@@ -297,6 +297,91 @@ html,body{background:var(--bg);color:var(--text);font-family:var(--sans);height:
 
 @keyframes fadeUp{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);}}
 
+/* 핸드폰 UI */
+.phone-frame{
+  width:280px;margin:0 auto;
+  background:#111;border-radius:36px;
+  padding:12px 8px;
+  box-shadow:0 0 0 2px #333, 0 20px 60px rgba(0,0,0,.7);
+  position:relative;
+}
+.phone-notch{
+  width:80px;height:22px;background:#111;
+  border-radius:0 0 14px 14px;
+  margin:0 auto 8px;
+  position:relative;z-index:1;
+  display:flex;align-items:center;justify-content:center;gap:6px;
+}
+.phone-notch::before{
+  content:'';width:8px;height:8px;
+  background:#1a1a1a;border-radius:50%;
+  border:1px solid #2a2a2a;
+}
+.phone-screen{
+  background:#000;border-radius:24px;
+  overflow:hidden;
+}
+.phone-status{
+  background:#000;padding:4px 16px;
+  display:flex;justify-content:space-between;align-items:center;
+  font-size:10px;color:white;font-family:'Segoe UI',sans-serif;
+}
+.phone-home{
+  width:100px;height:4px;background:#333;
+  border-radius:2px;margin:8px auto 4px;
+}
+
+/* 카톡 앱 */
+.kakao-header{
+  background:#3c1e1e;
+  padding:10px 14px;
+  display:flex;align-items:center;gap:10px;
+}
+.kakao-back{color:white;font-size:14px;cursor:pointer;padding:4px;}
+.kakao-room-name{color:white;font-size:13px;font-weight:600;flex:1;}
+.kakao-member{color:rgba(255,255,255,.5);font-size:11px;}
+.kakao-body{
+  background:#b2c7d9;
+  height:380px;
+  overflow-y:auto;
+  padding:10px 8px;
+  display:flex;flex-direction:column;gap:6px;
+  -webkit-overflow-scrolling:touch;
+}
+.kakao-body::-webkit-scrollbar{width:3px;}
+.kakao-body::-webkit-scrollbar-thumb{background:rgba(0,0,0,.2);}
+.kakao-date-divider{
+  text-align:center;font-size:10px;
+  color:rgba(0,0,0,.4);
+  background:rgba(0,0,0,.1);
+  padding:2px 10px;border-radius:10px;
+  align-self:center;margin:4px 0;
+}
+.kmsg-row{display:flex;align-items:flex-end;gap:4px;}
+.kmsg-row.mine{flex-direction:row-reverse;}
+.kavatar{
+  width:28px;height:28px;border-radius:50%;
+  background:#f9e000;display:flex;align-items:center;
+  justify-content:center;font-size:14px;flex-shrink:0;
+  align-self:flex-start;
+}
+.kmsg-wrap{display:flex;flex-direction:column;max-width:68%;}
+.kmsg-row.mine .kmsg-wrap{align-items:flex-end;}
+.kname{font-size:10px;color:rgba(0,0,0,.5);margin-bottom:2px;padding-left:2px;}
+.kbubble{
+  padding:7px 10px;border-radius:12px;
+  font-size:12px;line-height:1.5;color:#111;
+  word-break:break-all;
+}
+.kbubble.other{background:white;border-radius:2px 12px 12px 12px;}
+.kbubble.mine{background:#fee500;border-radius:12px 2px 12px 12px;}
+.ktime{font-size:9px;color:rgba(0,0,0,.4);flex-shrink:0;margin-bottom:2px;}
+.padlock-dial{display:flex;flex-direction:column;align-items:center;gap:4px;}
+.dial-btn{background:var(--bg3);border:1px solid var(--border2);color:var(--text);width:52px;height:38px;font-size:18px;cursor:pointer;transition:all .15s;border-radius:3px;}
+.dial-btn:hover{background:var(--border2);color:var(--gold);}
+.dial-btn:active{transform:scale(.95);}
+.dial-num{width:52px;height:64px;background:var(--bg);border:2px solid var(--border2);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:30px;color:var(--gold);border-radius:3px;}
+
 /* ============================================
    가상 Windows 데스크탑
 ============================================ */
@@ -489,55 +574,55 @@ html,body{background:var(--bg);color:var(--text);font-family:var(--sans);height:
             <text class="hs-lbl" x="494" y="374">스위치</text>
           </g>
 
+          <!-- 노트북 — 항상 클릭 가능 (비밀번호 힌트 없음) -->
+          <g class="hs-group" onclick="openLaptop()" tabindex="0" role="button">
+            <rect class="hs-rect" x="920" y="580" width="280" height="200"/>
+            <text class="hs-lbl" x="924" y="584">노트북</text>
+          </g>
+
           <!-- 불 켜진 후 활성화 그룹 -->
           <g id="hs-light-group" style="pointer-events:none;opacity:0;transition:opacity .5s ease;">
 
-            <!-- 냉장고 위 메모 (자유 획득) -->
+            <!-- 냉장고 위 메모 -->
             <g class="hs-group" onclick="inspectFridge()" tabindex="0" role="button">
               <rect class="hs-rect" x="30" y="70" width="250" height="340"/>
               <text class="hs-lbl" x="34" y="74">냉장고 위 메모</text>
             </g>
 
-            <!-- 핸드폰 카톡 (핵심 단서) -->
+            <!-- 핸드폰 카톡 -->
             <g class="hs-group" onclick="inspectKakao()" tabindex="0" role="button">
-              <rect class="hs-rect" x="1100" y="580" width="120" height="200"/>
-              <text class="hs-lbl" x="1104" y="584">핸드폰</text>
+              <rect class="hs-rect" x="1240" y="620" width="120" height="180"/>
+              <text class="hs-lbl" x="1244" y="624">핸드폰</text>
             </g>
 
-            <!-- 창문 — 외부 발자국 (자살 아님 증거) -->
+            <!-- 창문 — 외부 발자국 -->
             <g class="hs-group" onclick="inspectWindow()" tabindex="0" role="button">
               <rect class="hs-rect" x="950" y="40" width="390" height="400"/>
               <text class="hs-lbl" x="954" y="44">창문</text>
             </g>
 
-            <!-- 야구 유니폼 (비밀번호 힌트) -->
-            <g class="hs-group" onclick="inspectUniform()" tabindex="0" role="button">
-              <rect class="hs-rect" x="1240" y="50" width="260" height="400"/>
-              <text class="hs-lbl" x="1244" y="54">야구 유니폼</text>
-            </g>
-
-            <!-- 액자 — 비밀번호 조합 힌트 -->
-            <g class="hs-group" onclick="inspectPainting()" tabindex="0" role="button">
+            <!-- 액자 — 클릭하면 이미지 확대 -->
+            <g class="hs-group" onclick="zoomPainting()" tabindex="0" role="button">
               <rect class="hs-rect" x="440" y="50" width="360" height="380"/>
               <text class="hs-lbl" x="444" y="54">벽의 액자</text>
             </g>
 
-            <!-- 포스트잇 — 찢긴 비밀번호 메모 (퍼즐) -->
+            <!-- 옷장 자물쇠 -->
+            <g class="hs-group" onclick="openPadlock()" tabindex="0" role="button">
+              <rect class="hs-rect" x="700" y="350" width="200" height="500"/>
+              <text class="hs-lbl" x="704" y="354">옷장 자물쇠</text>
+            </g>
+
+            <!-- 포스트잇 -->
             <g class="hs-group" onclick="inspectPostit()" tabindex="0" role="button">
-              <rect class="hs-rect" x="900" y="580" width="160" height="160"/>
-              <text class="hs-lbl" x="904" y="584">포스트잇</text>
+              <rect class="hs-rect" x="900" y="560" width="180" height="140"/>
+              <text class="hs-lbl" x="904" y="564">포스트잇</text>
             </g>
 
             <!-- 맥거핀: 침대 -->
             <g class="hs-group" onclick="inspectBed()" tabindex="0" role="button">
               <rect class="hs-rect" x="100" y="600" width="320" height="260"/>
               <text class="hs-lbl" x="104" y="604">침대</text>
-            </g>
-
-            <!-- 맥거핀: 옷장 -->
-            <g class="hs-group" onclick="inspectWardrobe()" tabindex="0" role="button">
-              <rect class="hs-rect" x="700" y="400" width="180" height="450"/>
-              <text class="hs-lbl" x="704" y="404">옷장</text>
             </g>
 
             <!-- 맥거핀: 화장실 문 -->
@@ -606,18 +691,7 @@ html,body{background:var(--bg);color:var(--text);font-family:var(--sans);height:
               ">→</button>
             </div>
 
-            <!-- 힌트 버튼 -->
-            <div id="win-hint-btn" style="margin-top:12px;cursor:pointer;"
-                 onclick="toggleWinHint()">
-              <span style="font-family:'Segoe UI',sans-serif;font-size:12px;color:rgba(255,255,255,.4);text-decoration:underline;">
-                비밀번호 힌트 보기
-              </span>
-            </div>
-            <div id="win-hint-box" style="display:none;margin-top:8px;background:rgba(0,0,0,.4);padding:8px 16px;border-radius:2px;">
-              <span style="font-family:'Segoe UI',sans-serif;font-size:12px;color:rgba(255,255,255,.6);">
-                힌트: 내가 제일 좋아하는 선수
-              </span>
-            </div>
+            <!-- 힌트 없음 — 방 안에서 직접 찾아야 -->
             <div id="win-pw-error" style="display:none;margin-top:10px;color:#ff6b6b;font-size:12px;font-family:'Segoe UI',sans-serif;">
               비밀번호가 올바르지 않습니다.
             </div>
@@ -937,6 +1011,286 @@ html,body{background:var(--bg);color:var(--text);font-family:var(--sans);height:
   </div>
 </div>
 
+<!-- 핸드폰 카카오톡 모달 -->
+<div class="modal-overlay" id="modal-phone">
+  <div class="modal-box" style="max-width:320px;background:transparent;border:none;box-shadow:none;">
+    <div class="phone-frame">
+      <!-- 노치 -->
+      <div class="phone-notch">
+        <div style="font-size:9px;color:#555;font-family:monospace;">23:41</div>
+      </div>
+
+      <div class="phone-screen">
+        <!-- 상태바 -->
+        <div class="phone-status">
+          <span>23:41</span>
+          <span>📶 🔋</span>
+        </div>
+
+        <!-- 카톡 헤더 -->
+        <div class="kakao-header">
+          <div class="kakao-back" onclick="closeModal('modal-phone')">‹</div>
+          <div>
+            <div class="kakao-room-name">김서연 (전 직장 동료)</div>
+            <div class="kakao-member">마지막 메시지 2024.11.02</div>
+          </div>
+        </div>
+
+        <!-- 대화 내용 -->
+        <div class="kakao-body" id="kakao-body">
+          <div class="kakao-date-divider">2024년 11월 2일</div>
+
+          <!-- 서연 -->
+          <div class="kmsg-row">
+            <div class="kavatar">👩</div>
+            <div class="kmsg-wrap">
+              <div class="kname">김서연</div>
+              <div style="display:flex;align-items:flex-end;gap:3px;">
+                <div class="kbubble other">준혁씨 요즘 괜찮아요? 연락이 없어서 걱정됐어요</div>
+                <div class="ktime">23:01</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 준혁 -->
+          <div class="kmsg-row mine">
+            <div class="kmsg-wrap">
+              <div style="display:flex;align-items:flex-end;gap:3px;flex-direction:row-reverse;">
+                <div class="kbubble mine">아 네 그냥 좀 바빴어요. 근데 서연씨 나 좀 이상한 거 발견했어요</div>
+                <div class="ktime">23:03</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 서연 -->
+          <div class="kmsg-row">
+            <div class="kavatar">👩</div>
+            <div class="kmsg-wrap">
+              <div class="kname">김서연</div>
+              <div style="display:flex;align-items:flex-end;gap:3px;">
+                <div class="kbubble other">뭔데요?</div>
+                <div class="ktime">23:03</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 준혁 -->
+          <div class="kmsg-row mine">
+            <div class="kmsg-wrap">
+              <div style="display:flex;align-items:flex-end;gap:3px;flex-direction:row-reverse;">
+                <div class="kbubble mine">회사 서버에서 이상한 export 로그가 계속 쌓이고 있어요. 내가 건드린 게 아닌데 누군가 내 계정으로 쿼리를 돌린 것 같아요</div>
+                <div class="ktime">23:05</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 서연 -->
+          <div class="kmsg-row">
+            <div class="kavatar">👩</div>
+            <div class="kmsg-wrap">
+              <div class="kname">김서연</div>
+              <div style="display:flex;align-items:flex-end;gap:3px;">
+                <div class="kbubble other">그거 위험한 거 아니에요? 회사에 말해야 하는 거 아닌가요?</div>
+                <div class="ktime">23:06</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 준혁 -->
+          <div class="kmsg-row mine">
+            <div class="kmsg-wrap">
+              <div style="display:flex;align-items:flex-end;gap:3px;flex-direction:row-reverse;">
+                <div class="kbubble mine">회사가 문제인 것 같아서 말 못하겠어요. 일단 증거 모아두고 있어요. 파일 3곳에 나눠뒀으니까 혹시 내가 연락 안 되면 서연씨가 알아야 해요</div>
+                <div class="ktime">23:08</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 서연 -->
+          <div class="kmsg-row">
+            <div class="kavatar">👩</div>
+            <div class="kmsg-wrap">
+              <div class="kname">김서연</div>
+              <div style="display:flex;align-items:flex-end;gap:3px;">
+                <div class="kbubble other">무슨 소리예요 그게. 지금 위험한 상황인 거예요?</div>
+                <div class="ktime">23:09</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 준혁 -->
+          <div class="kmsg-row mine">
+            <div class="kmsg-wrap">
+              <div style="display:flex;align-items:flex-end;gap:3px;flex-direction:row-reverse;">
+                <div class="kbubble mine">아마도요. 비번도 바꿨어요. 절대 잊을 수 없는 걸로요</div>
+                <div class="ktime">23:10</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 서연 -->
+          <div class="kmsg-row">
+            <div class="kavatar">👩</div>
+            <div class="kmsg-wrap">
+              <div class="kname">김서연</div>
+              <div style="display:flex;align-items:flex-end;gap:3px;">
+                <div class="kbubble other">제발 조심해요. 무슨 일 있으면 바로 연락해요</div>
+                <div class="ktime">23:11</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 준혁 -->
+          <div class="kmsg-row mine">
+            <div class="kmsg-wrap">
+              <div style="display:flex;align-items:flex-end;gap:3px;flex-direction:row-reverse;">
+                <div class="kbubble mine">네. 고마워요 서연씨</div>
+                <div class="ktime">23:41</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 서연 -->
+          <div class="kmsg-row">
+            <div class="kavatar">👩</div>
+            <div class="kmsg-wrap">
+              <div class="kname">김서연</div>
+              <div style="display:flex;align-items:flex-end;gap:3px;">
+                <div class="kbubble other">저도요. 진짜 조심하고요</div>
+                <div class="ktime">23:41</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="kakao-date-divider" style="margin-top:8px;">마지막 메시지</div>
+        </div>
+
+      </div><!-- /phone-screen -->
+
+      <!-- 하단 홈바 -->
+      <div class="phone-home"></div>
+    </div><!-- /phone-frame -->
+
+    <!-- 닫기 버튼 -->
+    <div style="text-align:center;margin-top:16px;">
+      <button class="btn-ok" onclick="closeModal('modal-phone')"
+              style="border-color:var(--border2);color:var(--text2);max-width:280px;">
+        핸드폰 내려놓기
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- 자물쇠 UI 모달 -->
+<div class="modal-overlay" id="modal-padlock">
+  <div class="modal-box" style="max-width:380px;">
+    <div class="modal-header">
+      <span class="modal-title">옷장 자물쇠</span>
+      <button class="modal-close" onclick="closeModal('modal-padlock')">✕</button>
+    </div>
+    <div class="modal-body" style="text-align:center;">
+      <p style="font-size:13px;color:var(--text2);margin-bottom:24px;line-height:1.8;">
+        4자리 조합 자물쇠다.<br>숫자를 맞춰 잠금을 해제하라.
+      </p>
+
+      <!-- 다이얼 -->
+      <div style="display:flex;justify-content:center;gap:12px;margin-bottom:24px;">
+        <div class="padlock-dial" id="dial-0">
+          <button class="dial-btn" onclick="dialUp(0)">▲</button>
+          <div class="dial-num" id="dial-num-0">0</div>
+          <button class="dial-btn" onclick="dialDown(0)">▼</button>
+        </div>
+        <div class="padlock-dial" id="dial-1">
+          <button class="dial-btn" onclick="dialUp(1)">▲</button>
+          <div class="dial-num" id="dial-num-1">0</div>
+          <button class="dial-btn" onclick="dialDown(1)">▼</button>
+        </div>
+        <div class="padlock-dial" id="dial-2">
+          <button class="dial-btn" onclick="dialUp(2)">▲</button>
+          <div class="dial-num" id="dial-num-2">0</div>
+          <button class="dial-btn" onclick="dialDown(2)">▼</button>
+        </div>
+        <div class="padlock-dial" id="dial-3">
+          <button class="dial-btn" onclick="dialUp(3)">▲</button>
+          <div class="dial-num" id="dial-num-3">0</div>
+          <button class="dial-btn" onclick="dialDown(3)">▼</button>
+        </div>
+      </div>
+
+      <button class="btn-submit" onclick="checkPadlock()" style="width:100%;padding:14px;letter-spacing:4px;">
+        🔓 &nbsp;열기
+      </button>
+      <div id="padlock-feedback" class="puzzle-feedback" style="margin-top:12px;"></div>
+    </div>
+  </div>
+</div>
+
+<!-- 액자 확대 모달 -->
+<div class="modal-overlay" id="modal-painting">
+  <div class="modal-box" style="max-width:640px;">
+    <div class="modal-header">
+      <span class="modal-title">벽의 액자 — 확대</span>
+      <button class="modal-close" onclick="closeModal('modal-painting')">✕</button>
+    </div>
+    <div class="modal-body" style="padding:0;">
+      <!--
+        🖼️ 액자 이미지 교체:
+        src를 ./images/painting.jpeg 로 교체하세요
+        숫자가 숨겨진 그림 이미지를 넣으면 됩니다
+      -->
+      <img id="painting-zoom-img"
+           src="./images/painting.jpeg"
+           alt="액자 확대"
+           style="width:100%;display:block;"
+           onerror="this.style.display='none';document.getElementById('painting-placeholder').style.display='flex';">
+      <div id="painting-placeholder" style="
+        display:none;width:100%;height:300px;
+        background:var(--bg3);
+        align-items:center;justify-content:center;flex-direction:column;gap:12px;
+      ">
+        <div style="font-size:40px;opacity:.3;">🖼️</div>
+        <div style="font-family:var(--mono);font-size:11px;color:var(--text2);letter-spacing:2px;">
+          images/painting.jpeg 를 넣어주세요
+        </div>
+      </div>
+      <div style="padding:16px;font-size:12px;color:var(--text2);line-height:1.8;">
+        그림 안에 무언가 숨겨져 있는 것 같다.<br>
+        <span style="color:var(--gold);">네 귀퉁이</span>를 자세히 살펴보라.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 유니폼 발견 모달 -->
+<div class="modal-overlay" id="modal-uniform">
+  <div class="modal-box" style="max-width:400px;">
+    <div class="modal-header">
+      <span class="modal-title">옷장 내부</span>
+      <button class="modal-close" onclick="closeModal('modal-uniform')">✕</button>
+    </div>
+    <div class="modal-body" style="text-align:center;">
+      <div style="font-size:64px;margin-bottom:16px;">⚾</div>
+      <p style="font-size:14px;color:var(--text);margin-bottom:16px;">
+        자물쇠가 열렸다.<br>옷장 안에 야구 유니폼이 걸려있다.
+      </p>
+      <div style="
+        background:var(--bg3);border:1px solid var(--border2);
+        padding:20px;margin-bottom:16px;
+        font-family:var(--mono);font-size:24px;
+        color:var(--gold);letter-spacing:6px;
+      ">
+        PARK &nbsp; #29
+      </div>
+      <p style="font-size:12px;color:var(--text2);line-height:1.8;">
+        이준혁이 제일 좋아하는 선수.<br>
+        포스트잇의 <span style="color:var(--gold);">PW — ████29</span> 와<br>
+        액자 메모의 <span style="color:var(--gold);">"이름 먼저, 번호 다음"</span> 과 연결된다.
+      </p>
+      <button class="btn-ok" onclick="closeModal('modal-uniform')" style="margin-top:16px;">확인</button>
+    </div>
+  </div>
+</div>
+
 <!-- 모달: 알림 -->
 <div class="modal-overlay" id="modal-notice">
   <div class="modal-box" style="max-width:340px;">
@@ -1005,6 +1359,7 @@ const S={stage:1,viewStage:1,clues:[],
   f:{cctvSeen:false,mailboxRead:false,potFound:false,
      windowSeen:false,fridgeRead:false,
      paintingSolved:false,kakaoRead:false,postitRead:false,
+     wardrobeOpen:false,
      computerOpen:false,uniformSeen:false,urlFound:false,
      webpageEntered:false,file3Unlocked:false}};
 
@@ -1079,7 +1434,22 @@ const CLUES={
       </div>
       <p style="margin-top:14px;color:var(--text2);font-size:12px;">
         앞 네 글자가 찢겨나갔다.<br>
-        <span style="color:var(--gold);">액자 뒷면 메모</span>와 <span style="color:var(--gold);">선반의 유니폼</span>에 힌트가 있을 것 같다.
+        <span style="color:var(--gold);">액자 뒷면 메모</span>와 <span style="color:var(--gold);">옷장 안 유니폼</span>에 힌트가 있을 것 같다.
+      </p>
+    `
+  },
+  uniform_clue:{
+    title:'야구 유니폼 — PARK #29',
+    desc:'옷장 자물쇠를 열자 발견. 이준혁이 아끼던 유니폼.',
+    detail:`
+      <div style="text-align:center;margin-bottom:16px;font-size:48px;">⚾</div>
+      <div style="background:var(--bg3);border:1px solid var(--border2);padding:20px;text-align:center;font-family:var(--mono);font-size:22px;color:var(--gold);letter-spacing:6px;margin-bottom:14px;">
+        PARK &nbsp; #29
+      </div>
+      <p style="font-size:12px;color:var(--text2);line-height:1.8;">
+        포스트잇의 <span style="color:var(--gold);">PW — ████29</span><br>
+        액자 메모의 <span style="color:var(--gold);">"이름 먼저, 번호 다음"</span><br>
+        → 이름(PARK) + 번호(29) = <span style="color:var(--accent2);">PARK29</span>
       </p>
     `
   },
@@ -1460,6 +1830,92 @@ function openDoorLock(){
 
 // 스테이지 2
 /* ============================================
+   노트북 — 언제든 접근 가능, 비밀번호 힌트 없음
+============================================ */
+function openLaptop(){
+  // 이미 풀었으면 바로 데스크탑
+  if(S.solved.computer_pw){
+    document.getElementById('win-lockscreen').style.display='none';
+    document.getElementById('win-desktop').style.display='flex';
+    return;
+  }
+  // 잠금화면 — 힌트 없이 바로 입력창
+  document.getElementById('win-lockscreen').style.display='flex';
+  document.getElementById('win-desktop').style.display='none';
+}
+
+/* ============================================
+   액자 확대 — 이미지로 교체
+============================================ */
+function zoomPainting(){
+  if(S.stage<2){showLocked();return;}
+  if(!S.f.paintingSolved){S.f.paintingSolved=true;addClue('painting_hint');showToast('🖼️ 액자 확대');}
+  document.getElementById('modal-painting').classList.add('open');
+}
+
+// 기존 inspectPainting 대체
+function inspectPainting(){ zoomPainting(); }
+
+/* ============================================
+   자물쇠 다이얼
+============================================ */
+const dialValues = [0,0,0,0];
+
+// ✏️ 자물쇠 정답: 여기서 수정
+const PADLOCK_ANSWER = '4721';
+
+function dialUp(i){
+  dialValues[i] = (dialValues[i]+1) % 10;
+  document.getElementById(`dial-num-${i}`).textContent = dialValues[i];
+}
+
+function dialDown(i){
+  dialValues[i] = (dialValues[i]+9) % 10;
+  document.getElementById(`dial-num-${i}`).textContent = dialValues[i];
+}
+
+function openPadlock(){
+  if(S.stage<2){showLocked();return;}
+  if(S.f.wardrobeOpen){
+    // 이미 열린 경우 유니폼 바로 표시
+    document.getElementById('modal-uniform').classList.add('open');
+    return;
+  }
+  // 다이얼 초기화
+  for(let i=0;i<4;i++){
+    dialValues[i]=0;
+    document.getElementById(`dial-num-${i}`).textContent='0';
+  }
+  document.getElementById('padlock-feedback').textContent='';
+  document.getElementById('padlock-feedback').className='puzzle-feedback';
+  document.getElementById('modal-padlock').classList.add('open');
+}
+
+function checkPadlock(){
+  const val = dialValues.join('');
+  const fb = document.getElementById('padlock-feedback');
+  if(val === PADLOCK_ANSWER){
+    fb.textContent='✓ 자물쇠가 열렸다!';
+    fb.className='puzzle-feedback ok';
+    S.f.wardrobeOpen = true;
+    addClue('uniform_clue');
+    showToast('🔓 옷장 열림');
+    setTimeout(()=>{
+      closeModal('modal-padlock');
+      document.getElementById('modal-uniform').classList.add('open');
+    },800);
+  } else {
+    fb.textContent='✗ 맞지 않는다. 다시 시도해보라.';
+    fb.className='puzzle-feedback fail';
+    // 다이얼 흔들기
+    document.querySelectorAll('.dial-num').forEach(d=>{
+      d.style.color='var(--accent)';
+      setTimeout(()=>d.style.color='var(--gold)',500);
+    });
+  }
+}
+
+/* ============================================
    스테이지 2 — 방 내부
 ============================================ */
 function inspectFridge(){
@@ -1477,17 +1933,11 @@ function inspectWindow(){
 function inspectKakao(){
   if(S.stage<2){showLocked();return;}
   if(!S.f.kakaoRead){S.f.kakaoRead=true;addClue('kakao_chat');showToast('📱 카카오톡 대화 발견');}
-  // 카톡 UI 렌더링
-  document.getElementById('clue-title').textContent='핸드폰 — 카카오톡';
-  document.getElementById('clue-img').style.display='none';
-  document.getElementById('clue-text').innerHTML = renderKakao();
-  document.getElementById('modal-clue').classList.add('open');
-}
-
-function inspectPainting(){
-  if(S.stage<2){showLocked();return;}
-  if(!S.f.paintingSolved){S.f.paintingSolved=true;addClue('painting_hint');showToast('🖼️ 액자 뒷면 메모 발견!');}
-  showClueDetail('painting_hint');
+  document.getElementById('modal-phone').classList.add('open');
+  setTimeout(()=>{
+    const body = document.getElementById('kakao-body');
+    if(body) body.scrollTop = body.scrollHeight;
+  },100);
 }
 
 function inspectPostit(){
@@ -1496,8 +1946,16 @@ function inspectPostit(){
   showClueDetail('postit_clue');
 }
 
-function checkStage2(){
-  // 컴퓨터는 언제든 접근 가능 — 방 탐색과 독립
+function checkStage2(){}
+function inspectWardrobe(){ openPadlock(); }
+
+// inspectUniform → 옷장 열려야 볼 수 있음
+function inspectUniform(){
+  if(!S.f.wardrobeOpen){
+    showNotice('🔒','옷장이 잠겨있습니다','자물쇠를 먼저 열어야 합니다.');
+    return;
+  }
+  document.getElementById('modal-uniform').classList.add('open');
 }
 
 /* ============================================
