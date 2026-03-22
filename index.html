@@ -918,6 +918,288 @@ footer {
 .modal-play-btn:hover { background: var(--accent2); }
 
 /* ============================================
+   구독 플랜
+============================================ */
+#subscribe-section {
+  padding: 120px 48px;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+.plan-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2px;
+  margin-top: 56px;
+}
+
+.plan-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  padding: 40px 36px;
+  position: relative;
+  transition: border-color .2s;
+}
+
+.plan-card:hover { border-color: var(--border2); }
+
+.plan-card.featured {
+  border-color: var(--gold);
+  background: var(--bg3);
+}
+
+.plan-badge {
+  position: absolute;
+  top: -1px; right: 28px;
+  background: var(--gold);
+  color: var(--bg);
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 2px;
+  padding: 4px 10px;
+  text-transform: uppercase;
+}
+
+.plan-name {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text2);
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+}
+
+.plan-price {
+  font-family: var(--serif);
+  font-size: 48px;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1;
+  margin-bottom: 6px;
+}
+
+.plan-price span {
+  font-size: 16px;
+  font-family: var(--sans);
+  font-weight: 400;
+  color: var(--text2);
+}
+
+.plan-period {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--text2);
+  letter-spacing: 2px;
+  margin-bottom: 28px;
+}
+
+.plan-divider {
+  height: 1px;
+  background: var(--border);
+  margin-bottom: 24px;
+}
+
+.plan-features {
+  list-style: none;
+  margin-bottom: 32px;
+}
+
+.plan-features li {
+  font-size: 13px;
+  color: var(--text2);
+  line-height: 1;
+  padding: 9px 0;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.plan-features li:last-child { border-bottom: none; }
+
+.plan-features li::before {
+  content: '✓';
+  color: var(--gold);
+  font-family: var(--mono);
+  font-size: 11px;
+  flex-shrink: 0;
+}
+
+.plan-features li.disabled {
+  color: var(--text3);
+}
+
+.plan-features li.disabled::before {
+  content: '✕';
+  color: var(--text3);
+}
+
+.plan-btn {
+  display: block;
+  width: 100%;
+  padding: 14px;
+  background: none;
+  border: 1px solid var(--border2);
+  color: var(--text2);
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all .2s;
+  text-align: center;
+  text-decoration: none;
+}
+
+.plan-btn:hover { border-color: var(--text); color: var(--text); }
+
+.plan-btn.primary {
+  background: var(--gold);
+  border-color: var(--gold);
+  color: var(--bg);
+}
+
+.plan-btn.primary:hover { background: var(--gold2); border-color: var(--gold2); }
+
+/* 결제 방법 */
+.pay-methods {
+  margin-top: 48px;
+  padding: 32px;
+  border: 1px solid var(--border);
+  background: var(--bg2);
+}
+
+.pay-methods-title {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--text2);
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  margin-bottom: 20px;
+}
+
+.pay-btns {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.pay-btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 20px;
+  border: 1px solid var(--border2);
+  background: none;
+  cursor: pointer;
+  transition: all .2s;
+  font-size: 13px;
+  color: var(--text);
+  font-family: var(--sans);
+  text-decoration: none;
+}
+
+.pay-btn:hover { border-color: var(--text); }
+
+.pay-btn.toss { border-color: #3182f6; color: #3182f6; }
+.pay-btn.toss:hover { background: #3182f6; color: white; }
+
+.pay-btn.kakao { border-color: #fee500; color: #3c1e1e; background: #fee500; }
+.pay-btn.kakao:hover { background: #fdd800; }
+
+.pay-notice {
+  margin-top: 16px;
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--text3);
+  letter-spacing: 1px;
+  line-height: 1.8;
+}
+
+/* 구독 안내 팝업 */
+.sub-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.92);
+  z-index: 500;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  backdrop-filter: blur(8px);
+}
+
+.sub-modal-overlay.open { display: flex; }
+
+.sub-modal {
+  background: var(--bg2);
+  border: 1px solid var(--border2);
+  border-top: 2px solid var(--gold);
+  max-width: 420px;
+  width: 100%;
+  padding: 36px 32px;
+  animation: modalIn .3s ease;
+  text-align: center;
+}
+
+.sub-modal-icon { font-size: 36px; margin-bottom: 16px; }
+
+.sub-modal-title {
+  font-family: var(--serif);
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 12px;
+}
+
+.sub-modal-desc {
+  font-size: 13px;
+  color: var(--text2);
+  line-height: 1.9;
+  margin-bottom: 28px;
+}
+
+.sub-modal-btns {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.sub-modal-btns .btn-gold {
+  padding: 14px;
+  background: var(--gold);
+  color: var(--bg);
+  border: none;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background .2s;
+}
+
+.sub-modal-btns .btn-gold:hover { background: var(--gold2); }
+
+.sub-modal-btns .btn-ghost {
+  padding: 12px;
+  background: none;
+  color: var(--text2);
+  border: 1px solid var(--border2);
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 2px;
+  cursor: pointer;
+  transition: all .2s;
+}
+
+.sub-modal-btns .btn-ghost:hover { color: var(--text); border-color: var(--text); }
+
+@media (max-width: 900px) {
+  #subscribe-section { padding: 80px 24px; }
+  .plan-grid { grid-template-columns: 1fr; }
+}
+
+/* ============================================
    반응형
 ============================================ */
 @media (max-width: 900px) {
@@ -961,6 +1243,7 @@ footer {
   <ul class="nav-links" id="nav-links">
     <li><a href="#" onclick="showPage('home');return false;" id="nav-home" class="active">홈</a></li>
     <li><a href="#" onclick="showPage('theme');return false;" id="nav-theme">테마</a></li>
+    <li><a href="#" onclick="showPage('subscribe');return false;" id="nav-subscribe">구독</a></li>
     <li><a href="#" onclick="showPage('about');return false;" id="nav-about">소개</a></li>
   </ul>
 
@@ -1140,6 +1423,20 @@ footer {
           각 단서는 치밀하게 연결되어 있고,
           진실은 예상치 못한 곳에 숨어있습니다.
         </p>
+
+        <!-- 구독 안내 -->
+        <div style="margin-top:28px;padding:20px 22px;border:1px solid var(--border2);border-left:3px solid var(--gold);background:var(--bg3);">
+          <div style="font-family:var(--mono);font-size:10px;color:var(--gold);letter-spacing:3px;margin-bottom:12px;">SUBSCRIPTION</div>
+          <p style="font-size:13px;line-height:1.9;color:var(--text2);">
+            <strong style="color:var(--text);">테마 1~3</strong>은 무료로 즐길 수 있습니다.<br>
+            이후 출시되는 신규 테마는 <strong style="color:var(--gold);">월 4,900원</strong> 구독으로 모두 이용 가능합니다.<br>
+            토스페이 · 카카오페이로 간편하게 구독하세요.
+          </p>
+          <a href="#" onclick="showPage('subscribe');return false;"
+             style="display:inline-block;margin-top:14px;font-family:var(--mono);font-size:11px;color:var(--gold);letter-spacing:2px;text-decoration:none;border-bottom:1px solid var(--gold);padding-bottom:2px;">
+            구독 플랜 보기 →
+          </a>
+        </div>
         <div class="about-stats">
           <div class="stat-item">
             <div class="stat-num">60<span style="font-size:18px;">분</span></div>
@@ -1165,6 +1462,105 @@ footer {
 </div>
 
 <!-- 테마 상세 모달 -->
+
+<!-- ============================================
+     구독 페이지
+============================================ -->
+<div id="page-subscribe" class="page" style="padding-top:72px;">
+  <section id="subscribe-section">
+
+    <div class="theme-header">
+      <div class="section-label">Subscription</div>
+      <h2 class="section-title">구독 플랜</h2>
+      <div class="section-divider"></div>
+      <p style="font-size:13px;color:var(--text2);line-height:1.9;max-width:480px;">
+        테마 1~3은 무료입니다.<br>
+        구독하시면 신규 출시 테마를 모두 이용할 수 있습니다.
+      </p>
+    </div>
+
+    <div class="plan-grid">
+
+      <!-- 무료 플랜 -->
+      <div class="plan-card">
+        <div class="plan-name">Free</div>
+        <div class="plan-price">0<span>원</span></div>
+        <div class="plan-period">영구 무료</div>
+        <div class="plan-divider"></div>
+        <ul class="plan-features">
+          <li>테마 1 — 1103 접속 기록</li>
+          <li>테마 2 — (출시 예정)</li>
+          <li>테마 3 — (출시 예정)</li>
+          <li class="disabled">테마 4 이상 — 구독 전용</li>
+          <li class="disabled">신규 테마 즉시 이용</li>
+        </ul>
+        <div class="plan-btn" style="cursor:default;opacity:.4;">현재 플랜</div>
+      </div>
+
+      <!-- 구독 플랜 -->
+      <div class="plan-card featured">
+        <div class="plan-badge">추천</div>
+        <div class="plan-name">Subscriber</div>
+        <div class="plan-price">4,900<span>원</span></div>
+        <div class="plan-period">/ 월 · 언제든 해지 가능</div>
+        <div class="plan-divider"></div>
+        <ul class="plan-features">
+          <li>테마 1~3 무료 포함</li>
+          <li>테마 4 이상 전체 이용</li>
+          <li>신규 테마 출시 즉시 이용</li>
+          <li>월정액 · 건별 결제 선택 가능</li>
+          <li>토스페이 · 카카오페이 지원</li>
+        </ul>
+        <button class="plan-btn primary" onclick="openSubModal()">▶ &nbsp;구독 시작하기</button>
+      </div>
+
+    </div>
+
+    <!-- 결제 수단 -->
+    <div class="pay-methods">
+      <div class="pay-methods-title">지원 결제 수단</div>
+      <div class="pay-btns">
+        <a class="pay-btn toss" href="#" onclick="goTossPay();return false;">
+          💙 &nbsp;토스페이로 구독
+        </a>
+        <a class="pay-btn kakao" href="#" onclick="goKakaoPay();return false;">
+          💛 &nbsp;카카오페이로 구독
+        </a>
+      </div>
+      <div class="pay-notice">
+        ※ 현재 결제 시스템 준비 중입니다. 오픈 시 알림을 드릴게요.<br>
+        ※ 건별 결제는 테마당 2,900원입니다. (추후 지원 예정)
+      </div>
+    </div>
+
+  </section>
+
+  <footer>
+    <div class="footer-left">© 2024 1103 — Online Mystery. All rights reserved.</div>
+    <div class="footer-right">Case File 01 — 접속 기록</div>
+  </footer>
+</div>
+
+<!-- 구독 안내 팝업 (테마 클릭 시) -->
+<div class="sub-modal-overlay" id="sub-modal">
+  <div class="sub-modal">
+    <div class="sub-modal-icon">🔐</div>
+    <div class="sub-modal-title">구독자 전용 테마</div>
+    <div class="sub-modal-desc">
+      이 테마는 구독자만 이용할 수 있습니다.<br>
+      <strong style="color:var(--gold);">월 4,900원</strong>으로 출시된 모든 테마를<br>
+      제한 없이 즐겨보세요.
+    </div>
+    <div class="sub-modal-btns">
+      <button class="btn-gold" onclick="closeSubModal();showPage('subscribe');">
+        ▶ &nbsp;구독 플랜 보기
+      </button>
+      <button class="btn-ghost" onclick="closeSubModal()">
+        나중에 하기
+      </button>
+    </div>
+  </div>
+</div>
 <div class="modal-overlay" id="theme-modal">
   <div class="modal-box">
     <div class="modal-header">
@@ -1250,6 +1646,36 @@ function closeThemeModal(){
 document.getElementById('theme-modal').addEventListener('click', e => {
   if(e.target === document.getElementById('theme-modal')) closeThemeModal();
 });
+
+/* 구독 안내 팝업 */
+function openSubModal(){
+  document.getElementById('sub-modal').classList.add('open');
+}
+
+function closeSubModal(){
+  document.getElementById('sub-modal').classList.remove('open');
+}
+
+document.getElementById('sub-modal').addEventListener('click', e => {
+  if(e.target === document.getElementById('sub-modal')) closeSubModal();
+});
+
+/*
+  💳 결제 연동 안내
+  토스페이 / 카카오페이 실제 연동은 사업자등록 + API 계약 필요
+  아래 URL을 실제 결제 링크로 교체하세요
+  토스: https://developers.tosspayments.com
+  카카오: https://developers.kakao.com/docs/latest/ko/kakaopay/common
+*/
+function goTossPay(){
+  // 🔧 추후 실제 토스페이 결제 URL로 교체
+  alert('토스페이 결제 시스템을 준비 중입니다.\n오픈 시 알림 드릴게요!');
+}
+
+function goKakaoPay(){
+  // 🔧 추후 실제 카카오페이 결제 URL로 교체
+  alert('카카오페이 결제 시스템을 준비 중입니다.\n오픈 시 알림 드릴게요!');
+}
 
 /* 히어로 이미지 — 별도 이미지 있으면 교체 */
 function loadHeroImg(){
