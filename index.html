@@ -646,7 +646,9 @@ html,body{background:var(--bg);color:var(--text);font-family:var(--sans);height:
 </div>
 
 <script>
-const S={stage:1,viewStage:1,clues:[],f:{cctvSeen:false,mailboxRead:false,potFound:false,windowSeen:false,fridgeRead:false,paintingSolved:false,mirrorRead:false,computerOpen:false,uniformSeen:false,urlFound:false,webpageEntered:false,file3Unlocked:false}};
+const S={stage:1,viewStage:1,clues:[],
+  solved:{doorlock:false, painting:false, computer_pw:false, webpage_pw:false},
+  f:{cctvSeen:false,mailboxRead:false,potFound:false,windowSeen:false,fridgeRead:false,paintingSolved:false,mirrorRead:false,computerOpen:false,uniformSeen:false,urlFound:false,webpageEntered:false,file3Unlocked:false}};
 
 const CLUES={
   cctv:{title:'CCTV 영상 기록',desc:'2024.11.03 23:14 — 이준혁 마지막 귀가 장면',detail:`<p>복도 CCTV 마지막 기록.</p><p style="margin:12px 0;font-family:var(--mono);font-size:12px;color:var(--text2);">타임스탬프: <span class="clue-hl">2024.11.03 / 23:14</span></p><p>이준혁이 도어락을 누르는 장면이 흐릿하게 잡혀있다.<br>손가락 움직임: <span class="clue-hl">좌상→우하→우상→중앙</span></p><p style="margin-top:12px;color:var(--text2);font-size:12px;">도어락 키패드: 1 2 3 / 4 5 6 / 7 8 9 / 0</p>`},
@@ -664,6 +666,7 @@ const CLUES={
 let curPuzzle=null;
 const PUZZLES={
   doorlock:{
+    key:'doorlock',
     title:'도어락 — 1103호',
     desc:`CCTV 영상에서 이준혁이 도어락을 누르는 장면을 분석했다.<br><br>손가락 움직임 순서:<br><strong style="color:var(--gold);">좌상단 → 우하단 → 우상단 → 중앙</strong><br><br>도어락 키패드:<br><span style="font-family:var(--mono);letter-spacing:6px;">1 2 3<br>4 5 6<br>7 8 9<br>&nbsp;&nbsp;0</span><br><br>4자리 번호는?`,
     hint:'키패드에서 좌상단은 1, 우하단은 9, 우상단은 3, 중앙은 5예요. 순서대로 이어붙이면 됩니다.',
@@ -671,6 +674,7 @@ const PUZZLES={
     onSuccess(){addClue('cctv');advanceStage(2);showToast('🚪 1103호 진입');}
   },
   painting:{
+    key:'painting',
     title:'벽의 추상화',
     desc:`액자를 확대해보니 붓터치처럼 보이는 선들 사이에 숫자가 교묘하게 숨겨져 있다.<br><br>그림의 <strong style="color:var(--gold);">네 귀퉁이</strong>를 자세히 보면 각각 숫자가 하나씩 새겨져 있다.<br><br>좌상 → 우상 → 좌하 → 우하 순서로 읽으면?`,
     hint:'그림 귀퉁이 순서대로 숫자를 읽으면 4자리가 나옵니다. 좌상=4, 우상=7, 좌하=2, 우하=1.',
@@ -678,6 +682,7 @@ const PUZZLES={
     onSuccess(){addClue('business_card');S.f.paintingSolved=true;showToast('🖼️ 액자 뒤 벽면 금고 발견!');checkStage2();}
   },
   computer_pw:{
+    key:'computer_pw',
     title:'윈도우 잠금화면',
     desc:`잠금화면 하단 <strong style="color:var(--gold);">"비밀번호 힌트 보기"</strong>를 눌렀다.<br><br>힌트: <em style="color:var(--text2);">"내가 제일 좋아하는 선수"</em><br><br>선반의 야구 유니폼:<br>등번호 <span class="clue-hl">29</span> / 이름 <span class="clue-hl">PARK</span><br><br>비밀번호 입력 (영문+숫자)`,
     hint:'성(PARK)과 등번호(29)를 붙이면 됩니다. 대문자로 입력하세요.',
@@ -685,6 +690,7 @@ const PUZZLES={
     onSuccess(){S.f.computerOpen=true;showToast('💻 컴퓨터 잠금 해제');closeModal('modal-puzzle');openBrowser();}
   },
   webpage_pw:{
+    key:'webpage_pw',
     title:'darkfile-1103 — 비밀번호',
     desc:`페이지가 비밀번호를 요구한다.<br><br>USB 파일의 힌트:<br><em style="color:var(--text2);">"비밀번호: 서연이 나한테 처음 보낸 날짜"</em><br><br>우편함 편지 봉투 소인:<br><span class="clue-hl">2024.10.27</span><br><br>날짜만 입력하세요 (4자리)`,
     hint:'봉투 소인의 월(10)과 일(27)을 붙이면 됩니다. → 1027',
@@ -836,7 +842,14 @@ function inspectCCTV(){
 }
 function inspectMailbox(){if(!S.f.mailboxRead){S.f.mailboxRead=true;addClue('letter');showToast('📬 편지 발견');}showClueDetail('letter');}
 function inspectPot(){if(!S.f.potFound){S.f.potFound=true;addClue('usb');showToast('💾 USB 발견');}showClueDetail('usb');}
-function openDoorLock(){if(!S.f.cctvSeen){showNotice('🔒','단서가 필요해요','복도 CCTV를 먼저 확인해보세요.');return;}openPuzzle('doorlock');}
+function openDoorLock(){
+  if(!S.f.cctvSeen){showNotice('🔒','단서가 필요해요','복도 CCTV를 먼저 확인해보세요.');return;}
+  if(S.solved.doorlock){
+    showNotice('✅','이미 해제됨','도어락은 이미 해제되어 있습니다.<br>1103호 안으로 진입했습니다.');
+    return;
+  }
+  openPuzzle('doorlock');
+}
 
 // 스테이지 2
 function inspectWindow(){if(S.stage<2){showLocked();return;}if(!S.f.windowSeen){S.f.windowSeen=true;addClue('window_scratch');showToast('🪟 이상한 점 발견');}showClueDetail('window_scratch');}
@@ -847,7 +860,11 @@ function checkStage2(){if(S.f.paintingSolved&&S.f.mirrorRead&&S.stage===2){setTi
 
 // 스테이지 3
 function inspectUniform(){if(S.stage<3){showLocked();return;}showInfo('야구 유니폼',`<p>선반에 걸린 야구 유니폼.</p><p style="margin:14px 0;font-family:var(--mono);font-size:20px;color:var(--gold);letter-spacing:4px;">#29 &nbsp;PARK</p><p style="color:var(--text2);font-size:12px;">LG 트윈스 팬이었던 것 같다.</p>`);}
-function openComputer(){if(S.stage<3){showLocked();return;}openPuzzle('computer_pw');}
+function openComputer(){
+  if(S.stage<3){showLocked();return;}
+  if(S.solved.computer_pw){openBrowser();return;}
+  openPuzzle('computer_pw');
+}
 function openBrowser(){showInfo('브라우저 접속 기록',`<div style="font-family:var(--mono);font-size:12px;line-height:2.4;background:var(--bg3);padding:14px;"><span style="color:var(--text2);">09:14</span> &nbsp;google.com<br><span style="color:var(--text2);">15:03</span> &nbsp;<span style="background:#1a0000;color:var(--accent2);padding:2px 8px;">████████████████.com</span></div><p style="margin-top:14px;color:var(--text2);font-size:12px;">가려진 URL을 복원해야 한다. 메모장 파일에 힌트가 있을 것 같다.</p><button class="btn-ok" style="margin-top:12px;" onclick="openMemopad()">📄 메모장 열기</button>`);}
 function openMemopad(){closeModal('modal-clue');showInfo('메모장 — notepad.txt',`<div style="font-family:var(--mono);font-size:13px;line-height:2.2;background:var(--bg3);padding:14px;color:var(--text2);">이름: <span style="color:var(--text);">darkfile</span><br>날짜: 11월 03일 → <span class="clue-hl">1103</span><br>플랫폼: <span style="color:var(--text);">netlify.app</span></div><p style="margin-top:14px;color:var(--gold);font-family:var(--mono);font-size:13px;letter-spacing:2px;">darkfile-1103.netlify.app</p><p style="margin-top:8px;color:var(--text2);font-size:12px;">USB를 연결해야 접속할 수 있을 것 같다.</p>`);if(!S.f.urlFound){S.f.urlFound=true;addClue('url_note');setTimeout(()=>{advanceStage(4);showToast('🌐 웹페이지 접속 준비 완료');},800);}}
 
@@ -993,7 +1010,26 @@ function openPuzzle(key){curPuzzle=PUZZLES[key];document.getElementById('puzzle-
 // 힌트 초기화
 document.getElementById('hint-box').style.display='none';document.getElementById('hint-btn').style.display='block';
 document.getElementById('modal-puzzle').classList.add('open');setTimeout(()=>inp.focus(),120);}
-function checkPuzzle(){if(!curPuzzle)return;const v=document.getElementById('puzzle-input').value.trim().toUpperCase();const a=curPuzzle.answer.toUpperCase();const inp=document.getElementById('puzzle-input');const fb=document.getElementById('puzzle-feedback');if(v===a){inp.classList.add('ok');fb.textContent='✓ 정답입니다.';fb.className='puzzle-feedback ok';setTimeout(()=>{closeModal('modal-puzzle');curPuzzle.onSuccess();},800);}else{inp.classList.add('err');fb.textContent='✗ 틀렸습니다. 다시 생각해보세요.';fb.className='puzzle-feedback fail';setTimeout(()=>inp.classList.remove('err'),500);}}
+function checkPuzzle(){
+  if(!curPuzzle)return;
+  const v=document.getElementById('puzzle-input').value.trim().toUpperCase();
+  const a=curPuzzle.answer.toUpperCase();
+  const inp=document.getElementById('puzzle-input');
+  const fb=document.getElementById('puzzle-feedback');
+  if(v===a){
+    inp.classList.add('ok');
+    fb.textContent='✓ 정답입니다.';
+    fb.className='puzzle-feedback ok';
+    // 풀린 퍼즐 기록
+    if(curPuzzle.key) S.solved[curPuzzle.key] = true;
+    setTimeout(()=>{closeModal('modal-puzzle');curPuzzle.onSuccess();},800);
+  } else {
+    inp.classList.add('err');
+    fb.textContent='✗ 틀렸습니다. 다시 생각해보세요.';
+    fb.className='puzzle-feedback fail';
+    setTimeout(()=>inp.classList.remove('err'),500);
+  }
+}
 function showLocked(){showNotice('🔒','아직 확인할 수 없습니다','단서가 더 필요합니다. 현재 위치를 먼저 살펴보세요.');}
 function showNotice(icon,title,text){document.getElementById('notice-icon').textContent=icon;document.getElementById('notice-title').textContent=title;document.getElementById('notice-text').innerHTML=`<strong>${title}</strong>${text}`;document.getElementById('modal-notice').classList.add('open');}
 function closeModal(id){document.getElementById(id).classList.remove('open');}
