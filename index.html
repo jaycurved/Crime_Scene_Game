@@ -63,20 +63,37 @@ html,body{background:var(--bg);color:var(--text);font-family:var(--sans);height:
 .hs-lbl{
   font-family:'Noto Serif KR','나눔명조','Batang',serif;
   font-weight:600;
-  font-size:24px;
+  font-size:12px;
   fill:#f0d060;
   paint-order:stroke fill;
   stroke:#000;
-  stroke-width:5px;
+  stroke-width:3px;
   stroke-linejoin:round;
   opacity:0;
   transition:opacity .2s;
   pointer-events:none;
   dominant-baseline:hanging;
-  letter-spacing:2px;
+  letter-spacing:1px;
 }
 .hs-group:hover .hs-lbl,
 .hs-group:focus .hs-lbl{ opacity:1; }
+
+/* BGM 버튼 */
+.bgm-btn{
+  background:none;
+  border:1px solid var(--border2);
+  color:var(--text2);
+  font-family:var(--mono);
+  font-size:11px;
+  letter-spacing:1px;
+  padding:4px 10px;
+  cursor:pointer;
+  transition:all .2s;
+  touch-action:manipulation;
+  border-radius:2px;
+}
+.bgm-btn:hover{ border-color:var(--gold); color:var(--gold); }
+.bgm-btn.muted{ border-color:var(--accent); color:var(--accent); }
 
 /* 인트로 포스터 전체화면 */
 #screen-intro{position:relative;align-items:center;justify-content:center;overflow:hidden;padding:0;}
@@ -206,20 +223,66 @@ html,body{background:var(--bg);color:var(--text);font-family:var(--sans);height:
 </head>
 <body>
 
+<!-- BGM -->
+<!-- 🎵 BGM 교체: src를 ./audio/bgm_intro.mp3 로 교체 -->
+<audio id="bgm" loop>
+  <source src="./audio/bgm_intro.mp3" type="audio/mpeg">
+</audio>
+
 <!-- 인트로 -->
 <div id="screen-intro" class="screen active">
   <!-- 🖼️ 포스터 이미지: src를 ./images/poster.jpeg 로 교체 -->
   <img class="intro-poster" src="./images/poster.jpeg" alt="포스터"
        onerror="this.style.display='none'">
   <div class="intro-overlay"></div>
-  <div class="intro-wrap">
+  <div class="intro-wrap" style="overflow-y:auto;max-height:100vh;">
     <div class="case-badge">CASE 01 — 2024.11</div>
-    <h1 class="intro-title"><span>미제 사건 파일</span>접속 기록</h1>
+    <h1 class="intro-title"><span>미제 사건 파일</span>1103</h1>
     <div class="intro-divider"></div>
-    <div class="intro-message">
-      <div class="sender">수신: 탐정 귀하 &nbsp;|&nbsp; 발신: <strong>김서연 (전 직장 동료)</strong></div>
-      <p>그건 자살이 아니에요.<br>오피스텔 호수는 <em>1103호</em>입니다.<br><br>이준혁은 뭔가를 알고 있었어요.<br>직접 가서 확인해주세요. 제발.</p>
+
+    <!-- 사건 개요 -->
+    <div class="intro-message" style="text-align:left;margin-bottom:16px;">
+      <div class="sender" style="margin-bottom:12px;">📋 &nbsp;사건 개요</div>
+      <p style="color:var(--text);line-height:2;font-size:13px;">
+        <strong style="color:var(--gold);">피해자</strong> &nbsp;이준혁 (34세, 프리랜서 개발자)<br>
+        <strong style="color:var(--gold);">발견일</strong> &nbsp;2024년 11월 4일 오전 7시 22분<br>
+        <strong style="color:var(--gold);">장소 &nbsp;</strong> &nbsp;서울 마포구 오피스텔 1103호<br>
+        <strong style="color:var(--gold);">사인 &nbsp;</strong> &nbsp;추락사 — 경찰 자살로 종결
+      </p>
     </div>
+
+    <div class="intro-message" style="text-align:left;margin-bottom:16px;">
+      <div class="sender" style="margin-bottom:12px;">📁 &nbsp;수사 배경</div>
+      <p style="font-size:13px;line-height:2;color:var(--text);">
+        이준혁은 대형 IT기업 <strong style="color:var(--accent2);">㈜넥스코어</strong>의 서버를 유지보수하던
+        프리랜서 개발자였다. 사건 당일, 그는 내부고발 사이트에 접속을 시도했고
+        그로부터 불과 몇 시간 뒤 오피스텔 외부에서 시신으로 발견됐다.<br><br>
+        경찰은 현장 감식 없이 자살로 신속 종결했다.
+        하지만 이준혁의 전 직장 동료 <strong style="color:var(--gold);">김서연</strong>은
+        그것이 자살이 아니라고 주장하며 당신에게 제보해왔다.
+      </p>
+    </div>
+
+    <div class="intro-message" style="text-align:left;margin-bottom:16px;">
+      <div class="sender" style="margin-bottom:12px;">✉️ &nbsp;제보 메시지</div>
+      <div class="sender">발신: <strong>김서연 (전 직장 동료)</strong></div>
+      <p style="font-size:13px;line-height:2;margin-top:8px;">
+        그건 자살이 아니에요.<br>
+        준혁이는 뭔가를 알고 있었고, 그게 그를 죽였어요.<br>
+        오피스텔 호수는 <em style="color:var(--accent2);">1103호</em>입니다.<br>
+        직접 가서 확인해주세요. 저도 쫓기고 있어요.
+      </p>
+    </div>
+
+    <div class="intro-message" style="text-align:left;margin-bottom:24px;border-left-color:var(--accent);">
+      <div class="sender" style="margin-bottom:8px;">⚠️ &nbsp;수사 목표</div>
+      <p style="font-size:13px;line-height:2;color:var(--text2);">
+        현장에 남겨진 단서들을 수집하고 퍼즐을 풀어<br>
+        <strong style="color:var(--text);">이준혁이 왜 죽었는지, 사건의 전말</strong>을 밝혀내세요.<br>
+        제한 시간은 <strong style="color:var(--gold);">60분</strong>입니다.
+      </p>
+    </div>
+
     <button class="btn-start" onclick="startGame()">▶ 수사 시작</button>
   </div>
 </div>
@@ -352,8 +415,11 @@ html,body{background:var(--bg);color:var(--text);font-family:var(--sans);height:
   <!-- 패널 -->
   <div class="game-panel">
     <div class="panel-header">
-      <div class="case-id">CASE 01 — 접속 기록</div>
-      <div class="stage-ind" id="stage-ind">STAGE 1 / 5</div>
+      <div class="case-id">CASE 01 — 1103</div>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <button class="bgm-btn" id="bgm-btn" onclick="toggleBGM()">♪ BGM</button>
+        <div class="stage-ind" id="stage-ind">STAGE 1 / 5</div>
+      </div>
     </div>
     <div class="panel-tabs">
       <button class="panel-tab active" onclick="switchTab('progress',this)">진행 현황</button>
@@ -516,8 +582,30 @@ function startTimer(){
   },1000);
 }
 
+/* ============================================
+   BGM
+============================================ */
+let bgmMuted = false;
+const bgmEl = document.getElementById('bgm');
+
+function toggleBGM(){
+  bgmMuted = !bgmMuted;
+  const btn = document.getElementById('bgm-btn');
+  if(bgmMuted){
+    bgmEl.pause();
+    btn.textContent = '✕ BGM';
+    btn.classList.add('muted');
+  } else {
+    bgmEl.play().catch(()=>{});
+    btn.textContent = '♪ BGM';
+    btn.classList.remove('muted');
+  }
+}
+
 function startGame(){
   showScreen('screen-game');
+  // BGM 자동 재생 시도 (브라우저 정책상 사용자 클릭 후 가능)
+  bgmEl.play().catch(()=>{});
   startTimer();
 }
 
