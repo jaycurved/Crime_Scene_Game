@@ -130,9 +130,30 @@ html,body{background:var(--bg);color:var(--text);font-family:var(--sans);height:
 .tab-pane{display:none;}
 .tab-pane.active{display:block;}
 
-.stage-list{list-style:none;}
-.stage-item{display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);}
+/* 스테이지 이동 가능 항목 */
+.stage-item{
+  display:flex;align-items:flex-start;gap:10px;padding:10px 0;
+  border-bottom:1px solid var(--border);
+  transition:background .15s;
+  border-radius:4px;
+  padding-left:4px;
+}
 .stage-item:last-child{border-bottom:none;}
+.stage-item.clickable{ cursor:pointer; }
+.stage-item.clickable:hover{ background:rgba(201,168,76,.06); }
+.stage-item.clickable:active{ background:rgba(201,168,76,.12); }
+.stage-item.current-loc{ background:rgba(192,57,43,.06); }
+
+.stage-arrow{
+  font-size:12px;
+  color:var(--text2);
+  margin-top:3px;
+  flex-shrink:0;
+  opacity:0;
+  transition:opacity .2s, color .2s;
+}
+.stage-item.clickable:hover .stage-arrow{ opacity:1; color:var(--gold); }
+.stage-item.clickable .stage-arrow{ opacity:.4; }
 .stage-dot{width:8px;height:8px;border-radius:50%;border:2px solid var(--border2);margin-top:4px;flex-shrink:0;transition:all .3s;}
 .stage-dot.done{background:var(--gold);border-color:var(--gold);}
 .stage-dot.current{background:var(--accent);border-color:var(--accent);box-shadow:0 0 8px var(--accent);}
@@ -498,12 +519,50 @@ html,body{background:var(--bg);color:var(--text);font-family:var(--sans);height:
     </div>
     <div class="panel-content">
       <div class="tab-pane active" id="tab-progress">
-        <ul class="stage-list">
-          <li class="stage-item"><div class="stage-dot current" id="dot-1"></div><div class="stage-info"><div class="stage-name" id="sn-1">오피스텔 복도</div><div class="stage-sub">도어락 해제 필요</div></div></li>
-          <li class="stage-item"><div class="stage-dot" id="dot-2"></div><div class="stage-info"><div class="stage-name locked" id="sn-2">방 내부</div><div class="stage-sub" id="ss-2">🔒 잠김</div></div></li>
-          <li class="stage-item"><div class="stage-dot" id="dot-3"></div><div class="stage-info"><div class="stage-name locked" id="sn-3">피해자 컴퓨터</div><div class="stage-sub" id="ss-3">🔒 잠김</div></div></li>
-          <li class="stage-item"><div class="stage-dot" id="dot-4"></div><div class="stage-info"><div class="stage-name locked" id="sn-4">숨겨진 웹페이지</div><div class="stage-sub" id="ss-4">🔒 잠김</div></div></li>
-          <li class="stage-item"><div class="stage-dot" id="dot-5"></div><div class="stage-info"><div class="stage-name locked" id="sn-5">위성 추적</div><div class="stage-sub" id="ss-5">🔒 잠김</div></div></li>
+        <div style="font-family:var(--mono);font-size:10px;color:var(--text2);letter-spacing:1px;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid var(--border);">
+          ✦ 방문한 장소를 클릭하면 이동할 수 있습니다
+        </div>
+        <ul class="stage-list" id="stage-list-ul">
+          <li class="stage-item" id="li-1" onclick="goToStage(1)">
+            <div class="stage-dot current" id="dot-1"></div>
+            <div class="stage-info">
+              <div class="stage-name" id="sn-1">오피스텔 복도</div>
+              <div class="stage-sub" id="ss-1">현재 위치</div>
+            </div>
+            <div class="stage-arrow" id="arr-1"></div>
+          </li>
+          <li class="stage-item" id="li-2" onclick="goToStage(2)">
+            <div class="stage-dot" id="dot-2"></div>
+            <div class="stage-info">
+              <div class="stage-name locked" id="sn-2">방 내부</div>
+              <div class="stage-sub" id="ss-2">🔒 잠김</div>
+            </div>
+            <div class="stage-arrow" id="arr-2"></div>
+          </li>
+          <li class="stage-item" id="li-3" onclick="goToStage(3)">
+            <div class="stage-dot" id="dot-3"></div>
+            <div class="stage-info">
+              <div class="stage-name locked" id="sn-3">피해자 컴퓨터</div>
+              <div class="stage-sub" id="ss-3">🔒 잠김</div>
+            </div>
+            <div class="stage-arrow" id="arr-3"></div>
+          </li>
+          <li class="stage-item" id="li-4" onclick="goToStage(4)">
+            <div class="stage-dot" id="dot-4"></div>
+            <div class="stage-info">
+              <div class="stage-name locked" id="sn-4">숨겨진 웹페이지</div>
+              <div class="stage-sub" id="ss-4">🔒 잠김</div>
+            </div>
+            <div class="stage-arrow" id="arr-4"></div>
+          </li>
+          <li class="stage-item" id="li-5" onclick="goToStage(5)">
+            <div class="stage-dot" id="dot-5"></div>
+            <div class="stage-info">
+              <div class="stage-name locked" id="sn-5">위성 추적</div>
+              <div class="stage-sub" id="ss-5">🔒 잠김</div>
+            </div>
+            <div class="stage-arrow" id="arr-5"></div>
+          </li>
         </ul>
       </div>
       <div class="tab-pane" id="tab-clues">
@@ -587,7 +646,7 @@ html,body{background:var(--bg);color:var(--text);font-family:var(--sans);height:
 </div>
 
 <script>
-const S={stage:1,clues:[],f:{cctvSeen:false,mailboxRead:false,potFound:false,windowSeen:false,fridgeRead:false,paintingSolved:false,mirrorRead:false,computerOpen:false,uniformSeen:false,urlFound:false,webpageEntered:false,file3Unlocked:false}};
+const S={stage:1,viewStage:1,clues:[],f:{cctvSeen:false,mailboxRead:false,potFound:false,windowSeen:false,fridgeRead:false,paintingSolved:false,mirrorRead:false,computerOpen:false,uniformSeen:false,urlFound:false,webpageEntered:false,file3Unlocked:false}};
 
 const CLUES={
   cctv:{title:'CCTV 영상 기록',desc:'2024.11.03 23:14 — 이준혁 마지막 귀가 장면',detail:`<p>복도 CCTV 마지막 기록.</p><p style="margin:12px 0;font-family:var(--mono);font-size:12px;color:var(--text2);">타임스탬프: <span class="clue-hl">2024.11.03 / 23:14</span></p><p>이준혁이 도어락을 누르는 장면이 흐릿하게 잡혀있다.<br>손가락 움직임: <span class="clue-hl">좌상→우하→우상→중앙</span></p><p style="margin-top:12px;color:var(--text2);font-size:12px;">도어락 키패드: 1 2 3 / 4 5 6 / 7 8 9 / 0</p>`},
@@ -812,57 +871,119 @@ function showEnding(){showScreen('screen-ending');const events=[{d:'2019. 03',t:
 
 // 유틸
 /* ============================================
-   스테이지 진입 팝업 데이터
+   스테이지 진입/복귀 팝업 데이터
    ✏️ 문구 수정은 여기서
 ============================================ */
 const STAGE_INTRO = {
-  2:{
-    num:'STAGE 02',
-    title:'1103호 내부',
-    desc:'도어락이 열렸다.\n삐걱거리는 소리와 함께 문이 열린다.\n안으로 들어왔다. 형광등이 깜빡이고,\n창문은 열려있다.'
-  },
-  3:{
-    num:'STAGE 03',
-    title:'피해자의 책상',
-    desc:'방 안쪽 책상으로 이동했다.\n노트북이 잠금화면 상태로 켜져있다.\n그가 마지막으로 무엇을 보려 했는지\n알아낼 수 있을 것 같다.'
-  },
-  4:{
-    num:'STAGE 04',
-    title:'숨겨진 웹페이지',
-    desc:'URL을 복원했다.\nUSB를 연결하고 브라우저를 열었다.\n이준혁이 숨겨둔 무언가가\n이 페이지 안에 있다.'
-  },
-  5:{
-    num:'STAGE 05',
-    title:'위성 추적',
-    desc:'내부 메일의 수신처 IP를 추적했다.\n서버의 실제 위치가 특정됐다.\n마지막 단서가 저기 있다.'
-  }
+  2:{num:'STAGE 02',title:'1103호 내부',
+     desc:'도어락이 열렸다.\n삐걱거리는 소리와 함께 문이 열린다.\n안으로 들어왔다. 형광등이 깜빡이고,\n창문은 열려있다.'},
+  3:{num:'STAGE 03',title:'피해자의 책상',
+     desc:'방 안쪽 책상으로 이동했다.\n노트북이 잠금화면 상태로 켜져있다.\n그가 마지막으로 무엇을 보려 했는지\n알아낼 수 있을 것 같다.'},
+  4:{num:'STAGE 04',title:'숨겨진 웹페이지',
+     desc:'URL을 복원했다.\nUSB를 연결하고 브라우저를 열었다.\n이준혁이 숨겨둔 무언가가\n이 페이지 안에 있다.'},
+  5:{num:'STAGE 05',title:'위성 추적',
+     desc:'내부 메일의 수신처 IP를 추적했다.\n서버의 실제 위치가 특정됐다.\n마지막 단서가 저기 있다.'}
 };
 
-function showStagePopup(n){
-  const data = STAGE_INTRO[n];
+// 복귀 팝업 문구
+const STAGE_RETURN = {
+  1:{num:'STAGE 01',title:'오피스텔 복도로 돌아왔다',
+     desc:'다시 1103호 앞 복도다.\n이미 살펴본 곳이지만,\n놓친 것이 있을지도 모른다.'},
+  2:{num:'STAGE 02',title:'방 내부로 돌아왔다',
+     desc:'다시 1103호 안이다.\n형광등이 여전히 깜빡이고 있다.\n미처 확인하지 못한 것이 있을 수 있다.'},
+  3:{num:'STAGE 03',title:'책상으로 돌아왔다',
+     desc:'다시 피해자의 책상 앞이다.\n컴퓨터 화면이 그대로 켜져있다.'},
+  4:{num:'STAGE 04',title:'웹페이지로 돌아왔다',
+     desc:'다시 숨겨진 페이지다.\n아직 확인하지 못한 파일이 있을 수 있다.'},
+  5:{num:'STAGE 05',title:'위성 추적 화면으로 돌아왔다',
+     desc:'IP 추적 화면으로 돌아왔다.'}
+};
+
+function showStagePopup(n, isReturn=false){
+  const data = isReturn ? STAGE_RETURN[n] : STAGE_INTRO[n];
   if(!data) return;
   document.getElementById('sp-num').textContent   = data.num;
   document.getElementById('sp-title').textContent = data.title;
   document.getElementById('sp-desc').innerHTML    = data.desc.replace(/\n/g,'<br>');
-  const popup = document.getElementById('stage-popup');
-  popup.classList.add('show');
+  document.getElementById('stage-popup').classList.add('show');
 }
 
 function closeStagePopup(){
   document.getElementById('stage-popup').classList.remove('show');
 }
 
+/* 진행 현황에서 스테이지 이동 */
+function goToStage(n){
+  // 아직 열리지 않은 스테이지 차단
+  if(n > S.stage){
+    showNotice('🔒','아직 갈 수 없습니다','이 장소는 아직 잠겨있습니다.<br>현재 위치에서 단서를 더 찾아보세요.');
+    return;
+  }
+  // 현재 위치면 무시
+  if(n === S.viewStage) return;
+
+  const prev = S.viewStage;
+  S.viewStage = n;
+
+  // 씬 전환
+  document.querySelectorAll('.scene-slide').forEach(el=>el.classList.remove('active'));
+  const target = document.getElementById(`scene-${n}`);
+  if(target) target.classList.add('active');
+
+  // UI 업데이트
+  updateUI();
+
+  // 복귀 팝업 (이전에 방문한 곳으로 돌아가는 경우)
+  const isReturn = n < S.stage || (n === S.stage && prev !== n);
+  setTimeout(()=>showStagePopup(n, isReturn), 200);
+}
+
 function advanceStage(n){
   if(n<=S.stage)return;
   S.stage=n;
+  S.viewStage=n;
   updateUI();
   document.querySelectorAll('.scene-slide').forEach(el=>el.classList.remove('active'));
   const next=document.getElementById(`scene-${n}`);
   if(next)next.classList.add('active');
-  // 스테이지 진입 팝업 (1스테이지는 게임 시작이라 제외)
-  if(n >= 2) setTimeout(()=>showStagePopup(n), 300);
+  if(n>=2) setTimeout(()=>showStagePopup(n, false), 300);
 }
-function updateUI(){document.getElementById('stage-ind').textContent=`STAGE ${S.stage} / 5`;[1,2,3,4,5].forEach(i=>{const dot=document.getElementById(`dot-${i}`);const sn=document.getElementById(`sn-${i}`);dot.className='stage-dot';sn.className='stage-name';if(i<S.stage)dot.classList.add('done');else if(i===S.stage)dot.classList.add('current');else sn.classList.add('locked');});}
+function updateUI(){
+  document.getElementById('stage-ind').textContent=`STAGE ${S.stage} / 5`;
+  [1,2,3,4,5].forEach(i=>{
+    const dot=document.getElementById(`dot-${i}`);
+    const sn=document.getElementById(`sn-${i}`);
+    const ss=document.getElementById(`ss-${i}`);
+    const li=document.getElementById(`li-${i}`);
+    const arr=document.getElementById(`arr-${i}`);
+    dot.className='stage-dot';
+    sn.className='stage-name';
+    li.className='stage-item';
+    if(i<S.stage){
+      dot.classList.add('done');
+      li.classList.add('clickable');
+      if(arr) arr.textContent='›';
+    } else if(i===S.stage){
+      dot.classList.add('current');
+      li.classList.add('clickable');
+      if(arr) arr.textContent='›';
+    } else {
+      sn.classList.add('locked');
+      if(ss) ss.textContent='🔒 잠김';
+      if(arr) arr.textContent='';
+    }
+    // 현재 보고 있는 위치
+    if(i===S.viewStage){
+      li.classList.add('current-loc');
+      if(ss) ss.textContent='📍 현재 위치';
+      if(arr) arr.textContent='';
+    } else if(i<S.stage){
+      if(ss) ss.textContent='← 돌아가기';
+    } else if(i===S.stage && i!==S.viewStage){
+      if(ss) ss.textContent='← 돌아가기';
+    }
+  });
+}
 function addClue(id){if(S.clues.find(c=>c.id===id))return;const c=CLUES[id];if(!c)return;S.clues.push({id,...c,isNew:true});renderClues();}
 function renderClues(){const n=S.clues.length;document.getElementById('clue-count').textContent=`(${n})`;document.getElementById('clue-empty').style.display=n?'none':'block';document.getElementById('clue-list').innerHTML=S.clues.map(c=>`<div class="clue-item" onclick="viewClue('${c.id}')"><div class="clue-item-title">${c.title}${c.isNew?'<span class="new-badge">NEW</span>':''}</div><div class="clue-item-desc">${c.desc}</div></div>`).join('');}
 function viewClue(id){const c=S.clues.find(x=>x.id===id);if(!c)return;c.isNew=false;renderClues();showClueDetail(id);}
