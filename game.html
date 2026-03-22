@@ -433,25 +433,49 @@ html,body{background:var(--bg);color:var(--text);font-family:var(--sans);height:
     <!-- 스테이지 2 — 방 내부 -->
     <div class="scene-slide" id="scene-2">
       <div class="scene-wrap">
+        <!-- 불 꺼진 상태: stage2_room_dark.jpeg / 켜진 상태: stage2_room.jpeg -->
         <img class="scene-img" id="img-stage2" src="" alt="방 내부">
-        <svg class="hotspot-svg" viewBox="0 0 1600 900">
-          <g class="hs-group" onclick="inspectWindow()" tabindex="0" role="button">
-            <rect class="hs-rect" x="950" y="40" width="390" height="400"/>
-            <text class="hs-lbl" x="954" y="44">창문</text>
+
+        <!-- 불 꺼진 상태 어두운 오버레이 -->
+        <div id="room-dark-overlay" style="
+          position:absolute;inset:0;
+          background:rgba(0,0,0,.82);
+          pointer-events:none;
+          transition:opacity .6s ease;
+          z-index:1;
+        "></div>
+
+        <svg class="hotspot-svg" viewBox="0 0 1600 900" style="z-index:2;">
+
+          <!-- 전등 스위치 — 항상 클릭 가능 -->
+          <g class="hs-group" id="hs-switch" onclick="toggleLight()" tabindex="0" role="button">
+            <rect class="hs-rect" x="490" y="370" width="80" height="130"/>
+            <text class="hs-lbl" x="494" y="374">스위치</text>
           </g>
-          <g class="hs-group" onclick="inspectFridge()" tabindex="0" role="button">
-            <rect class="hs-rect" x="30" y="70" width="250" height="340"/>
-            <text class="hs-lbl" x="34" y="74">냉장고 위 메모</text>
-          </g>
-          <g class="hs-group" onclick="inspectPainting()" tabindex="0" role="button">
-            <rect class="hs-rect" x="440" y="50" width="360" height="380"/>
-            <text class="hs-lbl" x="444" y="54">벽의 액자</text>
-          </g>
-          <g class="hs-group" onclick="inspectMirror()" tabindex="0" role="button">
-            <rect class="hs-rect" x="1350" y="180" width="220" height="500"/>
-            <text class="hs-lbl" x="1354" y="184">욕실</text>
+
+          <!-- 불 켜진 후에만 활성화되는 핫스팟 그룹 -->
+          <g id="hs-light-group" style="pointer-events:none;opacity:0;transition:opacity .5s ease;">
+
+            <g class="hs-group" onclick="inspectWindow()" tabindex="0" role="button">
+              <rect class="hs-rect" x="950" y="40" width="390" height="400"/>
+              <text class="hs-lbl" x="954" y="44">창문</text>
+            </g>
+            <g class="hs-group" onclick="inspectFridge()" tabindex="0" role="button">
+              <rect class="hs-rect" x="30" y="70" width="250" height="340"/>
+              <text class="hs-lbl" x="34" y="74">냉장고 위 메모</text>
+            </g>
+            <g class="hs-group" onclick="inspectPainting()" tabindex="0" role="button">
+              <rect class="hs-rect" x="440" y="50" width="360" height="380"/>
+              <text class="hs-lbl" x="444" y="54">벽의 액자</text>
+            </g>
+            <g class="hs-group" onclick="inspectMirror()" tabindex="0" role="button">
+              <rect class="hs-rect" x="1350" y="180" width="220" height="500"/>
+              <text class="hs-lbl" x="1354" y="184">욕실</text>
+            </g>
+
           </g>
         </svg>
+
         <div class="scene-footer">
           <div class="scene-location"><strong>1103호 — 방 내부</strong>STAGE 02 / 05</div>
         </div>
@@ -727,8 +751,51 @@ function loadImg(id, baseName){
 // 페이지 로드 시 이미지 자동 연결
 loadImg('img-poster',  'poster');
 loadImg('img-stage1',  'stage1_corridor');
-loadImg('img-stage2',  'stage2_room');
+loadImg('img-stage2',  'stage2_room_dark'); // 처음엔 어두운 버전
 loadImg('img-stage3',  'stage3_desk');
+
+/* ============================================
+   전등 스위치 토글
+============================================ */
+let roomLightOn = false;
+
+function toggleLight(){
+  roomLightOn = !roomLightOn;
+  const overlay   = document.getElementById('room-dark-overlay');
+  const lightGrp  = document.getElementById('hs-light-group');
+  const img       = document.getElementById('img-stage2');
+
+  if(roomLightOn){
+    // 불 켜기
+    overlay.style.opacity = '0';
+    lightGrp.style.opacity = '1';
+    lightGrp.style.pointerEvents = 'all';
+    // 밝은 이미지로 교체
+    loadImgDirect(img, 'stage2_room');
+    showToast('💡 불이 켜졌다');
+  } else {
+    // 불 끄기
+    overlay.style.opacity = '1';
+    lightGrp.style.opacity = '0';
+    lightGrp.style.pointerEvents = 'none';
+    // 어두운 이미지로 교체
+    loadImgDirect(img, 'stage2_room_dark');
+    showToast('🌑 불이 꺼졌다');
+  }
+}
+
+// 특정 img 요소에 직접 이미지 로드 (확장자 자동 감지)
+function loadImgDirect(el, baseName){
+  const exts = ['jpeg','jpg','png','webp'];
+  let i = 0;
+  function tryNext(){
+    if(i>=exts.length){ return; }
+    el.src = `./images/${baseName}.${exts[i]}`;
+    el.onerror = ()=>{ i++; tryNext(); };
+    i++;
+  }
+  tryNext();
+}
 
 /* ============================================
    타이머 (60분)
