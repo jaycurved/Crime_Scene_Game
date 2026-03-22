@@ -621,7 +621,51 @@ function showHint(){
 }
 
 // 스테이지 1
-function inspectCCTV(){S.f.cctvSeen=true;showInfo('CCTV 모니터',`<p style="font-family:var(--mono);font-size:11px;color:var(--text2);margin-bottom:12px;">REC ● &nbsp;2024.11.03 23:14:07</p><p>흑백 영상 속 이준혁이 도어락 앞에 서있다.<br>손가락이 움직인다.</p><p style="margin-top:12px;font-family:var(--mono);color:var(--gold);">좌상단 → 우하단 → 우상단 → 중앙</p><p style="margin-top:12px;color:var(--text2);font-size:12px;">도어락 번호를 알아낼 수 있을 것 같다.</p>`);}
+function inspectCCTV(){
+  S.f.cctvSeen=true;
+  showInfo('CCTV 모니터',`
+    <p style="font-family:var(--mono);font-size:11px;color:var(--text2);margin-bottom:12px;">
+      REC ● &nbsp;2024.11.03 &nbsp;23:14:07
+    </p>
+
+    <!--
+      🎬 유튜브 영상 연결 방법:
+      1. YouTube에 영상 업로드 (공개 범위: 일부공개 권장)
+      2. 영상 URL에서 ID 복사
+         예) youtube.com/watch?v=abc1234XYZ → ID = abc1234XYZ
+      3. 아래 YOUTUBE_VIDEO_ID 부분을 ID로 교체
+    -->
+    <div style="position:relative;width:100%;padding-bottom:56.25%;background:#000;margin-bottom:16px;border:1px solid #333;">
+      <iframe
+        id="cctv-iframe"
+        style="position:absolute;inset:0;width:100%;height:100%;
+               filter:grayscale(1) contrast(1.15) brightness(0.9);
+               border:none;"
+        src="https://www.youtube.com/embed/YOUTUBE_VIDEO_ID?rel=0&modestbranding=1&playsinline=1"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowfullscreen
+        loading="lazy">
+      </iframe>
+      <!-- 영상 미연결 시 플레이스홀더 -->
+      <div id="cctv-placeholder"
+           style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:12px;background:#050505;color:#444;font-family:var(--mono);font-size:12px;letter-spacing:2px;">
+        <div style="font-size:32px;opacity:.3;">📹</div>
+        <div>영상 연결 전</div>
+        <div style="font-size:10px;color:#333;">index.html에서 YOUTUBE_VIDEO_ID 교체</div>
+      </div>
+    </div>
+
+    <p style="font-size:12px;color:var(--text2);margin-bottom:10px;">
+      흑백 영상 속 이준혁이 도어락 앞에 서있다. 손가락이 움직인다.
+    </p>
+    <p style="font-family:var(--mono);color:var(--gold);font-size:13px;letter-spacing:1px;">
+      좌상단 → 우하단 → 우상단 → 중앙
+    </p>
+    <p style="margin-top:10px;color:var(--text2);font-size:11px;">
+      도어락 번호를 알아낼 수 있을 것 같다.
+    </p>
+  `);
+}
 function inspectMailbox(){if(!S.f.mailboxRead){S.f.mailboxRead=true;addClue('letter');showToast('📬 편지 발견');}showClueDetail('letter');}
 function inspectPot(){if(!S.f.potFound){S.f.potFound=true;addClue('usb');showToast('💾 USB 발견');}showClueDetail('usb');}
 function openDoorLock(){if(!S.f.cctvSeen){showNotice('🔒','단서가 필요해요','복도 CCTV를 먼저 확인해보세요.');return;}openPuzzle('doorlock');}
