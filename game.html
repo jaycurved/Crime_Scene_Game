@@ -1312,26 +1312,7 @@ git token - check .env
       <div class="phone-home" onclick="phoneOpenApp('home')"></div>
     </div><!-- /phone-frame -->
 
-    <!-- 녹음 재생 버튼 (전화 받은 후 활성화) -->
     <div style="text-align:center;margin-top:12px;">
-      <button id="call-replay-btn"
-        onclick="playCallRecording()"
-        disabled
-        style="
-          background:none;
-          border:1px solid var(--border2);
-          color:var(--text3);
-          font-family:var(--mono);font-size:10px;
-          letter-spacing:2px;padding:7px 16px;
-          cursor:not-allowed;
-          transition:all .3s;
-          max-width:280px;width:100%;
-        ">
-        🎙 통화 녹음 재생 (잠김)
-      </button>
-    </div>
-
-    <div style="text-align:center;margin-top:8px;">
       <button class="btn-ok" onclick="closeModal('modal-phone')"
               style="border-color:var(--border2);color:var(--text2);max-width:280px;">
         핸드폰 내려놓기
@@ -1561,7 +1542,7 @@ const S={stage:1,viewStage:1,clues:[],
      wardrobeOpen:false,memoSecretRead:false,
      computerOpen:false,uniformSeen:false,urlFound:false,
      webpageEntered:false,file3Unlocked:false,
-     callReceived:false,coordReceived:false,satelliteViewed:false}};
+     callReceived:false,coordReceived:false,satelliteViewed:false,callTriggered:false}};
 
 const CLUES={
   cctv:{title:'CCTV 영상 기록',desc:'2024.11.03 23:14 — 이준혁 마지막 귀가 장면',detail:`<p>복도 CCTV 마지막 기록.</p><p style="margin:12px 0;font-family:var(--mono);font-size:12px;color:var(--text2);">타임스탬프: <span class="clue-hl">2024.11.03 / 23:14</span></p><p>이준혁이 도어락을 누르는 장면이 흐릿하게 잡혀있다.<br>손가락 움직임: <span class="clue-hl">좌상→우하→우상→중앙</span></p><p style="margin-top:12px;color:var(--text2);font-size:12px;">도어락 키패드: 1 2 3 / 4 5 6 / 7 8 9 / 0</p>`},
@@ -2066,11 +2047,13 @@ function updateHintCount(){
 }
 
 function mailGoBack(){
-  // 컴퓨터 창 닫고 방 내부로
   closeWin('win-browser');
   goToStage(2);
-  // 전화 벨소리 시작
-  setTimeout(()=>{ triggerIncomingCall(); }, 800);
+  // 전화는 최초 1회만
+  if(!S.f.callTriggered){
+    S.f.callTriggered = true;
+    setTimeout(()=>{ triggerIncomingCall(); }, 800);
+  }
 }
 
 /* ============================================
@@ -2630,7 +2613,25 @@ function inspectCCTV(){
   `);
 }
 function inspectMailbox(){if(!S.f.mailboxRead){S.f.mailboxRead=true;addClue('letter');showToast('📬 편지 발견');}showClueDetail('letter');}
-function inspectPot(){if(!S.f.potFound){S.f.potFound=true;addClue('usb');showToast('💾 USB 발견');}showClueDetail('usb');}
+function inspectPot(){
+  if(!S.f.potFound){
+    S.f.potFound = true;
+    addClue('usb');
+    // USB 획득 모달
+    showInfo('💾 USB 드라이브 획득',`
+      <img src="./images/usb_clue.jpeg" alt="USB" style="width:100%;display:block;margin-bottom:16px;border-radius:2px;" onerror="this.style.display='none'">
+      <div style="text-align:center;padding:8px 0;">
+        <div style="font-family:var(--mono);font-size:16px;color:var(--gold);letter-spacing:3px;margin-bottom:10px;">USB를 획득했다</div>
+        <p style="font-size:13px;color:var(--text2);line-height:1.8;">
+          화분 흙 속 방수 케이스 안에 숨겨져 있었다.<br>
+          컴퓨터에 연결하면 무언가 열 수 있을 것 같다.
+        </p>
+      </div>
+    `);
+    return;
+  }
+  showClueDetail('usb');
+}
 function openDoorLock(){
   if(S.solved.doorlock){ goToStage(2); return; }
   openKeypad({
@@ -2647,8 +2648,8 @@ function openDoorLock(){
 ============================================ */
 function openLaptop(){
   if(S.stage < 2){ showLocked(); return; }
-  // 불이 꺼져있으면 클릭 불가
   if(!roomLightOn){
+    // 불이 꺼져있으면 아무것도 표시하지 않음
     showToast('💡 먼저 불을 켜야 합니다');
     return;
   }
