@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>1103 — 온라인 미스터리</title>
+<title>케이스파일 — 온라인 방탈출</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600;700;900&family=Share+Tech+Mono&family=Noto+Sans+KR:wght@300;400;500&display=swap');
 
@@ -1233,10 +1233,16 @@ footer {
 <!-- 네비게이션 -->
 <nav>
   <a class="nav-logo" href="#" onclick="showPage('home');return false;">
-    <div class="nav-logo-mark">11<br style="line-height:.6">03</div>
+    <!-- 🖼️ 로고 이미지: ./images/logo.png 로 교체하면 자동 적용 -->
+    <div class="nav-logo-mark" id="logo-wrap">
+      <img id="logo-img" src="./images/logo.png" alt="케이스파일"
+           style="width:100%;height:100%;object-fit:contain;"
+           onerror="this.style.display='none';document.getElementById('logo-fallback').style.display='flex';">
+      <div id="logo-fallback" style="display:flex;align-items:center;justify-content:center;width:100%;height:100%;font-family:var(--serif);font-size:13px;color:var(--gold);letter-spacing:1px;">CF</div>
+    </div>
     <div>
-      <div class="nav-logo-text">1103</div>
-      <span class="nav-logo-sub">Online Mystery</span>
+      <div class="nav-logo-text">케이스파일</div>
+      <span class="nav-logo-sub">CASE FILE — Online Mystery</span>
     </div>
   </a>
 
@@ -1266,12 +1272,12 @@ footer {
     </div>
 
     <div class="hero-content">
-      <div class="hero-eyebrow">Online Mystery — Case File</div>
-      <h1 class="hero-title">1103</h1>
-      <div class="hero-title-sub">미제 사건 파일</div>
+      <div class="hero-eyebrow">Case File — Online Mystery</div>
+      <h1 class="hero-title">케이스<br>파일</h1>
+      <div class="hero-title-sub">당신이 마지막 형사입니다</div>
       <p class="hero-tagline">
-        그건 자살이 아니에요.<br>
-        <em>당신만이 진실을 밝힐 수 있습니다.</em>
+        미궁에 빠진 사건, 묻힌 진실.<br>
+        <em>단서를 찾고, 퍼즐을 풀고, 진실을 밝혀내세요.</em>
       </p>
       <a href="#" class="hero-cta" onclick="showPage('theme');return false;">
         <span>▶ &nbsp;테마 선택하기</span>
@@ -1289,21 +1295,20 @@ footer {
   <!-- 홈 하단 CTA -->
   <section id="cta">
     <div class="cta-inner">
-      <div class="section-label">Now Available</div>
+      <div class="section-label">What is Case File?</div>
       <h2 class="cta-title">사건은 지금도<br>진행 중입니다</h2>
       <p class="cta-desc">
-        단서를 수집하고 퍼즐을 풀어<br>
-        이준혁의 죽음에 숨겨진 진실을 밝혀내세요.<br>
-        제한 시간은 단 60분입니다.
+        온라인으로 즐기는 새로운 방탈출 경험.<br>
+        케이스파일이 무엇인지 더 알아보세요.
       </p>
-      <a href="#" class="cta-btn" onclick="showPage('theme');return false;">
-        ▶ &nbsp;지금 시작하기
+      <a href="#" class="cta-btn" onclick="showPage('about');return false;">
+        ▶ &nbsp;소개 보기
       </a>
     </div>
   </section>
 
   <footer>
-    <div class="footer-left">© 2024 1103 — Online Mystery. All rights reserved.</div>
+    <div class="footer-left">© 2024 케이스파일 — Case File Online Mystery. All rights reserved.</div>
     <div class="footer-right">Case File 01 — 접속 기록</div>
   </footer>
 
@@ -1393,7 +1398,7 @@ footer {
   </section>
 
   <footer>
-    <div class="footer-left">© 2024 1103 — Online Mystery. All rights reserved.</div>
+    <div class="footer-left">© 2024 케이스파일 — Case File Online Mystery. All rights reserved.</div>
     <div class="footer-right">Case File 01 — 접속 기록</div>
   </footer>
 </div>
@@ -1411,17 +1416,16 @@ footer {
         <div class="about-img-frame"></div>
       </div>
       <div class="about-text">
-        <div class="section-label">About 1103</div>
-        <h2 class="section-title">온라인으로 즐기는<br>진짜 미스터리</h2>
+        <div class="section-label">About Case File</div>
+        <h2 class="section-title">온라인으로 즐기는<br>새로운 방탈출</h2>
         <div class="section-divider"></div>
         <p class="about-body">
-          <strong>1103</strong>은 방탈출의 몰입감을 온라인으로 구현한
-          미스터리 추리 게임입니다.<br><br>
-          단순한 퍼즐이 아닙니다. <strong>실제 웹페이지 접속</strong>,
-          <strong>위성 지도 탐색</strong>, <strong>CCTV 영상 분석</strong> 등
-          온라인 환경만이 가능한 방식으로 사건을 파헤칩니다.<br><br>
-          각 단서는 치밀하게 연결되어 있고,
-          진실은 예상치 못한 곳에 숨어있습니다.
+          <strong>케이스파일</strong>은 방탈출의 긴장감과 추리소설의 몰입감을
+          온라인으로 구현한 미스터리 게임 플랫폼입니다.<br><br>
+          장소에 구애받지 않고, 언제 어디서든
+          혼자 또는 함께 사건을 파헤칠 수 있습니다.<br><br>
+          각 테마는 치밀하게 설계된 독립적인 사건으로 구성되며,
+          수사할수록 예상치 못한 반전이 기다리고 있습니다.
         </p>
 
         <!-- 구독 안내 -->
@@ -1456,7 +1460,7 @@ footer {
   </section>
 
   <footer>
-    <div class="footer-left">© 2024 1103 — Online Mystery. All rights reserved.</div>
+    <div class="footer-left">© 2024 케이스파일 — Case File Online Mystery. All rights reserved.</div>
     <div class="footer-right">Case File 01 — 접속 기록</div>
   </footer>
 </div>
@@ -1511,7 +1515,7 @@ footer {
           <li>월정액 · 건별 결제 선택 가능</li>
           <li>토스페이 · 카카오페이 지원</li>
         </ul>
-        <button class="plan-btn primary" onclick="openSubModal()">▶ &nbsp;구독 시작하기</button>
+        <button class="plan-btn primary" onclick="openPaySelect()">▶ &nbsp;구독 시작하기</button>
       </div>
 
     </div>
@@ -1536,9 +1540,35 @@ footer {
   </section>
 
   <footer>
-    <div class="footer-left">© 2024 1103 — Online Mystery. All rights reserved.</div>
+    <div class="footer-left">© 2024 케이스파일 — Case File Online Mystery. All rights reserved.</div>
     <div class="footer-right">Case File 01 — 접속 기록</div>
   </footer>
+</div>
+
+<!-- 결제 선택 모달 -->
+<div class="sub-modal-overlay" id="pay-select-modal">
+  <div class="sub-modal" style="max-width:440px;">
+    <div class="sub-modal-icon">💳</div>
+    <div class="sub-modal-title">결제 수단 선택</div>
+    <div class="sub-modal-desc">
+      <strong style="color:var(--gold);">월 4,900원</strong> · 언제든 해지 가능<br>
+      아래에서 결제 수단을 선택해주세요.
+    </div>
+    <div class="sub-modal-btns">
+      <button class="btn-gold" style="background:#3182f6;letter-spacing:1px;"
+              onclick="goTossPay()">
+        💙 &nbsp;토스페이로 구독하기
+      </button>
+      <button class="btn-gold" style="background:#fee500;color:#3c1e1e;letter-spacing:1px;"
+              onclick="goKakaoPay()">
+        💛 &nbsp;카카오페이로 구독하기
+      </button>
+      <button class="btn-ghost" onclick="closePaySelect()">취소</button>
+    </div>
+    <div style="margin-top:16px;font-family:var(--mono);font-size:10px;color:var(--text3);letter-spacing:1px;line-height:1.8;">
+      ※ 결제 시스템 준비 중 — 오픈 시 알림 예정
+    </div>
+  </div>
 </div>
 
 <!-- 구독 안내 팝업 (테마 클릭 시) -->
@@ -1660,21 +1690,67 @@ document.getElementById('sub-modal').addEventListener('click', e => {
   if(e.target === document.getElementById('sub-modal')) closeSubModal();
 });
 
+/* 결제 선택 모달 */
+function openPaySelect(){
+  document.getElementById('pay-select-modal').classList.add('open');
+}
+
+function closePaySelect(){
+  document.getElementById('pay-select-modal').classList.remove('open');
+}
+
+document.getElementById('pay-select-modal').addEventListener('click', e => {
+  if(e.target === document.getElementById('pay-select-modal')) closePaySelect();
+});
+
 /*
-  💳 결제 연동 안내
+  💳 결제 연동
   토스페이 / 카카오페이 실제 연동은 사업자등록 + API 계약 필요
-  아래 URL을 실제 결제 링크로 교체하세요
   토스: https://developers.tosspayments.com
   카카오: https://developers.kakao.com/docs/latest/ko/kakaopay/common
+  ✏️ 연동 완료 후 아래 URL을 실제 결제 링크로 교체하세요
 */
 function goTossPay(){
-  // 🔧 추후 실제 토스페이 결제 URL로 교체
-  alert('토스페이 결제 시스템을 준비 중입니다.\n오픈 시 알림 드릴게요!');
+  closePaySelect();
+  // 🔧 실제 토스페이 결제 URL로 교체
+  showPayNotice('토스페이');
 }
 
 function goKakaoPay(){
-  // 🔧 추후 실제 카카오페이 결제 URL로 교체
-  alert('카카오페이 결제 시스템을 준비 중입니다.\n오픈 시 알림 드릴게요!');
+  closePaySelect();
+  // 🔧 실제 카카오페이 결제 URL로 교체
+  showPayNotice('카카오페이');
+}
+
+function showPayNotice(method){
+  const overlay = document.createElement('div');
+  overlay.style.cssText = `
+    position:fixed;inset:0;background:rgba(0,0,0,.88);
+    z-index:600;display:flex;align-items:center;justify-content:center;
+    padding:20px;backdrop-filter:blur(8px);
+  `;
+  overlay.innerHTML = `
+    <div style="background:var(--bg2);border:1px solid var(--border2);border-top:2px solid var(--gold);
+                max-width:380px;width:100%;padding:36px 32px;text-align:center;">
+      <div style="font-size:36px;margin-bottom:16px;">🔧</div>
+      <div style="font-family:var(--serif);font-size:20px;font-weight:700;color:var(--text);margin-bottom:12px;">
+        결제 시스템 준비 중
+      </div>
+      <div style="font-size:13px;color:var(--text2);line-height:1.9;margin-bottom:24px;">
+        <strong style="color:var(--gold);">${method}</strong> 결제 시스템을<br>
+        현재 준비 중에 있습니다.<br>
+        오픈 시 바로 알려드릴게요!
+      </div>
+      <button onclick="this.closest('div[style]').remove()"
+              style="padding:12px 32px;background:none;border:1px solid var(--border2);
+                     color:var(--text2);font-family:var(--mono);font-size:11px;
+                     letter-spacing:2px;cursor:pointer;">
+        확인
+      </button>
+    </div>
+  `;
+  document.body.appendChild(overlay);
+  overlay.addEventListener('click', e => { if(e.target===overlay) overlay.remove(); });
 }
 
 /* 히어로 이미지 — 별도 이미지 있으면 교체 */

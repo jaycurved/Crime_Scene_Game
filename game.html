@@ -404,10 +404,16 @@ html,body{background:var(--bg);color:var(--text);font-family:var(--sans);height:
             <text class="hs-lbl" x="242" y="14">CCTV</text>
           </g>
 
-          <!-- 현관문 -->
+          <!-- 현관문 1103호 -->
           <g class="hs-group" onclick="openDoorLock()" tabindex="0" role="button">
             <rect class="hs-rect" x="391" y="150" width="150" height="700"/>
             <text class="hs-lbl" x="395" y="154">현관문</text>
+          </g>
+
+          <!-- 맥거핀: 오른쪽 문 (1104호) -->
+          <g class="hs-group" onclick="inspectOtherDoor()" tabindex="0" role="button">
+            <rect class="hs-rect" x="560" y="200" width="120" height="600"/>
+            <text class="hs-lbl" x="564" y="204">옆 호실</text>
           </g>
 
           <!-- 화분 -->
@@ -420,6 +426,18 @@ html,body{background:var(--bg);color:var(--text);font-family:var(--sans);height:
           <g class="hs-group" onclick="inspectMailbox()" tabindex="0" role="button">
             <rect class="hs-rect" x="1150" y="260" width="360" height="280"/>
             <text class="hs-lbl" x="1154" y="264">우편함</text>
+          </g>
+
+          <!-- 맥거핀: 복도 바닥 얼룩 -->
+          <g class="hs-group" onclick="inspectFloorStain()" tabindex="0" role="button">
+            <rect class="hs-rect" x="600" y="750" width="280" height="120"/>
+            <text class="hs-lbl" x="604" y="754">바닥 얼룩</text>
+          </g>
+
+          <!-- 맥거핀: 천장 형광등 -->
+          <g class="hs-group" onclick="inspectLight()" tabindex="0" role="button">
+            <rect class="hs-rect" x="580" y="0" width="300" height="60"/>
+            <text class="hs-lbl" x="584" y="4">형광등</text>
           </g>
 
         </svg>
@@ -453,6 +471,12 @@ html,body{background:var(--bg);color:var(--text);font-family:var(--sans);height:
             <text class="hs-lbl" x="494" y="374">스위치</text>
           </g>
 
+          <!-- 맥거핀: 방문 (불 꺼진 상태에서도 클릭 가능) -->
+          <g class="hs-group" onclick="inspectRoomDoor()" tabindex="0" role="button">
+            <rect class="hs-rect" x="1490" y="100" width="110" height="700"/>
+            <text class="hs-lbl" x="1494" y="104">화장실 문</text>
+          </g>
+
           <!-- 불 켜진 후에만 활성화되는 핫스팟 그룹 -->
           <g id="hs-light-group" style="pointer-events:none;opacity:0;transition:opacity .5s ease;">
 
@@ -471,6 +495,24 @@ html,body{background:var(--bg);color:var(--text);font-family:var(--sans);height:
             <g class="hs-group" onclick="inspectMirror()" tabindex="0" role="button">
               <rect class="hs-rect" x="1350" y="180" width="220" height="500"/>
               <text class="hs-lbl" x="1354" y="184">욕실</text>
+            </g>
+
+            <!-- 맥거핀: 옷장 -->
+            <g class="hs-group" onclick="inspectWardrobe()" tabindex="0" role="button">
+              <rect class="hs-rect" x="700" y="400" width="200" height="450"/>
+              <text class="hs-lbl" x="704" y="404">옷장</text>
+            </g>
+
+            <!-- 맥거핀: 침대 -->
+            <g class="hs-group" onclick="inspectBed()" tabindex="0" role="button">
+              <rect class="hs-rect" x="100" y="600" width="320" height="260"/>
+              <text class="hs-lbl" x="104" y="604">침대</text>
+            </g>
+
+            <!-- 맥거핀: 책상 위 커피잔 -->
+            <g class="hs-group" onclick="inspectCoffee()" tabindex="0" role="button">
+              <rect class="hs-rect" x="1100" y="500" width="120" height="120"/>
+              <text class="hs-lbl" x="1104" y="504">커피잔</text>
             </g>
 
           </g>
@@ -494,6 +536,21 @@ html,body{background:var(--bg);color:var(--text);font-family:var(--sans);height:
           <g class="hs-group" onclick="inspectUniform()" tabindex="0" role="button">
             <rect class="hs-rect" x="1240" y="50" width="320" height="440"/>
             <text class="hs-lbl" x="1244" y="54">야구 유니폼</text>
+          </g>
+          <!-- 맥거핀: 책상 위 영수증 -->
+          <g class="hs-group" onclick="inspectReceipt()" tabindex="0" role="button">
+            <rect class="hs-rect" x="200" y="600" width="160" height="200"/>
+            <text class="hs-lbl" x="204" y="604">영수증</text>
+          </g>
+          <!-- 맥거핀: 책꽂이 -->
+          <g class="hs-group" onclick="inspectBookshelf()" tabindex="0" role="button">
+            <rect class="hs-rect" x="30" y="100" width="200" height="400"/>
+            <text class="hs-lbl" x="34" y="104">책꽂이</text>
+          </g>
+          <!-- 맥거핀: 핸드폰 -->
+          <g class="hs-group" onclick="inspectPhone()" tabindex="0" role="button">
+            <rect class="hs-rect" x="1100" y="620" width="100" height="180"/>
+            <text class="hs-lbl" x="1104" y="624">핸드폰</text>
           </g>
         </svg>
         <div class="scene-footer">
@@ -798,8 +855,140 @@ function loadImgDirect(el, baseName){
 }
 
 /* ============================================
-   타이머 (60분)
+   맥거핀 함수들 — 의미없는 단서들
 ============================================ */
+
+// 스테이지1 맥거핀
+function inspectOtherDoor(){
+  showInfo('1104호',`
+    <p>옆 호실 문이다. 굳게 잠겨있다.</p>
+    <p style="margin-top:12px;color:var(--text2);font-size:13px;">
+      여기는 들어갈 수 없다.<br>
+      수사와 관련이 없어 보인다.
+    </p>
+  `);
+}
+
+function inspectFloorStain(){
+  showInfo('바닥 얼룩',`
+    <p>복도 바닥에 검붉은 얼룩이 있다.</p>
+    <p style="margin-top:12px;color:var(--text2);font-size:13px;">
+      오래된 것처럼 보인다.<br>
+      커피를 흘린 자국인지, 다른 무언가인지 판단하기 어렵다.
+    </p>
+  `);
+}
+
+function inspectLight(){
+  showInfo('형광등',`
+    <p>깜빡이는 형광등이다.</p>
+    <p style="margin-top:12px;color:var(--text2);font-size:13px;">
+      오래된 건물답게 조명 상태가 좋지 않다.<br>
+      수사와는 무관해 보인다.
+    </p>
+  `);
+}
+
+// 스테이지2 맥거핀
+function inspectRoomDoor(){
+  showInfo('화장실 문',`
+    <p>화장실로 이어지는 문이다.</p>
+    <p style="margin-top:12px;color:var(--text2);font-size:13px;">
+      이미 경찰이 살펴봤을 것이다.<br>
+      특별한 것은 보이지 않는다.
+    </p>
+  `);
+}
+
+function inspectWardrobe(){
+  showInfo('옷장',`
+    <p>옷장을 열었다. 평범한 옷들이 걸려있다.</p>
+    <p style="margin-top:12px;color:var(--text2);font-size:13px;">
+      정장 두 벌, 캐주얼 옷 몇 벌.<br>
+      옷 사이를 뒤져봤지만 특별한 것은 없다.
+    </p>
+    <p style="margin-top:8px;color:var(--text2);font-size:12px;font-family:var(--mono);">
+      → 단서 없음
+    </p>
+  `);
+}
+
+function inspectBed(){
+  showInfo('침대',`
+    <p>침대를 살펴봤다. 이불이 구겨져 있다.</p>
+    <p style="margin-top:12px;color:var(--text2);font-size:13px;">
+      급하게 일어난 흔적인지, 원래 이런 것인지 알 수 없다.<br>
+      매트리스 아래도 확인해봤지만 아무것도 없다.
+    </p>
+    <p style="margin-top:8px;color:var(--text2);font-size:12px;font-family:var(--mono);">
+      → 단서 없음
+    </p>
+  `);
+}
+
+function inspectCoffee(){
+  showInfo('커피잔',`
+    <p>식은 커피가 반쯤 남아있다.</p>
+    <p style="margin-top:12px;color:var(--text2);font-size:13px;">
+      그가 마지막으로 마시던 커피일 것이다.<br>
+      잔 안쪽에 특별한 것은 없다.
+    </p>
+    <p style="margin-top:8px;color:var(--text2);font-size:12px;font-family:var(--mono);">
+      → 단서 없음
+    </p>
+  `);
+}
+
+// 스테이지3 맥거핀
+function inspectReceipt(){
+  showInfo('영수증',`
+    <p>편의점 영수증이다.</p>
+    <p style="margin-top:12px;font-family:var(--mono);font-size:12px;line-height:2;color:var(--text2);background:var(--bg3);padding:12px;">
+      GS25 마포공덕점<br>
+      2024.11.03 &nbsp;21:44<br>
+      ─────────────<br>
+      아메리카노 &nbsp;&nbsp;&nbsp;&nbsp;2,000<br>
+      에너지음료 &nbsp;&nbsp;&nbsp;&nbsp;2,500<br>
+      ─────────────<br>
+      합계 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4,500원
+    </p>
+    <p style="margin-top:10px;color:var(--text2);font-size:12px;">
+      사건 당일 밤 구매한 것으로 보인다.<br>
+      밤샘 작업을 준비했던 것 같다.
+    </p>
+    <p style="margin-top:8px;color:var(--text2);font-size:12px;font-family:var(--mono);">
+      → 참고 사항 (핵심 단서 아님)
+    </p>
+  `);
+}
+
+function inspectBookshelf(){
+  showInfo('책꽂이',`
+    <p>개발 관련 서적들이 꽂혀있다.</p>
+    <p style="margin-top:12px;color:var(--text2);font-size:13px;">
+      『클린 코드』, 『리팩터링』, 『해킹 아트』…<br>
+      전형적인 개발자의 책장이다.<br>
+      책들 사이를 살펴봤지만 숨겨진 것은 없다.
+    </p>
+    <p style="margin-top:8px;color:var(--text2);font-size:12px;font-family:var(--mono);">
+      → 단서 없음
+    </p>
+  `);
+}
+
+function inspectPhone(){
+  showInfo('핸드폰',`
+    <p>이준혁의 스마트폰이다. 화면이 깨져있다.</p>
+    <p style="margin-top:12px;color:var(--text2);font-size:13px;">
+      전원이 꺼진 상태다.<br>
+      경찰이 증거로 수거하지 않고 그대로 둔 것이 이상하다.<br>
+      잠금이 걸려있어 내용을 확인할 수 없다.
+    </p>
+    <p style="margin-top:8px;color:var(--accent2);font-size:12px;font-family:var(--mono);">
+      → 의문점: 왜 경찰이 핸드폰을 수거하지 않았나?
+    </p>
+  `);
+}
 let timerSec = 3600;
 let timerInterval = null;
 
