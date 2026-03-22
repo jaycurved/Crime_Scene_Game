@@ -845,7 +845,7 @@ function inspectPot(){if(!S.f.potFound){S.f.potFound=true;addClue('usb');showToa
 function openDoorLock(){
   if(!S.f.cctvSeen){showNotice('🔒','단서가 필요해요','복도 CCTV를 먼저 확인해보세요.');return;}
   if(S.solved.doorlock){
-    showNotice('✅','이미 해제됨','도어락은 이미 해제되어 있습니다.<br>1103호 안으로 진입했습니다.');
+    goToStage(2);
     return;
   }
   openPuzzle('doorlock');
