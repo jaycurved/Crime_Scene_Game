@@ -230,9 +230,8 @@ html,body{background:var(--bg);color:var(--text);font-family:var(--sans);height:
 
 <!-- 인트로 -->
 <div id="screen-intro" class="screen active">
-  <!-- 🖼️ 포스터 이미지: src를 ./images/poster.jpeg 로 교체 -->
-  <img class="intro-poster" src="./images/poster.jpeg" alt="포스터"
-       onerror="this.style.display='none'">
+  <!-- 🖼️ 포스터: poster.jpeg / poster.jpg / poster.png 중 있는 파일 자동 인식 -->
+  <img class="intro-poster" id="img-poster" src="" alt="포스터">
   <div class="intro-overlay"></div>
   <div class="intro-wrap">
     <div class="case-badge">CASE 01 — 2024.11</div>
@@ -301,7 +300,7 @@ html,body{background:var(--bg);color:var(--text);font-family:var(--sans);height:
     ========================================== -->
     <div class="scene-slide active" id="scene-1">
       <div class="scene-wrap">
-        <img class="scene-img" src="./images/stage1_corridor.jpeg" alt="오피스텔 복도">
+        <img class="scene-img" id="img-stage1" src="" alt="오피스텔 복도">
 
         <svg class="hotspot-svg" viewBox="0 0 1600 900" xmlns="http://www.w3.org/2000/svg">
 
@@ -340,7 +339,7 @@ html,body{background:var(--bg);color:var(--text);font-family:var(--sans);height:
     <!-- 스테이지 2 — 방 내부 -->
     <div class="scene-slide" id="scene-2">
       <div class="scene-wrap">
-        <img class="scene-img" src="./images/stage2_room.jpeg" alt="방 내부">
+        <img class="scene-img" id="img-stage2" src="" alt="방 내부">
         <svg class="hotspot-svg" viewBox="0 0 1600 900">
           <g class="hs-group" onclick="inspectWindow()" tabindex="0" role="button">
             <rect class="hs-rect" x="950" y="40" width="390" height="400"/>
@@ -368,7 +367,7 @@ html,body{background:var(--bg);color:var(--text);font-family:var(--sans);height:
     <!-- 스테이지 3 — 컴퓨터 -->
     <div class="scene-slide" id="scene-3">
       <div class="scene-wrap">
-        <img class="scene-img" src="./images/stage3_desk.jpeg" alt="책상">
+        <img class="scene-img" id="img-stage3" src="" alt="책상">
         <svg class="hotspot-svg" viewBox="0 0 1600 900">
           <g class="hs-group" onclick="openComputer()" tabindex="0" role="button">
             <rect class="hs-rect" x="380" y="140" width="830" height="570"/>
@@ -555,6 +554,32 @@ const PUZZLES={
 document.querySelectorAll('.hs-group').forEach(g=>{
   g.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' ')g.click();});
 });
+
+/*
+  ★ 이미지 자동 감지
+  jpeg / jpg / png 중 있는 파일을 자동으로 찾아서 연결
+  파일명만 맞으면 확장자 상관없이 동작
+*/
+function loadImg(id, baseName){
+  const exts = ['jpeg','jpg','png','webp'];
+  const el = document.getElementById(id);
+  if(!el) return;
+  let i = 0;
+  function tryNext(){
+    if(i >= exts.length){ el.style.display='none'; return; }
+    el.src = `./images/${baseName}.${exts[i]}`;
+    el.onerror = ()=>{ i++; tryNext(); };
+    el.onload  = ()=>{ el.style.display='block'; };
+    i++;
+  }
+  tryNext();
+}
+
+// 페이지 로드 시 이미지 자동 연결
+loadImg('img-poster',  'poster');
+loadImg('img-stage1',  'stage1_corridor');
+loadImg('img-stage2',  'stage2_room');
+loadImg('img-stage3',  'stage3_desk');
 
 /* ============================================
    타이머 (60분)
