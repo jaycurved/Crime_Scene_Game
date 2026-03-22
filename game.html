@@ -754,7 +754,7 @@ html,body{background:var(--bg);color:var(--text);font-family:var(--sans);height:
             </div>
 
             <!-- 창: 브라우저 (처음엔 숨김) -->
-            <div id="win-browser" class="win-window" style="display:none;left:40px;top:10px;width:860px;height:540px;">
+            <div id="win-browser" class="win-window" style="display:none;left:10px;top:5px;width:960px;height:580px;">
               <div class="win-titlebar" onmousedown="startDrag(event,'win-browser')">
                 <div style="display:flex;align-items:center;gap:8px;">
                   <span style="font-size:14px;">🌐</span>
@@ -856,16 +856,16 @@ html,body{background:var(--bg);color:var(--text);font-family:var(--sans);height:
                 <!-- 검색 결과 화면 (동적으로 교체) -->
                 <div id="browser-searchresult" style="display:none;padding:12px 16px;"></div>
 
-                <!-- vaultdrop.io 가상 사이트 -->
-                <div id="browser-vaultdrop" style="display:none;height:100%;flex-direction:column;">
+                <!-- darkfile.io 가상 사이트 -->
+                <div id="browser-darkfile" style="display:none;height:100%;flex-direction:column;">
                   <!-- 즐겨찾기 바 -->
                   <div style="background:#f1f3f4;padding:4px 12px;display:flex;gap:12px;align-items:center;border-bottom:1px solid #ddd;flex-shrink:0;">
                     <span style="font-size:11px;color:#888;">즐겨찾기:</span>
-                    <span onclick="browserNavigate('maploc.app')" style="font-size:11px;color:#1a73e8;cursor:pointer;display:flex;align-items:center;gap:3px;">🗺 MapLoc</span>
+                  <span onclick="browserNavigate('maploc.app')" style="font-size:11px;color:#1a73e8;cursor:pointer;display:flex;align-items:center;gap:3px;">🗺 MapLoc</span>
                     <span style="font-size:11px;color:#1a73e8;cursor:pointer;display:flex;align-items:center;gap:3px;">📰 Naver</span>
                     <span style="font-size:11px;color:#1a73e8;cursor:pointer;display:flex;align-items:center;gap:3px;">📬 Gmail</span>
                   </div>
-                  <!-- vaultdrop 콘텐츠 -->
+                  <!-- darkfile 콘텐츠 -->
                   <div id="vd-body" style="flex:1;overflow-y:auto;"></div>
                 </div>
 
@@ -873,7 +873,7 @@ html,body{background:var(--bg);color:var(--text);font-family:var(--sans);height:
                 <div id="browser-maploc" style="display:none;height:100%;flex-direction:column;">
                   <div style="background:#f1f3f4;padding:4px 12px;display:flex;gap:12px;align-items:center;border-bottom:1px solid #ddd;flex-shrink:0;">
                     <span style="font-size:11px;color:#888;">즐겨찾기:</span>
-                    <span onclick="browserNavigate('vaultdrop.io/jl1103')" style="font-size:11px;color:#1a73e8;cursor:pointer;">⬛ VaultDrop</span>
+                    <span onclick="browserNavigate('darkfile.io/jl1103')" style="font-size:11px;color:#1a73e8;cursor:pointer;">⬛ darkfile</span>
                     <span style="font-size:11px;color:#1a73e8;cursor:pointer;">📰 Naver</span>
                   </div>
                   <div id="maploc-body" style="flex:1;overflow-y:auto;background:#e8f4f8;display:flex;flex-direction:column;">
@@ -931,11 +931,10 @@ html,body{background:var(--bg);color:var(--text);font-family:var(--sans);height:
                   <span onclick="closeWin('win-notepad')">✕</span>
                 </div>
               </div>
-              <div style="background:white;flex:1;padding:16px;font-family:'Courier New',monospace;font-size:13px;color:#111;line-height:1.8;overflow-y:auto;white-space:pre-wrap;">어두운파일 - 0808
-dev backup - localhost:3000
+              <div style="background:white;flex:1;padding:16px;font-family:'Courier New',monospace;font-size:13px;color:#111;line-height:1.8;overflow-y:auto;white-space:pre-wrap;">dev backup - localhost:3000
 git token - check .env
 
-→ vaultdrop.io/jl1103
+→ darkfile.io/jl1103
 
 * USB 없이 접속 불가
               </div>
@@ -1037,253 +1036,28 @@ git token - check .env
       </div>
     </div>
 
-    <!-- 스테이지 4 — 가상 DarkFile 웹사이트 -->
+    <!-- 스테이지 4 — darkfile 접속 안내 -->
     <div class="scene-slide" id="scene-4">
-      <div class="scene-wrap" style="background:#f4f4f4;cursor:default;overflow:hidden;">
-
-        <!-- 가상 브라우저 프레임 -->
-        <div style="display:flex;flex-direction:column;height:100%;font-family:'Segoe UI',sans-serif;">
-
-          <!-- 브라우저 상단 -->
-          <div style="background:#e8e8e8;padding:6px 12px;display:flex;align-items:center;gap:8px;border-bottom:1px solid #ccc;flex-shrink:0;">
-            <div style="display:flex;gap:5px;">
-              <div style="width:12px;height:12px;border-radius:50%;background:#ff5f56;"></div>
-              <div style="width:12px;height:12px;border-radius:50%;background:#febc2e;"></div>
-              <div style="width:12px;height:12px;border-radius:50%;background:#27c840;"></div>
+      <div class="scene-wrap" style="background:#0a0a0a;cursor:default;display:flex;align-items:center;justify-content:center;">
+        <div style="text-align:center;font-family:var(--mono);">
+          <div style="font-size:13px;color:#555;letter-spacing:2px;margin-bottom:16px;">STAGE 04 — 숨겨진 파일 서버</div>
+          <div style="background:#111;border:1px solid #1e1e1e;padding:24px 32px;max-width:480px;">
+            <div style="color:#4ade80;font-size:12px;margin-bottom:16px;">$ 주소 발견 → 크롬 주소창에 입력하세요</div>
+            <div style="background:#0a0a0a;border:1px solid #2a2a2a;padding:12px 16px;color:#4ade80;font-size:15px;letter-spacing:1px;margin-bottom:16px;cursor:pointer;user-select:all;"
+                 onclick="stage4CopyURL(this)" title="클릭하면 복사">
+              darkfile.io/jl1103
             </div>
-            <div style="color:#999;font-size:12px;cursor:pointer;" onclick="dfBack()">← →</div>
-            <div style="flex:1;background:white;border:1px solid #ccc;border-radius:12px;padding:4px 12px;font-size:12px;color:#555;display:flex;align-items:center;gap:6px;">
-              <span style="color:#27c840;font-size:10px;">🔒</span>
-              <span id="df-url-bar">darkfile-1103.netlify.app</span>
-            </div>
+            <div style="font-size:10px;color:#444;">클릭하면 복사 · 크롬 주소창에 붙여넣기</div>
           </div>
-
-          <!-- 비밀번호 오버레이 -->
-          <div id="df-pw-screen" style="
-            position:absolute;inset:0;top:33px;
-            background:#1a1a2e;
-            display:flex;align-items:center;justify-content:center;
-            z-index:20;flex-direction:column;gap:0;
-          ">
-            <div style="width:360px;text-align:center;">
-              <div style="font-size:32px;margin-bottom:16px;letter-spacing:4px;color:#e0e0e0;font-family:monospace;font-weight:300;">⬛ DarkFile</div>
-              <div style="font-size:11px;color:#555;letter-spacing:3px;margin-bottom:32px;font-family:monospace;">PRIVATE · ENCRYPTED · SECURE</div>
-              <div style="background:#111;border:1px solid #2a2a3a;padding:28px 24px;">
-                <div style="font-size:12px;color:#888;margin-bottom:16px;font-family:monospace;letter-spacing:1px;">Enter access key to continue</div>
-                <input id="df-pw-input" type="password"
-                  placeholder="access key"
-                  style="width:100%;background:#0a0a0a;border:none;border-bottom:1px solid #3a3a5a;color:#c0c0ff;font-family:monospace;font-size:14px;letter-spacing:4px;padding:10px 0;outline:none;text-align:center;margin-bottom:8px;"
-                  onkeydown="if(event.key==='Enter')dfLogin()">
-                <div id="df-pw-err" style="color:#ff6b6b;font-size:11px;font-family:monospace;min-height:16px;margin-bottom:12px;"></div>
-                <button onclick="dfLogin()" style="width:100%;background:#0f62fe;color:white;border:none;padding:10px;font-size:12px;cursor:pointer;letter-spacing:2px;font-family:monospace;">
-                  AUTHENTICATE →
-                </button>
-              </div>
-            </div>
+          <div style="margin-top:20px;">
+            <button onclick="stage4OpenChrome()" style="background:none;border:1px solid #2a2a2a;color:#555;font-family:var(--mono);font-size:11px;letter-spacing:3px;padding:10px 24px;cursor:pointer;transition:all .2s;"
+              onmouseover="this.style.borderColor='#4ade80';this.style.color='#4ade80'"
+              onmouseout="this.style.borderColor='#2a2a2a';this.style.color='#555'">
+              💻 크롬 열기 → darkfile.io 접속
+            </button>
           </div>
-
-          <!-- 사이트 본문 -->
-          <div id="df-site" style="display:none;flex:1;overflow:hidden;flex-direction:column;">
-
-            <!-- DarkFile 상단바 -->
-            <div style="background:#161616;height:44px;display:flex;align-items:center;padding:0 16px;gap:16px;flex-shrink:0;">
-              <div style="font-family:monospace;font-size:13px;color:white;letter-spacing:1px;">⬛ <span style="color:#4f8ef7;">Dark</span>File</div>
-              <div style="display:flex;gap:0;margin-left:12px;">
-                <span onclick="dfShowView('files')" id="df-nav-files" style="color:#c6c6c6;font-size:12px;padding:0 14px;height:44px;display:flex;align-items:center;cursor:pointer;border-bottom:2px solid #4f8ef7;">Files</span>
-                <span onclick="dfShowView('activity')" style="color:#666;font-size:12px;padding:0 14px;height:44px;display:flex;align-items:center;cursor:pointer;">Activity</span>
-              </div>
-              <div style="margin-left:auto;width:26px;height:26px;border-radius:50%;background:#393939;display:flex;align-items:center;justify-content:center;font-size:10px;color:#aaa;font-family:monospace;">JL</div>
-            </div>
-
-            <!-- 레이아웃 -->
-            <div style="display:flex;flex:1;overflow:hidden;">
-
-              <!-- 사이드바 -->
-              <div style="width:200px;background:white;border-right:1px solid #e0e0e0;padding:8px 0;flex-shrink:0;overflow-y:auto;">
-                <div onclick="dfShowView('files')" style="display:flex;align-items:center;gap:8px;padding:9px 14px;cursor:pointer;background:#e8f0fe;color:#1a73e8;font-size:12px;">📁 My Files</div>
-                <div onclick="dfShowView('shared')" style="display:flex;align-items:center;gap:8px;padding:9px 14px;cursor:pointer;color:#555;font-size:12px;">🔗 Shared</div>
-                <div style="display:flex;align-items:center;gap:8px;padding:9px 14px;cursor:pointer;color:#555;font-size:12px;">⭐ Starred</div>
-                <div style="border-top:1px solid #eee;margin:8px 0;"></div>
-                <div style="display:flex;align-items:center;gap:8px;padding:9px 14px;cursor:pointer;color:#555;font-size:12px;">🔒 Encrypted</div>
-                <div style="padding:12px 14px 4px;font-size:10px;color:#aaa;letter-spacing:1px;text-transform:uppercase;">Storage</div>
-                <div style="margin:0 14px;height:4px;background:#eee;border-radius:2px;overflow:hidden;">
-                  <div style="width:23%;height:100%;background:#4f8ef7;border-radius:2px;"></div>
-                </div>
-                <div style="padding:4px 14px;font-size:10px;color:#aaa;font-family:monospace;">2.3 GB / 10 GB</div>
-              </div>
-
-              <!-- 파일 목록 -->
-              <div id="df-view-files" style="flex:1;overflow-y:auto;padding:16px;background:#fafafa;">
-                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
-                  <div style="font-size:16px;color:#202124;font-weight:400;">My Files</div>
-                </div>
-                <div style="font-size:11px;color:#aaa;font-family:monospace;margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid #e0e0e0;">NAME / SIZE / MODIFIED / STATUS</div>
-
-                <!-- 일반 폴더들 (맥거핀) -->
-                <div class="df-file-row" onclick="dfDecoy()">
-                  <span style="font-size:16px;">📁</span>
-                  <div style="flex:1;"><div style="font-size:13px;color:#1a73e8;">backup_2024</div></div>
-                  <div style="font-size:11px;color:#aaa;font-family:monospace;">—</div>
-                  <div style="font-size:11px;color:#aaa;font-family:monospace;width:90px;">2024.10.14</div>
-                  <span class="df-badge df-ok">normal</span>
-                </div>
-                <div class="df-file-row" onclick="dfDecoy()">
-                  <span style="font-size:16px;">📁</span>
-                  <div style="flex:1;"><div style="font-size:13px;color:#1a73e8;">personal</div></div>
-                  <div style="font-size:11px;color:#aaa;font-family:monospace;">—</div>
-                  <div style="font-size:11px;color:#aaa;font-family:monospace;width:90px;">2024.09.02</div>
-                  <span class="df-badge df-ok">normal</span>
-                </div>
-
-                <!-- 핵심 폴더 -->
-                <div class="df-file-row" onclick="dfShowView('evidence')" style="background:#fff8f8;">
-                  <span style="font-size:16px;">📁</span>
-                  <div style="flex:1;">
-                    <div style="font-size:13px;color:#1a73e8;">_nx_data_leak</div>
-                    <div style="font-size:10px;color:#da1e28;font-family:monospace;margin-top:2px;">⚠ sensitive</div>
-                  </div>
-                  <div style="font-size:11px;color:#aaa;font-family:monospace;">—</div>
-                  <div style="font-size:11px;color:#aaa;font-family:monospace;width:90px;">2024.11.03</div>
-                  <span class="df-badge df-enc">encrypted</span>
-                </div>
-
-                <!-- 일반 파일들 -->
-                <div class="df-file-row" onclick="dfDecoy()">
-                  <span style="font-size:16px;">📄</span>
-                  <div style="flex:1;"><div style="font-size:13px;color:#1a73e8;">resume_2024.pdf</div></div>
-                  <div style="font-size:11px;color:#aaa;font-family:monospace;">342 KB</div>
-                  <div style="font-size:11px;color:#aaa;font-family:monospace;width:90px;">2024.08.20</div>
-                  <span class="df-badge df-ok">normal</span>
-                </div>
-                <div class="df-file-row" onclick="dfDecoy()">
-                  <span style="font-size:16px;">🗒</span>
-                  <div style="flex:1;"><div style="font-size:13px;color:#1a73e8;">notes.txt</div></div>
-                  <div style="font-size:11px;color:#aaa;font-family:monospace;">12 KB</div>
-                  <div style="font-size:11px;color:#aaa;font-family:monospace;width:90px;">2024.10.30</div>
-                  <span class="df-badge df-ok">normal</span>
-                </div>
-              </div>
-
-              <!-- 증거 폴더 -->
-              <div id="df-view-evidence" style="flex:1;overflow-y:auto;padding:16px;background:#fafafa;display:none;">
-                <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
-                  <span onclick="dfShowView('files')" style="color:#1a73e8;cursor:pointer;font-size:12px;">← My Files</span>
-                  <span style="color:#aaa;font-size:12px;">/ _nx_data_leak</span>
-                </div>
-                <div style="background:#fff8e1;border:1px solid #ffe082;padding:10px 14px;margin-bottom:12px;font-size:11px;color:#8a6d3b;display:flex;align-items:center;gap:6px;">
-                  ⚠ This folder contains sensitive documents. Access is logged.
-                </div>
-                <div style="font-size:11px;color:#aaa;font-family:monospace;margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid #e0e0e0;">NAME / SIZE / MODIFIED / STATUS</div>
-
-                <div class="df-file-row" onclick="dfOpenFile('contract')">
-                  <span style="font-size:16px;">📋</span>
-                  <div style="flex:1;"><div style="font-size:13px;color:#1a73e8;">NX_ADV_CONTRACT_2019.pdf</div></div>
-                  <div style="font-size:11px;color:#aaa;font-family:monospace;">218 KB</div>
-                  <div style="font-size:11px;color:#aaa;font-family:monospace;width:110px;">2024.11.03 14:51</div>
-                  <span class="df-badge df-enc">encrypted</span>
-                </div>
-                <div class="df-file-row" onclick="dfOpenFile('serverlog')">
-                  <span style="font-size:16px;">📊</span>
-                  <div style="flex:1;"><div style="font-size:13px;color:#1a73e8;">export_log_dump.txt</div></div>
-                  <div style="font-size:11px;color:#aaa;font-family:monospace;">1.4 MB</div>
-                  <div style="font-size:11px;color:#aaa;font-family:monospace;width:110px;">2024.11.03 14:55</div>
-                  <span class="df-badge df-enc">encrypted</span>
-                </div>
-                <div class="df-file-row" onclick="dfOpenFile('mail')">
-                  <span style="font-size:16px;">✉️</span>
-                  <div style="flex:1;">
-                    <div style="font-size:13px;color:#1a73e8;">internal_mail_1103.eml</div>
-                  </div>
-                  <div style="font-size:11px;color:#aaa;font-family:monospace;">44 KB</div>
-                  <div style="font-size:11px;color:#aaa;font-family:monospace;width:110px;">2024.11.03 15:01</div>
-                  <span class="df-badge df-lock">locked</span>
-                </div>
-
-                <!-- 숨겨진 힌트 — 드래그해야 보임 -->
-                <div style="margin-top:28px;">
-                  <div style="font-size:10px;color:#ddd;font-family:monospace;margin-bottom:4px;">README</div>
-                  <div style="background:#f9f9f9;border:1px dashed #e0e0e0;padding:12px;font-family:monospace;font-size:12px;line-height:1.8;user-select:text;cursor:text;">
-                    <span style="color:#f9f9f9;background:#f9f9f9;user-select:text;">file03_password: 최초 수출 기록 월(두자리) + 연도 끝 두자리</span>
-                  </div>
-                </div>
-              </div>
-
-              <!-- 파일 뷰어 -->
-              <div id="df-view-file" style="flex:1;overflow-y:auto;padding:0;background:white;display:none;">
-                <div style="background:#161616;padding:8px 16px;display:flex;align-items:center;gap:10px;font-family:monospace;font-size:12px;color:#c6c6c6;flex-shrink:0;">
-                  <span onclick="dfBack()" style="color:#78a9ff;cursor:pointer;">←</span>
-                  <span id="df-file-name">file.pdf</span>
-                  <span onclick="dfBack()" style="margin-left:auto;cursor:pointer;color:#666;">✕</span>
-                </div>
-                <div id="df-file-content" style="padding:24px;"></div>
-              </div>
-
-              <!-- 메일 잠금 뷰 -->
-              <div id="df-view-mail" style="flex:1;overflow-y:auto;padding:24px;background:#fafafa;display:none;">
-                <div id="df-mail-locked">
-                  <div style="text-align:center;padding:40px 20px;">
-                    <div style="font-size:44px;margin-bottom:16px;">🔒</div>
-                    <div style="font-size:15px;color:#333;margin-bottom:6px;">파일 잠금 해제</div>
-                    <div style="font-size:12px;color:#888;margin-bottom:24px;font-family:monospace;">internal_mail_1103.eml</div>
-                    <div style="max-width:280px;margin:0 auto;">
-                      <input id="df-mail-pw" type="text" placeholder="비밀번호 입력"
-                        style="width:100%;border:none;border-bottom:2px solid #4f8ef7;background:#f4f4f4;padding:10px 12px;font-family:monospace;font-size:14px;letter-spacing:3px;outline:none;text-align:center;margin-bottom:6px;"
-                        onkeydown="if(event.key==='Enter')dfCheckMailPW()">
-                      <div id="df-mail-err" style="color:#da1e28;font-size:11px;min-height:16px;font-family:monospace;margin-bottom:10px;"></div>
-                      <button onclick="dfCheckMailPW()" style="width:100%;padding:10px;background:#0f62fe;color:white;border:none;font-size:12px;cursor:pointer;font-family:monospace;letter-spacing:1px;">
-                        Unlock
-                      </button>
-                      <div style="margin-top:8px;">
-                        <span onclick="dfShowView('evidence')" style="font-size:11px;color:#aaa;cursor:pointer;font-family:monospace;">← 뒤로</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div id="df-mail-unlocked" style="display:none;max-width:640px;margin:0 auto;">
-                  <div style="background:white;border:1px solid #e0e0e0;">
-                    <div style="background:#f9f9f9;padding:14px 18px;border-bottom:1px solid #e0e0e0;">
-                      <div style="font-size:12px;color:#555;padding:3px 0;"><span style="color:#999;width:50px;display:inline-block;">From</span> park.sj@nexcore.com (박성진 이사)</div>
-                      <div style="font-size:12px;color:#555;padding:3px 0;"><span style="color:#999;width:50px;display:inline-block;">To</span> [ 수신자 정보 보호됨 ]</div>
-                      <div style="font-size:12px;color:#555;padding:3px 0;font-family:monospace;"><span style="color:#999;width:50px;display:inline-block;font-family:sans-serif;">Date</span> 2024-11-03 22:47:09</div>
-                    </div>
-                    <div style="font-size:16px;font-weight:600;padding:12px 18px;border-bottom:1px solid #e0e0e0;color:#111;">RE: 건 처리 요청</div>
-                    <div style="padding:20px 18px;font-size:13px;line-height:2;color:#333;">
-                      <p>안녕하세요.</p><br>
-                      <p>오늘 밤 안에 처리해주십시오.<br>증거가 외부로 나가기 전에 조치가 필요합니다.</p><br>
-                      <p>해당 계정은 이미 플래그 처리했고,<br>물리적 접근도 오늘 중 이루어질 예정입니다.</p><br>
-                      <p>추후 사건 처리는 기존 협의대로 진행 부탁드립니다.<br>자살로 처리하는 방향으로 정리해 주시면 됩니다.</p><br>
-                      <div style="display:inline-block;border:2px solid #da1e28;color:#da1e28;font-family:monospace;font-size:13px;font-weight:700;padding:3px 12px;letter-spacing:2px;transform:rotate(-2deg);">URGENT</div><br><br>
-                      <p style="font-size:11px;color:#999;font-family:monospace;">— 박성진 / park.sj@nexcore.com<br>㈜넥스코어 데이터사업부 이사</p>
-                    </div>
-                  </div>
-                  <div style="margin-top:16px;text-align:center;">
-                    <button onclick="dfMailDone()" style="background:#0f62fe;color:white;border:none;padding:12px 28px;font-size:12px;cursor:pointer;font-family:monospace;letter-spacing:2px;">
-                      ✓ 확인 완료 → 다음 단계
-                    </button>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Activity / Shared 더미 -->
-              <div id="df-view-activity" style="flex:1;padding:24px;background:#fafafa;display:none;">
-                <div style="font-size:15px;color:#333;margin-bottom:16px;">Activity</div>
-                <div style="font-size:12px;color:#888;font-family:monospace;line-height:2.5;">
-                  <div>2024.11.03 15:01 &nbsp; <span style="color:#555;">j.lee uploaded</span> internal_mail_1103.eml</div>
-                  <div>2024.11.03 14:55 &nbsp; <span style="color:#555;">j.lee uploaded</span> export_log_dump.txt</div>
-                  <div>2024.11.03 14:51 &nbsp; <span style="color:#555;">j.lee uploaded</span> NX_ADV_CONTRACT_2019.pdf</div>
-                  <div>2024.11.03 14:48 &nbsp; <span style="color:#555;">j.lee created folder</span> _nx_data_leak</div>
-                </div>
-              </div>
-              <div id="df-view-shared" style="flex:1;padding:24px;background:#fafafa;display:none;">
-                <div style="text-align:center;padding:60px;color:#aaa;font-size:13px;">No files shared with you.</div>
-              </div>
-
-            </div>
-          </div>
-
         </div>
-
-        <div class="scene-footer"><div class="scene-location"><strong>숨겨진 웹페이지 — darkfile-1103</strong>STAGE 04 / 05</div></div>
+        <div class="scene-footer"><div class="scene-location"><strong>숨겨진 파일 서버 — darkfile.io</strong>STAGE 04 / 05</div></div>
       </div>
     </div>
 
@@ -1308,7 +1082,7 @@ git token - check .env
           <div style="background:#f1f3f4;padding:3px 12px;display:flex;gap:14px;align-items:center;border-bottom:1px solid #ddd;flex-shrink:0;font-size:11px;">
             <span style="color:#888;">즐겨찾기:</span>
             <span onclick="s5Navigate('maploc.app')" style="color:#1a73e8;cursor:pointer;">🗺 MapLoc</span>
-            <span onclick="s5Navigate('vaultdrop.io/jl1103')" style="color:#1a73e8;cursor:pointer;">⬛ VaultDrop</span>
+            <span onclick="s5Navigate('darkfile.io/jl1103')" style="color:#1a73e8;cursor:pointer;">⬛ darkfile</span>
           </div>
 
           <!-- MapLoc -->
@@ -1865,7 +1639,7 @@ const CLUES={
       </p>
     `
   },
-  url_note:{title:'메모장 — 웹주소 발견',desc:'컴퓨터 메모장에서 발견한 주소.',detail:`<div style="font-family:var(--mono);font-size:12px;line-height:2;color:var(--text2);background:var(--bg3);padding:14px;">어두운파일 - 0808<br>dev backup - localhost:3000<br>→ <span style="color:var(--gold);">vaultdrop.io/jl1103</span></div><p style="margin-top:12px;color:var(--text2);font-size:12px;">크롬 주소창에 직접 입력해야 한다.</p>`},
+  url_note:{title:'메모장 — 웹주소 발견',desc:'컴퓨터 메모장에서 발견한 주소.',detail:`<div style="font-family:var(--mono);font-size:12px;line-height:2;color:var(--text2);background:var(--bg3);padding:14px;">어두운파일 - 0808<br>dev backup - localhost:3000<br>→ <span style="color:var(--gold);">darkfile.io/jl1103</span></div><p style="margin-top:12px;color:var(--text2);font-size:12px;">크롬 주소창에 직접 입력해야 한다.</p>`},
   server_log:{title:'서버 로그 — 넥스코어',desc:'수신처 IP: 211.XXX.XXX.47 / 누적 약 8,900만 건',detail:`<div style="font-family:var(--mono);font-size:11px;line-height:2;color:var(--text2);background:var(--bg3);padding:14px;">NEXCORE DATA EXPORT LOG<br>─────────────────────<br>2024.10.01 &nbsp;exported: 2,847,203 users<br>...<br><span style="color:var(--gold);">2019.04.01 &nbsp;exported: 341,882 users ← 최초</span><br>─────────────────────<br>수신처 IP: <span class="clue-hl">211.XXX.XXX.47</span></div>`},
   internal_mail:{title:'내부 메일 — 박성진 → 경찰청',desc:'2024.11.03 22:47 발송.',detail:`<div style="font-family:var(--mono);font-size:12px;line-height:2;color:var(--text2);background:var(--bg3);padding:14px;">보낸 사람: park.sj@nexcore.com<br>받는 사람: [경찰청 내부]<br>날짜: <span class="clue-hl">2024.11.03 22:47</span><br>─────────────────────<br><span style="color:var(--text);">"오늘 밤 안에 처리해주십시오.<br>증거가 외부로 나가기 전에."</span></div><p style="margin-top:12px;color:var(--accent2);font-size:12px;">경찰 내부에 넥스코어 측 인물이 있었다.</p>`}
 };
@@ -1987,7 +1761,7 @@ function loadImgDirect(el, baseName){
 /* ============================================
    스테이지4 — 가상 DarkFile 웹사이트
 ============================================ */
-const DF_PW   = '1027';  // ✏️ 접속 비밀번호
+const DF_PW   = '0808';  // ✏️ 접속 비밀번호 (핸드폰 메모에서 획득)
 const DF_MAIL = '0419';  // ✏️ 메일 파일 비밀번호
 
 function dfLogin(){
@@ -2216,25 +1990,26 @@ function browserNavigate(url){
   url = (url||'').trim().replace(/^https?:\/\//i,'');
   const urlEl = document.getElementById('browser-url');
   if(urlEl) urlEl.value = url;
-  if(url.toLowerCase().includes('vaultdrop')){ showVaultDrop(); return; }
+  if(url.toLowerCase().includes('darkfile')){ showDarkfile(); return; }
   if(url.toLowerCase().includes('maploc')){ showMapLoc(); return; }
   browserBack();
   document.getElementById('browser-tab-title').textContent = url+' - Chrome';
 }
 
-function showVaultDrop(){
-  ['browser-history','browser-searchresult','browser-vaultdrop','browser-maploc'].forEach(id=>{
+function showDarkfile(){
+  ['browser-history','browser-searchresult','browser-darkfile','browser-maploc'].forEach(id=>{
     const el=document.getElementById(id); if(el){ el.style.display='none'; }
   });
-  const vd=document.getElementById('browser-vaultdrop');
-  vd.style.display='flex'; vd.style.flexDirection='column';
-  document.getElementById('browser-tab-title').textContent='VaultDrop — Secure Storage';
-  const urlEl=document.getElementById('browser-url'); if(urlEl) urlEl.value='vaultdrop.io/jl1103';
-  renderVaultDrop();
+  const df=document.getElementById('browser-darkfile');
+  df.style.display='flex'; df.style.flexDirection='column';
+  document.getElementById('browser-tab-title').textContent='darkfile — Secure Storage';
+  const urlEl=document.getElementById('browser-url'); if(urlEl) urlEl.value='darkfile.io/jl1103';
+  if(S.f.potFound && S.stage<4){ advanceStage(4); }
+  renderDarkfile();
 }
 
 function showMapLoc(){
-  ['browser-history','browser-searchresult','browser-vaultdrop','browser-maploc'].forEach(id=>{
+  ['browser-history','browser-searchresult','browser-darkfile','browser-maploc'].forEach(id=>{
     const el=document.getElementById(id); if(el){ el.style.display='none'; }
   });
   const ml=document.getElementById('browser-maploc');
@@ -2243,17 +2018,17 @@ function showMapLoc(){
   const urlEl=document.getElementById('browser-url'); if(urlEl) urlEl.value='maploc.app';
 }
 
-function renderVaultDrop(){
+function renderDarkfile(){
   const body=document.getElementById('vd-body'); if(!body) return;
   if(!S.f.potFound){
-    body.innerHTML=`<div style="background:#1a1a2e;min-height:380px;display:flex;align-items:center;justify-content:center;"><div style="width:320px;text-align:center;"><div style="font-size:24px;color:#e0e0e0;font-family:monospace;letter-spacing:3px;margin-bottom:8px;">⬛ VaultDrop</div><div style="background:#111;border:1px solid #2a2a3a;padding:20px;margin-top:16px;"><div style="font-size:11px;color:#888;margin-bottom:12px;font-family:monospace;">Enter access key</div><input id="vd-pw-inline" type="password" placeholder="access key" style="width:100%;background:#0a0a0a;border:none;border-bottom:1px solid #3a3a5a;color:#c0c0ff;font-family:monospace;font-size:13px;letter-spacing:3px;padding:7px 0;outline:none;text-align:center;margin-bottom:6px;" onkeydown="if(event.key==='Enter')vdLoginInline()"><div id="vd-err-inline" style="color:#ff6b6b;font-size:11px;min-height:14px;margin-bottom:8px;font-family:monospace;">⚠ Connection error: storage device required</div><button onclick="vdLoginInline()" style="width:100%;background:#0f62fe;color:white;border:none;padding:8px;font-size:12px;cursor:pointer;font-family:monospace;">AUTHENTICATE →</button></div></div></div>`;
+    body.innerHTML=`<div style="background:#1a1a2e;min-height:380px;display:flex;align-items:center;justify-content:center;"><div style="width:320px;text-align:center;"><div style="font-size:24px;color:#e0e0e0;font-family:monospace;letter-spacing:3px;margin-bottom:8px;">⬛ darkfile</div><div style="background:#111;border:1px solid #2a2a3a;padding:20px;margin-top:16px;"><div style="font-size:11px;color:#888;margin-bottom:12px;font-family:monospace;">Enter access key</div><input id="vd-pw-inline" type="password" placeholder="access key" style="width:100%;background:#0a0a0a;border:none;border-bottom:1px solid #3a3a5a;color:#c0c0ff;font-family:monospace;font-size:13px;letter-spacing:3px;padding:7px 0;outline:none;text-align:center;margin-bottom:6px;" onkeydown="if(event.key==='Enter')vdLoginInline()"><div id="vd-err-inline" style="color:#ff6b6b;font-size:11px;min-height:14px;margin-bottom:8px;font-family:monospace;">⚠ Connection error: storage device required</div><button onclick="vdLoginInline()" style="width:100%;background:#0f62fe;color:white;border:none;padding:8px;font-size:12px;cursor:pointer;font-family:monospace;">AUTHENTICATE →</button></div></div></div>`;
     return;
   }
   if(!S.f.webpageEntered){
-    body.innerHTML=`<div style="background:#1a1a2e;min-height:380px;display:flex;align-items:center;justify-content:center;"><div style="width:320px;text-align:center;"><div style="font-size:24px;color:#e0e0e0;font-family:monospace;letter-spacing:3px;margin-bottom:8px;">⬛ VaultDrop</div><div style="background:#111;border:1px solid #2a2a3a;padding:20px;margin-top:16px;"><div style="font-size:11px;color:#888;margin-bottom:12px;font-family:monospace;">Enter access key</div><input id="vd-pw-inline" type="password" placeholder="access key" style="width:100%;background:#0a0a0a;border:none;border-bottom:1px solid #3a3a5a;color:#c0c0ff;font-family:monospace;font-size:13px;letter-spacing:3px;padding:7px 0;outline:none;text-align:center;margin-bottom:6px;" onkeydown="if(event.key==='Enter')vdLoginInline()"><div id="vd-err-inline" style="color:#ff6b6b;font-size:11px;min-height:14px;margin-bottom:8px;font-family:monospace;"></div><button onclick="vdLoginInline()" style="width:100%;background:#0f62fe;color:white;border:none;padding:8px;font-size:12px;cursor:pointer;font-family:monospace;">AUTHENTICATE →</button></div></div></div>`;
+    body.innerHTML=`<div style="background:#1a1a2e;min-height:380px;display:flex;align-items:center;justify-content:center;"><div style="width:320px;text-align:center;"><div style="font-size:24px;color:#e0e0e0;font-family:monospace;letter-spacing:3px;margin-bottom:8px;">⬛ darkfile</div><div style="background:#111;border:1px solid #2a2a3a;padding:20px;margin-top:16px;"><div style="font-size:11px;color:#888;margin-bottom:12px;font-family:monospace;">Enter access key</div><input id="vd-pw-inline" type="password" placeholder="access key" style="width:100%;background:#0a0a0a;border:none;border-bottom:1px solid #3a3a5a;color:#c0c0ff;font-family:monospace;font-size:13px;letter-spacing:3px;padding:7px 0;outline:none;text-align:center;margin-bottom:6px;" onkeydown="if(event.key==='Enter')vdLoginInline()"><div id="vd-err-inline" style="color:#ff6b6b;font-size:11px;min-height:14px;margin-bottom:8px;font-family:monospace;"></div><button onclick="vdLoginInline()" style="width:100%;background:#0f62fe;color:white;border:none;padding:8px;font-size:12px;cursor:pointer;font-family:monospace;">AUTHENTICATE →</button></div></div></div>`;
     return;
   }
-  renderVaultDropSite(body);
+  renderDarkfileSite(body);
 }
 
 function vdLoginInline(){
@@ -2265,14 +2040,14 @@ function vdLoginInline(){
   }
   if(val.trim()===DF_PW){
     S.f.webpageEntered=true;
-    renderVaultDrop();
+    renderDarkfile();
   } else {
     const err=document.getElementById('vd-err-inline');
     if(err){ err.textContent='Invalid access key.'; setTimeout(()=>err.textContent='',1500); }
   }
 }
 
-function renderVaultDropSite(body){
+function renderDarkfileSite(body){
   body.innerHTML=`<div style="display:flex;height:100%;font-family:'Segoe UI',sans-serif;"><div style="width:170px;background:white;border-right:1px solid #e0e0e0;padding:8px 0;flex-shrink:0;"><div onclick="vdNav('files')" style="padding:8px 14px;cursor:pointer;background:#e8f0fe;color:#1a73e8;font-size:12px;">📁 My Files</div><div onclick="vdNav('activity')" style="padding:8px 14px;cursor:pointer;color:#555;font-size:12px;">📋 Activity</div><div style="border-top:1px solid #eee;margin:8px 0;"></div><div style="padding:6px 14px 2px;font-size:10px;color:#aaa;text-transform:uppercase;letter-spacing:1px;">Storage</div><div style="margin:4px 14px;height:4px;background:#eee;border-radius:2px;overflow:hidden;"><div style="width:23%;height:100%;background:#4f8ef7;border-radius:2px;"></div></div><div style="padding:2px 14px;font-size:10px;color:#aaa;font-family:monospace;">2.3 GB / 10 GB</div></div><div id="vd-main" style="flex:1;overflow-y:auto;padding:14px;background:#fafafa;"></div></div>`;
   vdNav('files');
 }
@@ -2323,7 +2098,22 @@ function vdCheckMailPW(){
 function s5Navigate(url){
   url=(url||'').trim().replace(/^https?:\/\//i,'');
   document.getElementById('s5-url').value=url;
-  // maploc만 지원
+}
+
+function stage4CopyURL(el){
+  const url=el.textContent.trim();
+  if(navigator.clipboard){ navigator.clipboard.writeText(url).then(()=>{ el.style.color='#fff'; setTimeout(()=>el.style.color='#4ade80',1500); }); }
+  const range=document.createRange(); range.selectNode(el);
+  window.getSelection().removeAllRanges(); window.getSelection().addRange(range);
+}
+
+function stage4OpenChrome(){
+  if(S.stage<3){ showLocked(); return; }
+  goToStage(3);
+  setTimeout(()=>{
+    winIconClick('chrome');
+    setTimeout(()=>{ browserNavigate('darkfile.io/jl1103'); }, 300);
+  }, 500);
 }
 
 function s5MapSearch(){
@@ -2908,11 +2698,11 @@ function winIconClick(name){
     el.style.display = 'flex';
     bringToFront(el);
     updateTaskbar();
-    // 메모장 열면 단서 등록
+    // 메모장 열면 단서 등록만 (스테이지 진행 없음 — 크롬으로 직접 접속해야)
     if(name==='notepad' && !S.f.urlFound){
       S.f.urlFound = true;
-      showToast('📄 메모장에서 단서 발견!');
-      setTimeout(()=>{ advanceStage(4); }, 1200);
+      addClue('url_note');
+      showToast('📄 메모장에서 주소 발견');
     }
   }
 }
@@ -3109,13 +2899,13 @@ function openBrowser(){
 function openMemopad(){
   closeModal('modal-clue');
   showInfo('메모장 — notepad.txt',`
-    <div style="font-family:'Courier New',monospace;font-size:13px;line-height:1.9;background:var(--bg3);padding:16px;color:var(--text2);">어두운파일 - 0808<br>dev backup - localhost:3000<br>git token - check .env<br><br><span style="color:var(--gold);">→ vaultdrop.io/jl1103</span><br><br>* USB 없이 접속 불가</div>
+    <div style="font-family:'Courier New',monospace;font-size:13px;line-height:1.9;background:var(--bg3);padding:16px;color:var(--text2);">dev backup - localhost:3000<br>git token - check .env<br><br><span style="color:var(--gold);">→ darkfile.io/jl1103</span><br><br>* USB 없이 접속 불가</div>
     <p style="margin-top:12px;color:var(--text2);font-size:12px;">크롬 주소창에 직접 입력해야 접속할 수 있다.</p>
   `);
   if(!S.f.urlFound){
-    S.f.urlFound=true;
+    S.f.urlFound = true;
     addClue('url_note');
-    setTimeout(()=>{ advanceStage(4); showToast('🌐 웹페이지 주소 발견'); }, 800);
+    showToast('🌐 웹주소 발견');
   }
 }
 
