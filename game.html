@@ -437,6 +437,14 @@ html,body{background:var(--bg);color:var(--text);font-family:var(--sans);height:
 <audio id="bgm" loop>
   <source src="./audio/bgm_intro.mp3" type="audio/mpeg">
 </audio>
+<!-- 📞 벨소리: ./audio/ringtone.mp3 파일 넣으면 자동 재생 -->
+<audio id="ringtone" loop>
+  <source src="./audio/ringtone.mp3" type="audio/mpeg">
+</audio>
+<!-- 🎙️ 전화 녹음: ./audio/call_voice.mp3 파일 넣으면 재생 가능 -->
+<audio id="call-recording">
+  <source src="./audio/call_voice.mp3" type="audio/mpeg">
+</audio>
 
 <!-- 인트로 -->
 <div id="screen-intro" class="screen active">
@@ -462,7 +470,7 @@ html,body{background:var(--bg);color:var(--text);font-family:var(--sans);height:
     <div class="intro-message" style="text-align:left;margin-bottom:16px;">
       <div class="sender" style="margin-bottom:12px;">📁 &nbsp;수사 배경</div>
       <p style="font-size:13px;line-height:2;color:var(--text);">
-        이준혁은 대형 IT기업 <strong style="color:var(--accent2);">㈜넥스코어</strong>의 서버를 유지보수하던
+        이준혁은 대형 IT기업 <strong style="color:var(--accent2);">㈜코어링크테크놀로지스</strong>의 서버를 유지보수하던
         프리랜서 개발자였다. 사건 당일, 그는 내부고발 사이트에 접속을 시도했고
         그로부터 불과 몇 시간 뒤 오피스텔 외부에서 시신으로 발견됐다.<br><br>
         경찰은 현장 감식 없이 자살로 신속 종결했다.
@@ -492,6 +500,19 @@ html,body{background:var(--bg);color:var(--text);font-family:var(--sans);height:
     </div>
 
     <button class="btn-start" onclick="startGame()">▶ 수사 시작</button>
+
+    <div style="
+      position:absolute;bottom:24px;left:50%;transform:translateX(-50%);
+      width:90%;max-width:600px;
+      text-align:center;
+      font-family:var(--sans);font-size:10px;
+      color:var(--text3);line-height:1.8;
+      letter-spacing:.3px;
+    ">
+      이 작품에서 등장한 모든 이름, 인물, 사건들은 허구입니다.<br>
+      실존하는 인물, 장소, 건물, 제품과는 일절 관련이 없습니다.<br>
+      관련이 있더라도 우연에 의한 것임을 밝힙니다.
+    </div>
   </div>
 </div>
 
@@ -776,10 +797,10 @@ html,body{background:var(--bg);color:var(--text);font-family:var(--sans);height:
                   onfocus="this.select()">
               </div>
               <!-- 브라우저 콘텐츠 -->
-              <div id="browser-content" style="background:white;flex:1;overflow-y:auto;font-size:13px;color:#333;">
+              <div id="browser-content" style="background:white;flex:1;overflow:hidden;font-size:13px;color:#333;display:flex;flex-direction:column;">
 
                 <!-- 방문 기록 화면 (기본) -->
-                <div id="browser-history" style="padding:16px;">
+                <div id="browser-history" style="padding:16px;overflow-y:auto;flex:1;">
                   <div style="font-size:16px;color:#202124;margin-bottom:4px;font-weight:400;">방문 기록</div>
                   <div style="font-size:12px;color:#70757a;margin-bottom:16px;">검색 및 방문한 페이지</div>
 
@@ -813,11 +834,11 @@ html,body{background:var(--bg);color:var(--text);font-family:var(--sans);height:
                     <div style="font-size:11px;color:#aaa;flex-shrink:0;">오전 10:03</div>
                   </div>
 
-                  <div class="chrome-hist-item" onclick="showSearchResult('nexcore')">
+                  <div class="chrome-hist-item" onclick="showSearchResult('corelink')">
                     <span class="chrome-hist-favicon">🔍</span>
                     <div style="flex:1;">
-                      <div style="color:#1a0dab;">넥스코어 개인정보 - Google 검색</div>
-                      <div style="font-size:11px;color:#70757a;">https://google.com/search?q=넥스코어+개인정보 &nbsp;·&nbsp; 오전 11:47</div>
+                      <div style="color:#1a0dab;">코어링크테크놀로지스 개인정보 - Google 검색</div>
+                      <div style="font-size:11px;color:#70757a;">https://google.com/search?q=코어링크테크놀로지스+개인정보 &nbsp;·&nbsp; 오전 11:47</div>
                     </div>
                     <div style="font-size:11px;color:#aaa;flex-shrink:0;">오전 11:47</div>
                   </div>
@@ -825,8 +846,8 @@ html,body{background:var(--bg);color:var(--text);font-family:var(--sans);height:
                   <div class="chrome-hist-item" onclick="showSearchResult('parkseongiin')">
                     <span class="chrome-hist-favicon">🔍</span>
                     <div style="flex:1;">
-                      <div style="color:#1a0dab;">박성진 넥스코어 이사 - Google 검색</div>
-                      <div style="font-size:11px;color:#70757a;">https://google.com/search?q=박성진+넥스코어+이사 &nbsp;·&nbsp; 오후 1:22</div>
+                      <div style="color:#1a0dab;">박성진 코어링크테크놀로지스 이사 - Google 검색</div>
+                      <div style="font-size:11px;color:#70757a;">https://google.com/search?q=박성진+코어링크테크놀로지스+이사 &nbsp;·&nbsp; 오후 1:22</div>
                     </div>
                     <div style="font-size:11px;color:#aaa;flex-shrink:0;">오후 1:22</div>
                   </div>
@@ -854,7 +875,7 @@ html,body{background:var(--bg);color:var(--text);font-family:var(--sans);height:
                 </div>
 
                 <!-- 검색 결과 화면 (동적으로 교체) -->
-                <div id="browser-searchresult" style="display:none;padding:12px 16px;"></div>
+                <div id="browser-searchresult" style="display:none;padding:12px 16px;overflow-y:auto;flex:1;"></div>
 
                 <!-- darkfile.io 가상 사이트 -->
                 <div id="browser-darkfile" style="display:none;height:100%;flex-direction:column;">
@@ -990,7 +1011,7 @@ git token - check .env
               <div style="background:#fafafa;flex:1;padding:16px;display:grid;grid-template-columns:repeat(4,1fr);gap:12px;align-items:start;">
                 <div style="text-align:center;">
                   <div style="font-size:28px;">📁</div>
-                  <div style="font-size:11px;color:#333;margin-top:4px;">nexcore_backup</div>
+                  <div style="font-size:11px;color:#333;margin-top:4px;">corelink_backup</div>
                 </div>
                 <div style="text-align:center;cursor:pointer;" ondblclick="showInfo('log_export.txt',`<div style=\'font-family:monospace;font-size:12px;color:var(--text2);background:var(--bg3);padding:14px;line-height:2;\'>ACCESS LOG<br>2024.11.03 14:55<br>user: j.lee<br>query: SELECT * FROM export_log<br>result: 847 rows<br><span style=\'color:var(--accent2);\'>WARNING: unauthorized query</span></div>`)">
                   <div style="font-size:28px;">📋</div>
@@ -1036,99 +1057,6 @@ git token - check .env
       </div>
     </div>
 
-    <!-- 스테이지 4 — darkfile 접속 안내 -->
-    <div class="scene-slide" id="scene-4">
-      <div class="scene-wrap" style="background:#0a0a0a;cursor:default;display:flex;align-items:center;justify-content:center;">
-        <div style="text-align:center;font-family:var(--mono);">
-          <div style="font-size:13px;color:#555;letter-spacing:2px;margin-bottom:16px;">STAGE 04 — 숨겨진 파일 서버</div>
-          <div style="background:#111;border:1px solid #1e1e1e;padding:24px 32px;max-width:480px;">
-            <div style="color:#4ade80;font-size:12px;margin-bottom:16px;">$ 주소 발견 → 크롬 주소창에 입력하세요</div>
-            <div style="background:#0a0a0a;border:1px solid #2a2a2a;padding:12px 16px;color:#4ade80;font-size:15px;letter-spacing:1px;margin-bottom:16px;cursor:pointer;user-select:all;"
-                 onclick="stage4CopyURL(this)" title="클릭하면 복사">
-              darkfile.io/jl1103
-            </div>
-            <div style="font-size:10px;color:#444;">클릭하면 복사 · 크롬 주소창에 붙여넣기</div>
-          </div>
-          <div style="margin-top:20px;">
-            <button onclick="stage4OpenChrome()" style="background:none;border:1px solid #2a2a2a;color:#555;font-family:var(--mono);font-size:11px;letter-spacing:3px;padding:10px 24px;cursor:pointer;transition:all .2s;"
-              onmouseover="this.style.borderColor='#4ade80';this.style.color='#4ade80'"
-              onmouseout="this.style.borderColor='#2a2a2a';this.style.color='#555'">
-              💻 크롬 열기 → darkfile.io 접속
-            </button>
-          </div>
-        </div>
-        <div class="scene-footer"><div class="scene-location"><strong>숨겨진 파일 서버 — darkfile.io</strong>STAGE 04 / 05</div></div>
-      </div>
-    </div>
-
-    <!-- 스테이지 5 -->
-    <div class="scene-slide" id="scene-5">
-      <div class="scene-wrap" style="background:#f4f4f4;cursor:default;overflow:hidden;">
-        <div style="display:flex;flex-direction:column;height:100%;font-family:'Segoe UI',sans-serif;">
-
-          <!-- 브라우저 상단 -->
-          <div style="background:#e8e8e8;padding:5px 12px;display:flex;align-items:center;gap:8px;border-bottom:1px solid #ccc;flex-shrink:0;">
-            <div style="display:flex;gap:5px;">
-              <div style="width:11px;height:11px;border-radius:50%;background:#ff5f56;"></div>
-              <div style="width:11px;height:11px;border-radius:50%;background:#febc2e;"></div>
-              <div style="width:11px;height:11px;border-radius:50%;background:#27c840;"></div>
-            </div>
-            <span style="font-size:12px;color:#999;">← →</span>
-            <input id="s5-url" type="text" value="maploc.app"
-              style="flex:1;background:white;border:1px solid #ccc;border-radius:12px;padding:3px 12px;font-size:12px;color:#555;outline:none;"
-              onkeydown="if(event.key==='Enter')s5Navigate(this.value)">
-          </div>
-          <!-- 즐겨찾기 -->
-          <div style="background:#f1f3f4;padding:3px 12px;display:flex;gap:14px;align-items:center;border-bottom:1px solid #ddd;flex-shrink:0;font-size:11px;">
-            <span style="color:#888;">즐겨찾기:</span>
-            <span onclick="s5Navigate('maploc.app')" style="color:#1a73e8;cursor:pointer;">🗺 MapLoc</span>
-            <span onclick="s5Navigate('darkfile.io/jl1103')" style="color:#1a73e8;cursor:pointer;">⬛ darkfile</span>
-          </div>
-
-          <!-- MapLoc -->
-          <div id="s5-maploc" style="flex:1;display:flex;flex-direction:column;overflow:hidden;">
-            <div style="background:#2c7873;padding:8px 16px;display:flex;align-items:center;gap:10px;flex-shrink:0;">
-              <span style="color:white;font-size:14px;font-weight:600;letter-spacing:1px;">🗺 MapLoc</span>
-              <div style="flex:1;background:white;border-radius:4px;display:flex;align-items:center;overflow:hidden;">
-                <input id="s5-coord-input" type="text" placeholder="좌표 입력 (예: 37.5195, 127.0572)"
-                  style="flex:1;border:none;padding:6px 12px;font-size:12px;font-family:monospace;outline:none;color:#333;"
-                  onkeydown="if(event.key==='Enter')s5MapSearch()">
-                <button onclick="s5MapSearch()" style="background:#2c7873;color:white;border:none;padding:6px 12px;cursor:pointer;font-size:12px;">검색</button>
-              </div>
-            </div>
-            <div id="s5-map-area" style="flex:1;background:#d4e8e4;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;">
-              <div id="s5-map-placeholder" style="text-align:center;color:#7aab9e;">
-                <div style="font-size:36px;margin-bottom:8px;">🗺</div>
-                <div style="font-size:12px;font-family:monospace;">좌표를 입력하면 위성 사진이 표시됩니다</div>
-              </div>
-              <div id="s5-map-result" style="display:none;width:100%;height:100%;align-items:center;justify-content:center;flex-direction:column;">
-                <!--
-                  🖼️ 위성 사진: ./images/satellite.jpeg 로 교체
-                  숫자 04217이 보이는 이미지를 넣으세요
-                -->
-                <img id="s5-satellite-img" src="./images/satellite.jpeg" alt="위성 사진"
-                  style="max-width:100%;max-height:100%;object-fit:contain;cursor:zoom-in;"
-                  onclick="zoomSatellite()"
-                  onerror="this.style.display='none';document.getElementById('s5-sat-fallback').style.display='flex';">
-                <div id="s5-sat-fallback" style="display:none;flex-direction:column;align-items:center;gap:12px;padding:32px;">
-                  <div style="background:#1a1a1a;color:#4ade80;font-family:monospace;font-size:12px;padding:20px 28px;border:1px solid #333;line-height:2.2;text-align:center;">
-                    SATELLITE VIEW — 37.5195°N 127.0572°E<br>
-                    <span style="color:#888;font-size:10px;">images/satellite.jpeg 파일을 넣어주세요</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div id="s5-coord-bar" style="display:none;background:#2c7873;padding:5px 16px;font-family:monospace;font-size:11px;color:rgba(255,255,255,.7);">
-              위도: 37.5195° N &nbsp;|&nbsp; 경도: 127.0572° E &nbsp;|&nbsp; 줌: 18 &nbsp;|&nbsp;
-              <span onclick="showComingSoon()" style="color:#fee500;cursor:pointer;">← 복도로 돌아가기</span>
-            </div>
-          </div>
-
-        </div>
-        <div class="scene-footer"><div class="scene-location"><strong>위성 추적 — MapLoc</strong>STAGE 05 / 05</div></div>
-      </div>
-    </div>
-
   </div><!-- /game-scene -->
 
   <!-- 패널 -->
@@ -1137,7 +1065,7 @@ git token - check .env
       <div class="case-id">CASE 01 — 1103</div>
       <div style="display:flex;align-items:center;gap:8px;">
         <button class="bgm-btn" id="bgm-btn" onclick="toggleBGM()">♪ BGM</button>
-        <div class="stage-ind" id="stage-ind">STAGE 1 / 5</div>
+        <div class="stage-ind" id="stage-ind">STAGE 1 / 3</div>
       </div>
     </div>
     <div class="panel-tabs">
@@ -1174,22 +1102,6 @@ git token - check .env
             </div>
             <div class="stage-arrow" id="arr-3"></div>
           </li>
-          <li class="stage-item" id="li-4" onclick="goToStage(4)">
-            <div class="stage-dot" id="dot-4"></div>
-            <div class="stage-info">
-              <div class="stage-name locked" id="sn-4">숨겨진 웹페이지</div>
-              <div class="stage-sub" id="ss-4">🔒 잠김</div>
-            </div>
-            <div class="stage-arrow" id="arr-4"></div>
-          </li>
-          <li class="stage-item" id="li-5" onclick="goToStage(5)">
-            <div class="stage-dot" id="dot-5"></div>
-            <div class="stage-info">
-              <div class="stage-name locked" id="sn-5">위성 추적</div>
-              <div class="stage-sub" id="ss-5">🔒 잠김</div>
-            </div>
-            <div class="stage-arrow" id="arr-5"></div>
-          </li>
         </ul>
       </div>
       <div class="tab-pane" id="tab-clues">
@@ -1207,6 +1119,18 @@ git token - check .env
     <h2 class="ending-title">접속 기록</h2>
     <div class="timeline" id="timeline"></div>
     <div class="ending-msg" id="ending-msg">"이준혁은 혼자였지만, 틀리지 않았습니다.<br>이 기록은 이제 당신의 손에 있습니다."</div>
+
+    <div style="
+      margin-top:40px;padding:16px 24px;
+      border-top:1px solid var(--border);
+      text-align:center;
+      font-family:var(--sans);font-size:10px;
+      color:var(--text3);line-height:1.8;
+    ">
+      이 작품에서 등장한 모든 이름, 인물, 사건들은 허구입니다.<br>
+      실존하는 인물, 장소, 건물, 제품과는 일절 관련이 없습니다.<br>
+      관련이 있더라도 우연에 의한 것임을 밝힙니다.
+    </div>
   </div>
 </div>
 
@@ -1361,7 +1285,26 @@ git token - check .env
       <div class="phone-home" onclick="phoneOpenApp('home')"></div>
     </div><!-- /phone-frame -->
 
-    <div style="text-align:center;margin-top:16px;">
+    <!-- 녹음 재생 버튼 (전화 받은 후 활성화) -->
+    <div style="text-align:center;margin-top:12px;">
+      <button id="call-replay-btn"
+        onclick="playCallRecording()"
+        disabled
+        style="
+          background:none;
+          border:1px solid var(--border2);
+          color:var(--text3);
+          font-family:var(--mono);font-size:10px;
+          letter-spacing:2px;padding:7px 16px;
+          cursor:not-allowed;
+          transition:all .3s;
+          max-width:280px;width:100%;
+        ">
+        🎙 통화 녹음 재생 (잠김)
+      </button>
+    </div>
+
+    <div style="text-align:center;margin-top:8px;">
       <button class="btn-ok" onclick="closeModal('modal-phone')"
               style="border-color:var(--border2);color:var(--text2);max-width:280px;">
         핸드폰 내려놓기
@@ -1640,8 +1583,8 @@ const CLUES={
     `
   },
   url_note:{title:'메모장 — 웹주소 발견',desc:'컴퓨터 메모장에서 발견한 주소.',detail:`<div style="font-family:var(--mono);font-size:12px;line-height:2;color:var(--text2);background:var(--bg3);padding:14px;">어두운파일 - 0808<br>dev backup - localhost:3000<br>→ <span style="color:var(--gold);">darkfile.io/jl1103</span></div><p style="margin-top:12px;color:var(--text2);font-size:12px;">크롬 주소창에 직접 입력해야 한다.</p>`},
-  server_log:{title:'서버 로그 — 넥스코어',desc:'수신처 IP: 211.XXX.XXX.47 / 누적 약 8,900만 건',detail:`<div style="font-family:var(--mono);font-size:11px;line-height:2;color:var(--text2);background:var(--bg3);padding:14px;">NEXCORE DATA EXPORT LOG<br>─────────────────────<br>2024.10.01 &nbsp;exported: 2,847,203 users<br>...<br><span style="color:var(--gold);">2019.04.01 &nbsp;exported: 341,882 users ← 최초</span><br>─────────────────────<br>수신처 IP: <span class="clue-hl">211.XXX.XXX.47</span></div>`},
-  internal_mail:{title:'내부 메일 — 박성진 → 경찰청',desc:'2024.11.03 22:47 발송.',detail:`<div style="font-family:var(--mono);font-size:12px;line-height:2;color:var(--text2);background:var(--bg3);padding:14px;">보낸 사람: park.sj@nexcore.com<br>받는 사람: [경찰청 내부]<br>날짜: <span class="clue-hl">2024.11.03 22:47</span><br>─────────────────────<br><span style="color:var(--text);">"오늘 밤 안에 처리해주십시오.<br>증거가 외부로 나가기 전에."</span></div><p style="margin-top:12px;color:var(--accent2);font-size:12px;">경찰 내부에 넥스코어 측 인물이 있었다.</p>`}
+  server_log:{title:'서버 로그 — 코어링크테크놀로지스',desc:'수신처 IP: 211.XXX.XXX.47 / 누적 약 8,900만 건',detail:`<div style="font-family:var(--mono);font-size:11px;line-height:2;color:var(--text2);background:var(--bg3);padding:14px;">CORELINK DATA EXPORT LOG<br>─────────────────────<br>2024.10.01 &nbsp;exported: 2,847,203 users<br>...<br><span style="color:var(--gold);">2019.04.01 &nbsp;exported: 341,882 users ← 최초</span><br>─────────────────────<br>수신처 IP: <span class="clue-hl">211.XXX.XXX.47</span></div>`},
+  internal_mail:{title:'내부 메일 — 박성진 → 경찰청',desc:'2024.11.03 22:47 발송.',detail:`<div style="font-family:var(--mono);font-size:12px;line-height:2;color:var(--text2);background:var(--bg3);padding:14px;">보낸 사람: park.sj@corelink.com<br>받는 사람: [경찰청 내부]<br>날짜: <span class="clue-hl">2024.11.03 22:47</span><br>─────────────────────<br><span style="color:var(--text);">"오늘 밤 안에 처리해주십시오.<br>증거가 외부로 나가기 전에."</span></div><p style="margin-top:12px;color:var(--accent2);font-size:12px;">경찰 내부에 코어링크테크놀로지스 측 인물이 있었다.</p>`}
 };
 
 let curPuzzle=null;
@@ -1762,7 +1705,7 @@ function loadImgDirect(el, baseName){
    스테이지4 — 가상 DarkFile 웹사이트
 ============================================ */
 const DF_PW   = '0808';  // ✏️ 접속 비밀번호 (핸드폰 메모에서 획득)
-const DF_MAIL = '0419';  // ✏️ 메일 파일 비밀번호
+const DF_MAIL = '1024';  // ✏️ 메일 파일 비밀번호
 
 function dfLogin(){
   const val = document.getElementById('df-pw-input').value.trim();
@@ -1805,7 +1748,7 @@ function dfDecoy(){
 // 계약서 내용
 const DF_FILES = {
   contract:{
-    name:'NX_ADV_CONTRACT_2019.pdf',
+    name:'CL_TGW_CONTRACT_2019.pdf',
     html:`<div style="background:white;border:1px solid #ddd;padding:40px 48px;max-width:580px;margin:0 auto;box-shadow:0 2px 8px rgba(0,0,0,.1);font-family:'Segoe UI',sans-serif;position:relative;">
       <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-25deg);font-size:52px;color:rgba(0,0,0,.04);font-weight:900;white-space:nowrap;pointer-events:none;">CONFIDENTIAL</div>
       <div style="border-bottom:2px solid #111;padding-bottom:12px;margin-bottom:20px;">
@@ -1814,8 +1757,8 @@ const DF_FILES = {
       </div>
       <div style="margin-bottom:16px;">
         <div style="font-size:11px;text-transform:uppercase;letter-spacing:2px;color:#888;margin-bottom:8px;">계약 당사자</div>
-        <div style="font-size:13px;padding:6px 0;border-bottom:1px solid #f5f5f5;display:flex;justify-content:space-between;"><span style="color:#666;">공급자</span><span>㈜넥스코어 (이사 박성진)</span></div>
-        <div style="font-size:13px;padding:6px 0;border-bottom:1px solid #f5f5f5;display:flex;justify-content:space-between;"><span style="color:#666;">수급자</span><span>㈜애드브릿지 (대표 최영민)</span></div>
+        <div style="font-size:13px;padding:6px 0;border-bottom:1px solid #f5f5f5;display:flex;justify-content:space-between;"><span style="color:#666;">공급자</span><span>㈜코어링크테크놀로지스 (이사 박성진)</span></div>
+        <div style="font-size:13px;padding:6px 0;border-bottom:1px solid #f5f5f5;display:flex;justify-content:space-between;"><span style="color:#666;">수급자</span><span>㈜타겟웨이브솔루션즈 (대표 최영민)</span></div>
         <div style="font-size:13px;padding:6px 0;border-bottom:1px solid #f5f5f5;display:flex;justify-content:space-between;"><span style="color:#666;">계약일</span><span>2019년 3월 15일</span></div>
       </div>
       <div style="margin-bottom:16px;">
@@ -1833,18 +1776,18 @@ const DF_FILES = {
         공급자는 사용자 동의 없이 데이터를 제공하며, 이에 따른 법적 책임은 공급자에 귀속된다.
       </div>
       <div style="display:flex;gap:40px;margin-top:24px;">
-        <div style="font-size:12px;color:#666;">공급자 서명<br><div style="font-size:14px;font-weight:600;color:#111;margin-top:4px;">박성진 (이사)</div><div style="font-size:10px;font-family:monospace;color:#aaa;">park.sj@nexcore.com</div></div>
-        <div style="font-size:12px;color:#666;">수급자 서명<br><div style="font-size:14px;font-weight:600;color:#111;margin-top:4px;">최영민 (대표)</div><div style="font-size:10px;font-family:monospace;color:#aaa;">adbridge.co.kr</div></div>
+        <div style="font-size:12px;color:#666;">공급자 서명<br><div style="font-size:14px;font-weight:600;color:#111;margin-top:4px;">박성진 (이사)</div><div style="font-size:10px;font-family:monospace;color:#aaa;">park.sj@corelink.com</div></div>
+        <div style="font-size:12px;color:#666;">수급자 서명<br><div style="font-size:14px;font-weight:600;color:#111;margin-top:4px;">최영민 (대표)</div><div style="font-size:10px;font-family:monospace;color:#aaa;">targetwave.co.kr</div></div>
       </div>
     </div>`
   },
   serverlog:{
     name:'export_log_dump.txt',
-    html:`<div style="background:#1e1e1e;color:#d4d4d4;font-family:monospace;font-size:12px;padding:16px;line-height:1.9;border-radius:2px;">
-      <div style="color:#569cd6;">[2019-04-01 00:03:11]</div> <span style="color:#4ec9b0;">EXPORT_START</span> user=<span style="color:#9cdcfe;">batch_svc</span> dest_ip=<span style="color:#dcdcaa;background:rgba(255,255,0,.08);">211.xxx.xxx.47</span> rows=341,882<br>
-      <span style="color:#569cd6;">[2019-04-01 00:14:52]</span> <span style="color:#4ec9b0;">EXPORT_DONE</span> duration=701s size=2.1GB status=OK<br><br>
-      <span style="color:#569cd6;">[2019-05-01 00:02:44]</span> <span style="color:#4ec9b0;">EXPORT_START</span> user=<span style="color:#9cdcfe;">batch_svc</span> dest_ip=<span style="color:#dcdcaa;background:rgba(255,255,0,.08);">211.xxx.xxx.47</span> rows=398,201<br>
-      <span style="color:#569cd6;">[2019-05-01 00:17:03]</span> <span style="color:#4ec9b0;">EXPORT_DONE</span> duration=844s size=2.4GB status=OK<br><br>
+    html:`<div style="background:#1e1e1e;color:#d4d4d4;font-family:monospace;font-size:12px;padding:16px;line-height:2;border-radius:2px;">
+      <div style="color:#569cd6;">[2019-04-01 00:03:11]</div> <span style="color:#4ec9b0;">EXPORT_START</span> user=<span style="color:#9cdcfe;">batch_svc</span> dest_ip=<span style="color:#dcdcaa;">211.xxx.xxx.47</span> rows=341,882 &nbsp;<span style="color:#ff79c6;font-weight:700;">[A=2^</span><span style="color:#ff79c6;">?</span><span style="color:#ff79c6;font-weight:700;">]</span><br>
+      <span style="color:#569cd6;">[2019-04-01 00:14:52]</span> <span style="color:#4ec9b0;">EXPORT_DONE</span> duration=701s size=2.1GB status=OK &nbsp;<span style="color:#50fa7b;font-weight:700;">session_key_prefix=</span><span style="color:#50fa7b;">10</span><br><br>
+      <span style="color:#569cd6;">[2019-05-01 00:02:44]</span> <span style="color:#4ec9b0;">EXPORT_START</span> user=<span style="color:#9cdcfe;">batch_svc</span> dest_ip=<span style="color:#dcdcaa;">211.xxx.xxx.47</span> rows=398,201 &nbsp;<span style="color:#ffb86c;font-weight:700;">checksum_mod=</span><span style="color:#ffb86c;">2</span><br>
+      <span style="color:#569cd6;">[2019-05-01 00:17:03]</span> <span style="color:#4ec9b0;">EXPORT_DONE</span> duration=844s size=2.4GB status=OK &nbsp;<span style="color:#8be9fd;font-weight:700;">verify_exp=</span><span style="color:#8be9fd;">4</span><br><br>
       <span style="color:#888;">... (중략 — 총 64개월 기록) ...</span><br><br>
       <span style="color:#569cd6;">[2024-10-01 00:03:17]</span> <span style="color:#4ec9b0;">EXPORT_START</span> user=<span style="color:#9cdcfe;">batch_svc</span> dest_ip=<span style="color:#dcdcaa;">211.xxx.xxx.47</span> rows=2,847,203<br>
       <span style="color:#569cd6;">[2024-10-01 00:44:31]</span> <span style="color:#4ec9b0;">EXPORT_DONE</span> duration=2654s size=19.3GB status=OK<br><br>
@@ -1853,7 +1796,10 @@ const DF_FILES = {
       <span style="color:#569cd6;">[2024-10-14 14:55:31]</span> <span style="color:#ce9178;">ALERT_TRIGGERED</span> admin=<span style="color:#9cdcfe;">park.sj</span> notified=true<br><br>
       <span style="color:#569cd6;">[2024-11-03 14:55:01]</span> <span style="color:#ce9178;">FILE_ACCESS</span> user=<span style="color:#9cdcfe;">j.lee</span> file="export_log_dump.txt" action=COPY_EXTERNAL<br>
       <span style="color:#569cd6;">[2024-11-03 23:14:09]</span> <span style="color:#ce9178;">ACCOUNT_FLAGGED</span> user=<span style="color:#9cdcfe;">j.lee</span> reason="unauthorized data access" flagged_by=<span style="color:#9cdcfe;">park.sj</span>
-      <div style="margin-top:12px;color:#666;">Total exported: ~89,000,000 records · Period: 2019-04 ~ 2024-10 · dest_ip: 211.xxx.xxx.47</div>
+      <div style="margin-top:16px;border-top:1px solid #333;padding-top:12px;color:#666;font-size:11px;">
+        Total exported: ~89,000,000 records &nbsp;·&nbsp; Period: 2019-04 ~ 2024-10<br>
+        <span style="color:#444;font-size:10px;">// INTEGRITY CHECK: <span style="color:#ff79c6;">A</span> = <span style="color:#50fa7b;">10</span> × <span style="color:#ffb86c;">2</span> ^ <span style="color:#8be9fd;">4</span> &nbsp;→&nbsp; file_lock_key = A</span>
+      </div>
     </div>`
   }
 };
@@ -1888,8 +1834,8 @@ function dfCheckMailPW(){
 
 function dfMailDone(){
   closeModal && closeModal('modal-clue');
-  advanceStage(5);
-  showToast('📡 위성 추적 시작');
+  showToast('📧 수사 완료');
+  setTimeout(showEnding, 800);
 }
 
 /* ============================================
@@ -1935,11 +1881,49 @@ function phoneOpenMemo(key){
   }
 }
 
-let callTimerInterval = null;
-let callSeconds = 0;
+/* ============================================
+   메일 나가기 — 방으로 이동 + 전화 트리거
+============================================ */
+function mailGoBack(){
+  // 컴퓨터 창 닫고 방 내부로
+  closeWin('win-browser');
+  goToStage(2);
+  // 전화 벨소리 시작
+  setTimeout(()=>{ triggerIncomingCall(); }, 800);
+}
+
+/* ============================================
+   벨소리 / 녹음 재생
+============================================ */
+function startRingtone(){
+  const r = document.getElementById('ringtone');
+  if(r){ try{ r.play().catch(()=>{}); }catch(e){} }
+}
+
+function stopRingtone(){
+  const r = document.getElementById('ringtone');
+  if(r){ r.pause(); r.currentTime=0; }
+}
+
+function playCallRecording(){
+  const rec = document.getElementById('call-recording');
+  if(rec){ try{ rec.currentTime=0; rec.play().catch(()=>{}); }catch(e){} }
+  showToast('🎙 통화 녹음 재생 중...');
+}
+
+function unlockCallReplay(){
+  const btn = document.getElementById('call-replay-btn');
+  if(!btn) return;
+  btn.disabled = false;
+  btn.style.cursor = 'pointer';
+  btn.style.color = 'var(--gold)';
+  btn.style.borderColor = 'var(--gold)';
+  btn.textContent = '🎙 통화 녹음 재생';
+}
 
 function triggerIncomingCall(){
   closeModal('modal-phone');
+  startRingtone();
   setTimeout(()=>{
     showToast('📞 전화가 오고 있습니다...');
     document.getElementById('modal-phone').classList.add('open');
@@ -1947,7 +1931,11 @@ function triggerIncomingCall(){
   }, 1200);
 }
 
+let callTimerInterval = null;
+let callSeconds = 0;
+
 function phoneDeclineCall(){
+  stopRingtone();
   phoneOpenApp('home');
   const notif = document.getElementById('phone-notification');
   notif.style.display='block';
@@ -1955,6 +1943,7 @@ function phoneDeclineCall(){
 }
 
 function phoneAnswerCall(){
+  stopRingtone();
   phoneOpenApp('oncall');
   S.f.callReceived = true;
   callSeconds = 0;
@@ -1978,9 +1967,16 @@ function phoneAnswerCall(){
 
 function phoneEndCall(){
   clearInterval(callTimerInterval);
+  stopRingtone();
   phoneOpenApp('home');
   showToast('📞 통화 종료 — 좌표를 기록하세요');
   S.f.coordReceived = true;
+  unlockCallReplay();
+}
+
+function phoneDeclineCallFull(){
+  stopRingtone();
+  phoneDeclineCall();
 }
 
 /* ============================================
@@ -2004,7 +2000,7 @@ function showDarkfile(){
   df.style.display='flex'; df.style.flexDirection='column';
   document.getElementById('browser-tab-title').textContent='darkfile — Secure Storage';
   const urlEl=document.getElementById('browser-url'); if(urlEl) urlEl.value='darkfile.io/jl1103';
-  if(S.f.potFound && S.stage<4){ advanceStage(4); }
+  // darkfile 접속은 별도 스테이지 없이 컴퓨터에서 진행
   renderDarkfile();
 }
 
@@ -2062,11 +2058,11 @@ const VD_VIEWS = {
     {icon:'📄',name:'resume_2024.pdf',date:'2024.08.20',badge:'normal',click:'vdDecoy()',warn:false},
   ])}`,
   evidence:()=>`<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;"><span onclick="vdNav('files')" style="color:#1a73e8;cursor:pointer;font-size:12px;">← My Files</span><span style="color:#aaa;font-size:12px;">/ _nx_data_leak</span></div><div style="background:#fff8e1;border:1px solid #ffe082;padding:8px 12px;margin-bottom:10px;font-size:11px;color:#8a6d3b;">⚠ Sensitive documents. Access logged.</div>${VD_FILE_ROWS([
-    {icon:'📋',name:'NX_ADV_CONTRACT_2019.pdf',date:'2024.11.03 14:51',badge:'encrypted',click:"vdOpenFile('contract')",warn:false},
+    {icon:'📋',name:'CL_TGW_CONTRACT_2019.pdf',date:'2024.11.03 14:51',badge:'encrypted',click:"vdOpenFile('contract')",warn:false},
     {icon:'📊',name:'export_log_dump.txt',date:'2024.11.03 14:55',badge:'encrypted',click:"vdOpenFile('serverlog')",warn:false},
     {icon:'✉️',name:'internal_mail_1103.eml',date:'2024.11.03 15:01',badge:'locked',click:"vdOpenFile('mail')",warn:false},
   ])}<div style="margin-top:20px;background:#f9f9f9;border:1px dashed #ddd;padding:10px;font-family:monospace;font-size:12px;user-select:text;cursor:text;"><div style="font-size:10px;color:#ccc;margin-bottom:4px;">README</div><span style="color:white;background:white;user-select:text;">file03_pw: 최초 수출 기록 월(두자리) + 연도 끝 두자리</span></div>`,
-  activity:()=>`<div style="font-size:14px;color:#202124;margin-bottom:10px;">Activity</div><div style="font-family:monospace;font-size:11px;color:#555;line-height:2.5;"><div>2024.11.03 15:01 &nbsp;j.lee uploaded internal_mail_1103.eml</div><div>2024.11.03 14:55 &nbsp;j.lee uploaded export_log_dump.txt</div><div>2024.11.03 14:51 &nbsp;j.lee uploaded NX_ADV_CONTRACT_2019.pdf</div><div>2024.11.03 14:48 &nbsp;j.lee created _nx_data_leak</div></div>`
+  activity:()=>`<div style="font-size:14px;color:#202124;margin-bottom:10px;">Activity</div><div style="font-family:monospace;font-size:11px;color:#555;line-height:2.5;"><div>2024.11.03 15:01 &nbsp;j.lee uploaded internal_mail_1103.eml</div><div>2024.11.03 14:55 &nbsp;j.lee uploaded export_log_dump.txt</div><div>2024.11.03 14:51 &nbsp;j.lee uploaded CL_TGW_CONTRACT_2019.pdf</div><div>2024.11.03 14:48 &nbsp;j.lee created _nx_data_leak</div></div>`
 };
 
 function vdNav(name){ const m=document.getElementById('vd-main'); if(m&&VD_VIEWS[name]) m.innerHTML=VD_VIEWS[name](); }
@@ -2078,7 +2074,8 @@ function vdOpenFile(name){
   if(name==='contract'){ addClue('server_log'); main.innerHTML=back+DF_FILES.contract.html; }
   else if(name==='serverlog'){ main.innerHTML=back+DF_FILES.serverlog.html; }
   else if(name==='mail'){
-    main.innerHTML=back+`<div id="vd-mail-locked"><div style="text-align:center;padding:32px;"><div style="font-size:40px;margin-bottom:10px;">🔒</div><div style="font-size:14px;color:#333;margin-bottom:6px;">파일 잠금 해제</div><div style="font-size:11px;color:#888;margin-bottom:18px;font-family:monospace;">internal_mail_1103.eml</div><div style="max-width:240px;margin:0 auto;"><input id="vd-mail-pw" type="text" placeholder="비밀번호" style="width:100%;border:none;border-bottom:2px solid #4f8ef7;background:#f4f4f4;padding:8px;font-family:monospace;font-size:13px;letter-spacing:3px;outline:none;text-align:center;margin-bottom:6px;" onkeydown="if(event.key==='Enter')vdCheckMailPW()"><div id="vd-mail-err" style="color:#da1e28;font-size:11px;min-height:14px;font-family:monospace;margin-bottom:8px;"></div><button onclick="vdCheckMailPW()" style="width:100%;padding:8px;background:#0f62fe;color:white;border:none;font-size:12px;cursor:pointer;font-family:monospace;">Unlock</button></div></div></div><div id="vd-mail-unlocked" style="display:none;"><div style="background:white;border:1px solid #e0e0e0;"><div style="background:#f9f9f9;padding:12px 16px;border-bottom:1px solid #e0e0e0;font-size:12px;color:#555;"><div><span style="color:#999;width:48px;display:inline-block;">From</span>park.sj@nexcore.com</div><div><span style="color:#999;width:48px;display:inline-block;">To</span>[ 수신자 정보 보호됨 ]</div><div style="font-family:monospace;"><span style="color:#999;width:48px;display:inline-block;font-family:sans-serif;">Date</span>2024-11-03 22:47:09</div></div><div style="font-size:15px;font-weight:600;padding:10px 16px;border-bottom:1px solid #e0e0e0;color:#111;">RE: 건 처리 요청</div><div style="padding:16px;font-size:13px;line-height:2;color:#333;"><p>안녕하세요.</p><br><p>오늘 밤 안에 처리해주십시오.<br>증거가 외부로 나가기 전에 조치가 필요합니다.</p><br><p>해당 계정은 이미 플래그 처리했고,<br>물리적 접근도 오늘 중 이루어질 예정입니다.</p><br><p>추후 사건 처리는 기존 협의대로 진행 부탁드립니다.<br>자살로 처리하는 방향으로 정리해 주시면 됩니다.</p><br><div style="display:inline-block;border:2px solid #da1e28;color:#da1e28;font-family:monospace;font-size:12px;font-weight:700;padding:2px 10px;letter-spacing:2px;">URGENT</div></div></div><div style="text-align:right;margin-top:10px;"><button onclick="vdNav('evidence')" style="background:none;border:1px solid #ddd;color:#555;padding:7px 16px;font-size:12px;cursor:pointer;font-family:monospace;margin-right:8px;">← 나가기</button><button onclick="vdMailConfirm()" style="background:#da1e28;color:white;border:none;padding:7px 16px;font-size:12px;cursor:pointer;font-family:monospace;">확인 완료 ✓</button></div>`;
+    main.innerHTML=back+`<div id="vd-mail-locked"><div style="text-align:center;padding:32px;"><div style="font-size:40px;margin-bottom:10px;">🔒</div><div style="font-size:14px;color:#333;margin-bottom:6px;">파일 잠금 해제</div><div style="font-size:11px;color:#888;margin-bottom:18px;font-family:monospace;">internal_mail_1103.eml</div><div style="max-width:240px;margin:0 auto;"><input id="vd-mail-pw" type="text" placeholder="비밀번호" style="width:100%;border:none;border-bottom:2px solid #4f8ef7;background:#f4f4f4;padding:8px;font-family:monospace;font-size:13px;letter-spacing:3px;outline:none;text-align:center;margin-bottom:6px;" onkeydown="if(event.key==='Enter')vdCheckMailPW()"><div id="vd-mail-err" style="color:#da1e28;font-size:11px;min-height:14px;font-family:monospace;margin-bottom:8px;"></div><button onclick="vdCheckMailPW()" style="width:100%;padding:8px;background:#0f62fe;color:white;border:none;font-size:12px;cursor:pointer;font-family:monospace;">Unlock</button></div></div></div><div id="vd-mail-unlocked" style="display:none;"><div style="background:white;border:1px solid #e0e0e0;"><div style="background:#f9f9f9;padding:12px 16px;border-bottom:1px solid #e0e0e0;font-size:12px;color:#555;"><div><span style="color:#999;width:48px;display:inline-block;">From</span>park.sj@corelink-tech.com</div><div><span style="color:#999;width:48px;display:inline-block;">To</span>[ 수신자 정보 보호됨 ]</div><div style="font-family:monospace;"><span style="color:#999;width:48px;display:inline-block;font-family:sans-serif;">Date</span>2024-11-03 22:47:09</div></div><div style="font-size:15px;font-weight:600;padding:10px 16px;border-bottom:1px solid #e0e0e0;color:#111;">RE: 건 처리 요청</div><div style="padding:16px;font-size:13px;line-height:2;color:#333;"><p>안녕하세요.</p><br><p>오늘 밤 안에 처리해주십시오.<br>증거가 외부로 나가기 전에 조치가 필요합니다.</p><br><p>해당 계정은 이미 플래그 처리했고,<br>물리적 접근도 오늘 중 이루어질 예정입니다.</p><br><p>추후 사건 처리는 기존 협의대로 진행 부탁드립니다.<br>자살로 처리하는 방향으로 정리해 주시면 됩니다.</p><br><div style="display:inline-block;border:2px solid #da1e28;color:#da1e28;font-family:monospace;font-size:12px;font-weight:700;padding:2px 10px;letter-spacing:2px;">URGENT</div></div></div><div style="text-align:center;margin-top:10px;padding-bottom:4px;"><button onclick="mailGoBack()" style="background:none;border:1px solid #ddd;color:#555;padding:7px 20px;font-size:12px;cursor:pointer;font-family:monospace;">← 나가기</button></div>`;
+
   }
 }
 
@@ -2166,7 +2163,7 @@ function maplocSearch(){
    복도 끝 문 — 위성 확인 후 진입
 ============================================ */
 function inspectSecretRoom(){
-  if(!S.f.satelliteViewed){
+  if(!S.f.coordReceived){
     showNotice('🔒','진입할 수 없습니다','지금은 이 문을 열 수 없습니다.');
     return;
   }
@@ -2773,19 +2770,19 @@ const SEARCH_RESULTS = {
       {title:'내부고발로 밝혀진 기업 개인정보 유출 사건들',url:'hani.co.kr › economy › it',desc:'내부 직원의 제보로 시작된 수사에서 해당 기업이 약 2000만 건의 사용자 위치 정보를 광고업체에 판매한 사실이 드러났다...',highlight:false}
     ]
   },
-  nexcore:{
-    query:'넥스코어 개인정보',
+  corelink:{
+    query:'코어링크테크놀로지스 개인정보',
     results:[
-      {title:'㈜넥스코어 — 회사 소개',url:'nexcore.co.kr › about',desc:'넥스코어는 2015년 설립된 모바일 플랫폼 기업으로, 월간 활성 사용자 300만 명을 보유한 국내 중견 IT기업입니다.',highlight:false},
-      {title:'넥스코어 개인정보 처리방침',url:'nexcore.co.kr › privacy',desc:'수집 항목: 이름, 이메일, <strong>위치정보</strong>, 검색 기록, 구매 내역. 제3자 제공: 제휴 마케팅사에 한하여 동의 하에 제공 — 단, 통계 목적의 경우 동의 없이 제공 가능.',highlight:true},
-      {title:'넥스코어 앱 위치정보 과도 수집 논란 — IT조선',url:'itchosun.com › 2024 › 09',desc:'넥스코어 앱이 백그라운드에서 지속적으로 위치정보를 수집한다는 사용자 제보가 잇따르고 있다. 회사 측은 "서비스 개선 목적"이라고 해명했으나...',highlight:false}
+      {title:'㈜코어링크테크놀로지스 — 회사 소개',url:'corelink.co.kr › about',desc:'코어링크테크놀로지스는 2015년 설립된 모바일 플랫폼 기업으로, 월간 활성 사용자 300만 명을 보유한 국내 중견 IT기업입니다.',highlight:false},
+      {title:'코어링크테크놀로지스 개인정보 처리방침',url:'corelink.co.kr › privacy',desc:'수집 항목: 이름, 이메일, <strong>위치정보</strong>, 검색 기록, 구매 내역. 제3자 제공: 제휴 마케팅사에 한하여 동의 하에 제공 — 단, 통계 목적의 경우 동의 없이 제공 가능.',highlight:true},
+      {title:'코어링크테크놀로지스 앱 위치정보 과도 수집 논란 — IT조선',url:'itchosun.com › 2024 › 09',desc:'코어링크테크놀로지스 앱이 백그라운드에서 지속적으로 위치정보를 수집한다는 사용자 제보가 잇따르고 있다. 회사 측은 "서비스 개선 목적"이라고 해명했으나...',highlight:false}
     ]
   },
   parkseongiin:{
-    query:'박성진 넥스코어 이사',
+    query:'박성진 코어링크테크놀로지스 이사',
     results:[
-      {title:'박성진 — LinkedIn',url:'linkedin.com › in › park-seongjin',desc:'박성진 · <strong>이사 at ㈜넥스코어</strong> · 데이터사업부 총괄 · 서울대학교 경영학과 · 연결 3촌 이상',highlight:true},
-      {title:'넥스코어 데이터사업부 신설 — 전자신문',url:'etnews.com › 2021 › nexcore-data',desc:'넥스코어가 데이터사업부를 신설하고 박성진 전략기획실장을 이사로 승진 발령했다. 박 이사는 <strong>데이터 수익화 전략</strong>을 담당할 예정이며 외부 제휴사와의 협업을 총괄한다.',highlight:false}
+      {title:'박성진 — LinkedIn',url:'linkedin.com › in › park-seongjin',desc:'박성진 · <strong>이사 at ㈜코어링크테크놀로지스</strong> · 데이터사업부 총괄 · 서울대학교 경영학과 · 연결 3촌 이상',highlight:true},
+      {title:'코어링크테크놀로지스 데이터사업부 신설 — 전자신문',url:'etnews.com › 2021 › corelink-data',desc:'코어링크테크놀로지스가 데이터사업부를 신설하고 박성진 전략기획실장을 이사로 승진 발령했다. 박 이사는 <strong>데이터 수익화 전략</strong>을 담당할 예정이며 외부 제휴사와의 협업을 총괄한다.',highlight:false}
     ]
   },
   sqllog:{
@@ -2805,16 +2802,16 @@ function showSearchResult(key){
   const historyDiv = document.getElementById('browser-history');
   const urlBar = document.getElementById('browser-url');
   const tabTitle = document.getElementById('browser-tab-title');
-  historyDiv.style.display='none';
-  resultDiv.style.display='block';
+  if(historyDiv) historyDiv.style.display='none';
+  if(resultDiv){ resultDiv.style.display='block'; resultDiv.style.flex='1'; }
   if(data.isPage){
-    urlBar.textContent=data.url;
-    tabTitle.textContent=data.query+' - Chrome';
+    if(urlBar) urlBar.value=data.url;
+    if(tabTitle) tabTitle.textContent=data.query+' - Chrome';
     resultDiv.innerHTML=data.content;
     return;
   }
-  urlBar.textContent=`https://google.com/search?q=${data.query}`;
-  tabTitle.textContent=`${data.query} - Google 검색`;
+  if(urlBar) urlBar.value=`https://google.com/search?q=${data.query}`;
+  if(tabTitle) tabTitle.textContent=`${data.query} - Google 검색`;
   resultDiv.innerHTML=`
     <div style="padding:10px 0 8px;border-bottom:1px solid #ebebeb;margin-bottom:10px;display:flex;align-items:center;gap:6px;">
       <span style="font-size:18px;font-weight:700;color:#4285f4;letter-spacing:-1px;">G</span><span style="color:#ea4335;font-size:18px;font-weight:700;">o</span><span style="color:#fbbc05;font-size:18px;font-weight:700;">o</span><span style="color:#4285f4;font-size:18px;font-weight:700;">g</span><span style="color:#34a853;font-size:18px;font-weight:700;">l</span><span style="color:#ea4335;font-size:18px;font-weight:700;">e</span>
@@ -2833,9 +2830,13 @@ function showSearchResult(key){
 }
 
 function browserBack(){
-  document.getElementById('browser-history').style.display='block';
-  document.getElementById('browser-searchresult').style.display='none';
-  document.getElementById('browser-url').textContent='chrome://history';
+  ['browser-searchresult','browser-darkfile','browser-maploc'].forEach(id=>{
+    const el=document.getElementById(id); if(el) el.style.display='none';
+  });
+  const hist=document.getElementById('browser-history');
+  if(hist){ hist.style.display='block'; hist.style.flex='1'; }
+  const urlEl=document.getElementById('browser-url');
+  if(urlEl) urlEl.value='chrome://history';
   document.getElementById('browser-tab-title').textContent='방문 기록 - Chrome';
 }
 
@@ -2911,21 +2912,21 @@ function openMemopad(){
 
 // 스테이지 4
 function openWebpage(){if(S.stage<4){showLocked();return;}if(!S.f.webpageEntered){openPuzzle('webpage_pw');}else{openArchive();}}
-function openArchive(){showInfo('NEXCORE EVIDENCE ARCHIVE',`<div style="font-family:var(--mono);font-size:11px;color:var(--text2);margin-bottom:14px;">마지막 업데이트: 2024.11.03</div>${['contract','serverlog','mail'].map((t,i)=>`<div style="border:1px solid var(--border);margin-bottom:8px;"><div style="padding:13px 15px;cursor:pointer;" onclick="viewPDF('${t}')" onmouseover="this.style.background='var(--bg3)'" onmouseout="this.style.background=''"><span style="font-family:var(--mono);color:${i<2?'var(--gold)':'var(--text2)'};font-size:11px;">📄 FILE 0${i+1}</span><span style="margin-left:10px;font-size:13px;color:${i===2?'var(--text2)':''};">${['거래 계약서.pdf','서버 로그.pdf','내부 메일.pdf '+(S.f.file3Unlocked?'':'🔒')][i]}</span></div></div>`).join('')}<div style="margin-top:14px;padding:11px;background:var(--bg3);font-size:11px;color:var(--text2);font-family:var(--mono);">💡 페이지를 <strong style="color:var(--text);">드래그</strong>해보세요. 숨겨진 내용이 있을 수 있습니다.</div><div style="padding:8px;user-select:text;cursor:text;" onmouseup="checkDrag(this)" ontouchend="checkDrag(this)"><span style="color:var(--bg2);user-select:text;font-family:var(--mono);font-size:11px;">file03_password: 최초 수출 월(두자리) + 연도 끝 두자리 = 04 + 19 = 0419</span></div>`);}
+function openArchive(){showInfo('CORELINK EVIDENCE ARCHIVE',`<div style="font-family:var(--mono);font-size:11px;color:var(--text2);margin-bottom:14px;">마지막 업데이트: 2024.11.03</div>${['contract','serverlog','mail'].map((t,i)=>`<div style="border:1px solid var(--border);margin-bottom:8px;"><div style="padding:13px 15px;cursor:pointer;" onclick="viewPDF('${t}')" onmouseover="this.style.background='var(--bg3)'" onmouseout="this.style.background=''"><span style="font-family:var(--mono);color:${i<2?'var(--gold)':'var(--text2)'};font-size:11px;">📄 FILE 0${i+1}</span><span style="margin-left:10px;font-size:13px;color:${i===2?'var(--text2)':''};">${['거래 계약서.pdf','서버 로그.pdf','내부 메일.pdf '+(S.f.file3Unlocked?'':'🔒')][i]}</span></div></div>`).join('')}<div style="margin-top:14px;padding:11px;background:var(--bg3);font-size:11px;color:var(--text2);font-family:var(--mono);">💡 페이지를 <strong style="color:var(--text);">드래그</strong>해보세요. 숨겨진 내용이 있을 수 있습니다.</div><div style="padding:8px;user-select:text;cursor:text;" onmouseup="checkDrag(this)" ontouchend="checkDrag(this)"><span style="color:var(--bg2);user-select:text;font-family:var(--mono);font-size:11px;">file03_password: 최초 수출 월(두자리) + 연도 끝 두자리 = 04 + 19 = 0419</span></div>`);}
 function checkDrag(el){const sel=window.getSelection?window.getSelection().toString():'';if(sel.length>5)showToast('👁️ 숨겨진 텍스트 발견!');}
 function viewPDF(type){
-  if(type==='contract'){showInfo('거래 계약서.pdf',`<div style="background:white;color:#111;padding:20px;font-size:12px;line-height:2;"><div style="text-align:center;font-size:15px;font-weight:bold;border-bottom:2px solid #111;padding-bottom:10px;margin-bottom:14px;">개인정보 데이터 공급 계약서</div><p><strong>공급자:</strong> ㈜넥스코어 &nbsp;/&nbsp; <strong>수급자:</strong> ㈜애드브릿지</p><p><strong>계약일:</strong> 2019년 3월 15일</p><hr style="border-color:#ddd;margin:10px 0;"><p><strong>공급 항목:</strong> 사용자 위치정보, 검색 키워드, 구매 패턴 데이터</p><p><strong>단가:</strong> 사용자 1인당 ₩340 &nbsp;/&nbsp; <strong>계약:</strong> 자동 갱신</p><hr style="border-color:#ddd;margin:10px 0;"><p><strong>서명:</strong> 박성진 (넥스코어 이사) / 최영민 (애드브릿지 대표)</p></div><button class="btn-ok" style="margin-top:12px;" onclick="closeModal('modal-clue');openArchive();">← 목록으로</button>`);addClue('server_log');}
-  else if(type==='serverlog'){showInfo('서버 로그.pdf',`<div style="font-family:var(--mono);font-size:11px;line-height:2;color:var(--text2);background:var(--bg3);padding:14px;">NEXCORE DATA EXPORT LOG<br>─────────────────────────<br>2024.10.01 &nbsp;exported: 2,847,203 users<br>2024.09.01 &nbsp;exported: 2,791,445 users<br>...<br><span style="color:var(--gold);">2019.04.01 &nbsp;exported: 341,882 users ← 최초</span><br>─────────────────────────<br>총 누적: 약 <strong style="color:var(--accent2);">8,900만 건</strong><br>수신처 IP: <span class="clue-hl">211.XXX.XXX.47</span></div><p style="margin-top:12px;color:var(--text2);font-size:12px;">최초 수출: <span class="clue-hl">2019년 04월</span></p><button class="btn-ok" style="margin-top:12px;" onclick="closeModal('modal-clue');openArchive();">← 목록으로</button>`);}
+  if(type==='contract'){showInfo('거래 계약서.pdf',`<div style="background:white;color:#111;padding:20px;font-size:12px;line-height:2;"><div style="text-align:center;font-size:15px;font-weight:bold;border-bottom:2px solid #111;padding-bottom:10px;margin-bottom:14px;">개인정보 데이터 공급 계약서</div><p><strong>공급자:</strong> ㈜코어링크테크놀로지스 &nbsp;/&nbsp; <strong>수급자:</strong> ㈜타겟웨이브솔루션즈</p><p><strong>계약일:</strong> 2019년 3월 15일</p><hr style="border-color:#ddd;margin:10px 0;"><p><strong>공급 항목:</strong> 사용자 위치정보, 검색 키워드, 구매 패턴 데이터</p><p><strong>단가:</strong> 사용자 1인당 ₩340 &nbsp;/&nbsp; <strong>계약:</strong> 자동 갱신</p><hr style="border-color:#ddd;margin:10px 0;"><p><strong>서명:</strong> 박성진 (코어링크테크놀로지스 이사) / 최영민 (타겟웨이브솔루션즈 대표)</p></div><button class="btn-ok" style="margin-top:12px;" onclick="closeModal('modal-clue');openArchive();">← 목록으로</button>`);addClue('server_log');}
+  else if(type==='serverlog'){showInfo('서버 로그.pdf',`<div style="font-family:var(--mono);font-size:11px;line-height:2;color:var(--text2);background:var(--bg3);padding:14px;">CORELINK DATA EXPORT LOG<br>─────────────────────────<br>2024.10.01 &nbsp;exported: 2,847,203 users<br>2024.09.01 &nbsp;exported: 2,791,445 users<br>...<br><span style="color:var(--gold);">2019.04.01 &nbsp;exported: 341,882 users ← 최초</span><br>─────────────────────────<br>총 누적: 약 <strong style="color:var(--accent2);">8,900만 건</strong><br>수신처 IP: <span class="clue-hl">211.XXX.XXX.47</span></div><p style="margin-top:12px;color:var(--text2);font-size:12px;">최초 수출: <span class="clue-hl">2019년 04월</span></p><button class="btn-ok" style="margin-top:12px;" onclick="closeModal('modal-clue');openArchive();">← 목록으로</button>`);}
   else{if(!S.f.file3Unlocked){showInfo('내부 메일.pdf — 잠김',`<p style="color:var(--text2);margin-bottom:14px;">별도 비밀번호로 잠겨있다.</p><p style="font-size:12px;color:var(--text2);margin-bottom:12px;">힌트: 최초 수출 월(두 자리) + 연도 끝 두 자리<br><em>페이지를 드래그해서 숨겨진 힌트를 찾으세요.</em></p><div class="puzzle-input-wrap"><input class="puzzle-input" id="f3-input" type="text" maxlength="4" placeholder="- - - -" style="font-size:18px;" inputmode="numeric" onkeydown="if(event.key==='Enter')checkFile3()"><button class="btn-submit" onclick="checkFile3()">확인</button></div><div id="f3-fb" class="puzzle-feedback"></div><button class="btn-ok" style="margin-top:12px;" onclick="closeModal('modal-clue');openArchive();">← 목록으로</button>`);}else{showMailContent();}}
 }
 function checkFile3(){const v=document.getElementById('f3-input').value.trim();const fb=document.getElementById('f3-fb');if(v==='0419'){S.f.file3Unlocked=true;showMailContent();}else{fb.textContent='틀렸습니다. 다시 시도해보세요.';fb.className='puzzle-feedback fail';}}
-function showMailContent(){addClue('internal_mail');showInfo('내부 메일.pdf',`<div style="font-family:var(--mono);font-size:12px;line-height:2;background:var(--bg3);padding:14px;">보낸 사람: park.sj@nexcore.com<br>받는 사람: [경찰청 내부]<br>날짜: <span class="clue-hl">2024.11.03 22:47</span><br>─────────────────────<br><span style="color:var(--text);font-family:var(--serif);font-size:14px;line-height:2;">"오늘 밤 안에 처리해주십시오.<br>증거가 외부로 나가기 전에."</span></div><p style="margin-top:12px;color:var(--accent2);font-size:12px;">경찰이 연루됐다. 자살 종결의 이유.</p><button class="btn-ok" style="margin-top:14px;border-color:var(--accent);color:var(--accent2);" onclick="closeModal('modal-clue');advanceStage(5);">📡 위성 추적 시작 →</button>`);}
+function showMailContent(){addClue('internal_mail');showInfo('내부 메일.pdf',`<div style="font-family:var(--mono);font-size:12px;line-height:2;background:var(--bg3);padding:14px;">보낸 사람: park.sj@corelink.com<br>받는 사람: [경찰청 내부]<br>날짜: <span class="clue-hl">2024.11.03 22:47</span><br>─────────────────────<br><span style="color:var(--text);font-family:var(--serif);font-size:14px;line-height:2;">"오늘 밤 안에 처리해주십시오.<br>증거가 외부로 나가기 전에."</span></div><p style="margin-top:12px;color:var(--accent2);font-size:12px;">경찰이 연루됐다. 자살 종결의 이유.</p><button class="btn-ok" style="margin-top:14px;border-color:var(--accent);color:var(--accent2);" onclick="closeModal('modal-clue');advanceStage(5);">📡 위성 추적 시작 →</button>`);}
 
 // 스테이지 5
 function openMap(){if(S.stage<5){showLocked();return;}showInfo('IP 위성 추적 — 211.XXX.XXX.47',`<p style="margin-bottom:14px;font-size:12px;color:var(--text2);">수신처 IP 추적 결과:<br><strong style="color:var(--text);">서울 강남구 테헤란로 인근</strong></p><div style="width:100%;height:260px;border:1px solid var(--border);overflow:hidden;"><iframe width="100%" height="100%" style="border:0;" loading="lazy" allowfullscreen src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3165.4!2d127.0!3d37.5!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMzfCsDMwJzAwLjAiTiAxMjfCsDAwJzAwLjAiRQ!5e1!3m2!1sko!2skr!4v1700000000000!5m2!1sko!2skr" referrerpolicy="no-referrer-when-downgrade"></iframe></div><p style="margin-top:12px;color:var(--text2);font-size:12px;">위성뷰로 전환해 옥상을 자세히 살펴보세요.</p><button class="btn-ok" style="margin-top:14px;border-color:var(--gold);color:var(--gold);" onclick="closeModal('modal-clue');showEnding();">📋 수사 완료 — 전말 확인 →</button>`);}
 
 // 엔딩
-function showEnding(){showScreen('screen-ending');const events=[{d:'2019. 03',t:'넥스코어-애드브릿지, 불법 사용자 데이터 거래 시작. 계약 당사자: 박성진 이사.'},{d:'2024. 09',t:'이준혁, 서버 유지보수 중 우연히 데이터 수출 로그를 발견한다.'},{d:'2024. 10',t:'증거 파일을 3곳에 분산 은닉. 동료 김서연에게만 알린다.'},{d:'2024. 10. 27',t:'김서연, 이준혁에게 첫 메시지 전송. "고마워. 네가 옳았어."'},{d:'2024. 11. 03',t:'이준혁, 내부고발 사이트 접속. 이 순간 넥스코어 측에 발각된다.'},{d:'2024. 11. 03 &nbsp;22:47',t:'박성진 이사, 경찰청 내부 연락. "오늘 밤 안에 처리해달라."'},{d:'2024. 11. 03 &nbsp;23:14',t:'CCTV 마지막 장면. 이준혁이 귀가한다. 이후 영상 없음.'},{d:'2024. 11. 04',t:'경찰, 현장 감식 없이 자살로 신속 종결.'},{d:'2024. 11. 10',t:'김서연, 당신에게 익명으로 제보한다. 그녀 역시 쫓기고 있다.'}];const tl=document.getElementById('timeline');tl.innerHTML=events.map((e,i)=>`<div class="tl-item" style="transition-delay:${i*.15}s"><div class="tl-date">${e.d}</div><div class="tl-text">${e.t}</div></div>`).join('');setTimeout(()=>{document.querySelectorAll('.tl-item').forEach(el=>el.classList.add('vis'));setTimeout(()=>document.getElementById('ending-msg').classList.add('vis'),events.length*150+500);},300);}
+function showEnding(){showScreen('screen-ending');const events=[{d:'2019. 03',t:'코어링크테크놀로지스-타겟웨이브솔루션즈, 불법 사용자 데이터 거래 시작. 계약 당사자: 박성진 이사.'},{d:'2024. 09',t:'이준혁, 서버 유지보수 중 우연히 데이터 수출 로그를 발견한다.'},{d:'2024. 10',t:'증거 파일을 3곳에 분산 은닉. 동료 김서연에게만 알린다.'},{d:'2024. 10. 27',t:'김서연, 이준혁에게 첫 메시지 전송. "고마워. 네가 옳았어."'},{d:'2024. 11. 03',t:'이준혁, 내부고발 사이트 접속. 이 순간 코어링크테크놀로지스 측에 발각된다.'},{d:'2024. 11. 03 &nbsp;22:47',t:'박성진 이사, 경찰청 내부 연락. "오늘 밤 안에 처리해달라."'},{d:'2024. 11. 03 &nbsp;23:14',t:'CCTV 마지막 장면. 이준혁이 귀가한다. 이후 영상 없음.'},{d:'2024. 11. 04',t:'경찰, 현장 감식 없이 자살로 신속 종결.'},{d:'2024. 11. 10',t:'김서연, 당신에게 익명으로 제보한다. 그녀 역시 쫓기고 있다.'}];const tl=document.getElementById('timeline');tl.innerHTML=events.map((e,i)=>`<div class="tl-item" style="transition-delay:${i*.15}s"><div class="tl-date">${e.d}</div><div class="tl-text">${e.t}</div></div>`).join('');setTimeout(()=>{document.querySelectorAll('.tl-item').forEach(el=>el.classList.add('vis'));setTimeout(()=>document.getElementById('ending-msg').classList.add('vis'),events.length*150+500);},300);}
 
 // 유틸
 /* ============================================
@@ -2937,10 +2938,7 @@ const STAGE_INTRO = {
      desc:'도어락이 열렸다.\n삐걱거리는 소리와 함께 문이 열린다.\n안으로 들어왔다. 형광등이 깜빡이고,\n창문은 열려있다.'},
   3:{num:'STAGE 03',title:'피해자의 책상',
      desc:'방 안쪽 책상으로 이동했다.\n노트북이 잠금화면 상태로 켜져있다.\n그가 마지막으로 무엇을 보려 했는지\n알아낼 수 있을 것 같다.'},
-  4:{num:'STAGE 04',title:'숨겨진 웹페이지',
-     desc:'URL을 복원했다.\nUSB를 연결하고 브라우저를 열었다.\n이준혁이 숨겨둔 무언가가\n이 페이지 안에 있다.'},
-  5:{num:'STAGE 05',title:'위성 추적',
-     desc:'내부 메일의 수신처 IP를 추적했다.\n서버의 실제 위치가 특정됐다.\n마지막 단서가 저기 있다.'}
+
 };
 
 // 복귀 팝업 문구
@@ -2951,10 +2949,7 @@ const STAGE_RETURN = {
      desc:'다시 1103호 안이다.\n형광등이 여전히 깜빡이고 있다.\n미처 확인하지 못한 것이 있을 수 있다.'},
   3:{num:'STAGE 03',title:'책상으로 돌아왔다',
      desc:'다시 피해자의 책상 앞이다.\n컴퓨터 화면이 그대로 켜져있다.'},
-  4:{num:'STAGE 04',title:'웹페이지로 돌아왔다',
-     desc:'다시 숨겨진 페이지다.\n아직 확인하지 못한 파일이 있을 수 있다.'},
-  5:{num:'STAGE 05',title:'위성 추적 화면으로 돌아왔다',
-     desc:'IP 추적 화면으로 돌아왔다.'}
+
 };
 
 function showStagePopup(n, isReturn=false){
@@ -3007,8 +3002,8 @@ function advanceStage(n){
   if(n>=2) setTimeout(()=>showStagePopup(n, false), 300);
 }
 function updateUI(){
-  document.getElementById('stage-ind').textContent=`STAGE ${S.stage} / 5`;
-  [1,2,3,4,5].forEach(i=>{
+  document.getElementById('stage-ind').textContent=`STAGE ${S.stage} / 3`;
+  [1,2,3].forEach(i=>{
     const dot=document.getElementById(`dot-${i}`);
     const sn=document.getElementById(`sn-${i}`);
     const ss=document.getElementById(`ss-${i}`);
