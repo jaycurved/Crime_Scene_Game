@@ -59,13 +59,21 @@ html,body{background:var(--bg);color:var(--text);font-family:var(--sans);height:
 .hs-rect{fill:transparent;stroke:transparent;stroke-width:3;cursor:pointer;transition:fill .2s,stroke .2s;rx:4;}
 .hs-group:hover .hs-rect,.hs-group:focus .hs-rect{fill:rgba(201,168,76,.13);stroke:var(--gold);}
 
-.hs-label-fo{pointer-events:none;transition:opacity .2s;}
-.hs-label-box{
-  font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--gold);
-  background:rgba(10,10,10,.92);border:1px solid var(--gold);
-  padding:3px 9px;white-space:nowrap;letter-spacing:1px;border-radius:2px;
-  display:inline-block;
+/* 라벨: SVG text — foreignObject 대신 사용, 모든 브라우저에서 정확히 표시됨 */
+.hs-lbl-bg{opacity:0;transition:opacity .2s;pointer-events:none;}
+.hs-lbl-txt{
+  font-family:'Share Tech Mono',monospace;
+  font-size:20px;
+  fill:#c9a84c;
+  opacity:0;
+  transition:opacity .2s;
+  pointer-events:none;
+  dominant-baseline:hanging;
 }
+.hs-group:hover .hs-lbl-bg,
+.hs-group:focus .hs-lbl-bg{ opacity:1; }
+.hs-group:hover .hs-lbl-txt,
+.hs-group:focus .hs-lbl-txt{ opacity:1; }
 
 .scene-footer{position:absolute;bottom:0;left:0;right:0;padding:10px 16px;background:linear-gradient(transparent,rgba(0,0,0,.85));pointer-events:none;}
 .scene-location{font-family:var(--mono);font-size:10px;color:var(--text2);letter-spacing:2px;}
@@ -216,33 +224,29 @@ html,body{background:var(--bg);color:var(--text);font-family:var(--sans);height:
           <!-- CCTV (왼쪽 상단 TV) -->
           <g class="hs-group" onclick="inspectCCTV()" tabindex="0" role="button">
             <rect class="hs-rect" x="238" y="10" width="148" height="190"/>
-            <foreignObject class="hs-label-fo" x="10" y="255" width="180" height="30" style="opacity:0">
-              <div xmlns="http://www.w3.org/1999/xhtml" class="hs-label-box">📷 복도 CCTV</div>
-            </foreignObject>
+            <rect class="hs-lbl-bg" x="238" y="10" width="148" height="28" fill="rgba(10,10,10,.88)"/>
+            <text class="hs-lbl-txt" x="246" y="14">CCTV</text>
           </g>
 
           <!-- 현관문 -->
           <g class="hs-group" onclick="openDoorLock()" tabindex="0" role="button">
             <rect class="hs-rect" x="391" y="150" width="150" height="700"/>
-            <foreignObject class="hs-label-fo" x="215" y="25" width="200" height="30" style="opacity:0">
-              <div xmlns="http://www.w3.org/1999/xhtml" class="hs-label-box">🚪 현관문 — 도어락</div>
-            </foreignObject>
+            <rect class="hs-lbl-bg" x="391" y="150" width="150" height="28" fill="rgba(10,10,10,.88)"/>
+            <text class="hs-lbl-txt" x="399" y="154">현관문</text>
           </g>
 
           <!-- 화분 -->
           <g class="hs-group" onclick="inspectPot()" tabindex="0" role="button">
             <rect class="hs-rect" x="920" y="460" width="80" height="180"/>
-            <foreignObject class="hs-label-fo" x="730" y="430" width="120" height="30" style="opacity:0">
-              <div xmlns="http://www.w3.org/1999/xhtml" class="hs-label-box">🪴 화분</div>
-            </foreignObject>
+            <rect class="hs-lbl-bg" x="920" y="460" width="80" height="28" fill="rgba(10,10,10,.88)"/>
+            <text class="hs-lbl-txt" x="928" y="464">화분</text>
           </g>
 
           <!-- 우편함 -->
           <g class="hs-group" onclick="inspectMailbox()" tabindex="0" role="button">
             <rect class="hs-rect" x="1150" y="260" width="360" height="280"/>
-            <foreignObject class="hs-label-fo" x="960" y="140" width="140" height="30" style="opacity:0">
-              <div xmlns="http://www.w3.org/1999/xhtml" class="hs-label-box">📬 우편함</div>
-            </foreignObject>
+            <rect class="hs-lbl-bg" x="1150" y="260" width="148" height="28" fill="rgba(10,10,10,.88)"/>
+            <text class="hs-lbl-txt" x="1158" y="264">우편함</text>
           </g>
 
         </svg>
@@ -260,27 +264,23 @@ html,body{background:var(--bg);color:var(--text);font-family:var(--sans);height:
         <svg class="hotspot-svg" viewBox="0 0 1600 900">
           <g class="hs-group" onclick="inspectWindow()" tabindex="0" role="button">
             <rect class="hs-rect" x="950" y="40" width="390" height="400"/>
-            <foreignObject class="hs-label-fo" x="950" y="10" width="120" height="30" style="opacity:0">
-              <div xmlns="http://www.w3.org/1999/xhtml" class="hs-label-box">🪟 창문</div>
-            </foreignObject>
+            <rect class="hs-lbl-bg" x="950" y="40" width="100" height="28" fill="rgba(10,10,10,.88)"/>
+            <text class="hs-lbl-txt" x="958" y="44">창문</text>
           </g>
           <g class="hs-group" onclick="inspectFridge()" tabindex="0" role="button">
             <rect class="hs-rect" x="30" y="70" width="250" height="340"/>
-            <foreignObject class="hs-label-fo" x="30" y="40" width="200" height="30" style="opacity:0">
-              <div xmlns="http://www.w3.org/1999/xhtml" class="hs-label-box">❄️ 냉장고 위 메모</div>
-            </foreignObject>
+            <rect class="hs-lbl-bg" x="30" y="70" width="190" height="28" fill="rgba(10,10,10,.88)"/>
+            <text class="hs-lbl-txt" x="38" y="74">냉장고 위 메모</text>
           </g>
           <g class="hs-group" onclick="inspectPainting()" tabindex="0" role="button">
             <rect class="hs-rect" x="440" y="50" width="360" height="380"/>
-            <foreignObject class="hs-label-fo" x="440" y="20" width="140" height="30" style="opacity:0">
-              <div xmlns="http://www.w3.org/1999/xhtml" class="hs-label-box">🖼️ 벽의 액자</div>
-            </foreignObject>
+            <rect class="hs-lbl-bg" x="440" y="50" width="120" height="28" fill="rgba(10,10,10,.88)"/>
+            <text class="hs-lbl-txt" x="448" y="54">벽의 액자</text>
           </g>
           <g class="hs-group" onclick="inspectMirror()" tabindex="0" role="button">
             <rect class="hs-rect" x="1350" y="180" width="220" height="500"/>
-            <foreignObject class="hs-label-fo" x="1350" y="150" width="120" height="30" style="opacity:0">
-              <div xmlns="http://www.w3.org/1999/xhtml" class="hs-label-box">🚿 욕실</div>
-            </foreignObject>
+            <rect class="hs-lbl-bg" x="1350" y="180" width="80" height="28" fill="rgba(10,10,10,.88)"/>
+            <text class="hs-lbl-txt" x="1358" y="184">욕실</text>
           </g>
         </svg>
         <div class="scene-footer">
@@ -296,15 +296,13 @@ html,body{background:var(--bg);color:var(--text);font-family:var(--sans);height:
         <svg class="hotspot-svg" viewBox="0 0 1600 900">
           <g class="hs-group" onclick="openComputer()" tabindex="0" role="button">
             <rect class="hs-rect" x="380" y="140" width="830" height="570"/>
-            <foreignObject class="hs-label-fo" x="380" y="110" width="240" height="30" style="opacity:0">
-              <div xmlns="http://www.w3.org/1999/xhtml" class="hs-label-box">💻 노트북 — 잠금화면</div>
-            </foreignObject>
+            <rect class="hs-lbl-bg" x="380" y="140" width="210" height="28" fill="rgba(10,10,10,.88)"/>
+            <text class="hs-lbl-txt" x="388" y="144">노트북 — 잠금화면</text>
           </g>
           <g class="hs-group" onclick="inspectUniform()" tabindex="0" role="button">
             <rect class="hs-rect" x="1240" y="50" width="320" height="440"/>
-            <foreignObject class="hs-label-fo" x="1240" y="20" width="180" height="30" style="opacity:0">
-              <div xmlns="http://www.w3.org/1999/xhtml" class="hs-label-box">⚾ 야구 유니폼</div>
-            </foreignObject>
+            <rect class="hs-lbl-bg" x="1240" y="50" width="160" height="28" fill="rgba(10,10,10,.88)"/>
+            <text class="hs-lbl-txt" x="1248" y="54">야구 유니폼</text>
           </g>
         </svg>
         <div class="scene-footer">
@@ -442,14 +440,8 @@ const PUZZLES={
   webpage_pw:{title:'darkfile-1103 — 비밀번호',desc:`페이지가 비밀번호를 요구한다.<br><br>USB 파일의 힌트:<br><em style="color:var(--text2);">"비밀번호: 서연이 나한테 처음 보낸 날짜"</em><br><br>우편함 편지 봉투 소인:<br><span class="clue-hl">2024.10.27</span><br><br>날짜만 입력하세요 (4자리)`,answer:'1027',onSuccess(){S.f.webpageEntered=true;showToast('🔓 아카이브 접속 성공');closeModal('modal-puzzle');openArchive();}}
 };
 
-// SVG 핫스팟 hover/touch 라벨
+// SVG 핫스팟 키보드 접근성
 document.querySelectorAll('.hs-group').forEach(g=>{
-  const fo=g.querySelector('.hs-label-fo');
-  if(!fo)return;
-  g.addEventListener('mouseenter',()=>fo.style.opacity='1');
-  g.addEventListener('mouseleave',()=>fo.style.opacity='0');
-  g.addEventListener('touchstart',()=>fo.style.opacity='1',{passive:true});
-  g.addEventListener('touchend',()=>setTimeout(()=>fo.style.opacity='0',700),{passive:true});
   g.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' ')g.click();});
 });
 
