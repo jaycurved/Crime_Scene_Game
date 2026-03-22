@@ -1,0 +1,2061 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>접속 기록 — CASE 01</title>
+<style>
+  /* ============================================
+     🎨 전체 테마 변수
+     색상, 폰트 등 전체 디자인 설정
+  ============================================ */
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600;700&family=Share+Tech+Mono&family=Noto+Sans+KR:wght@300;400;500&display=swap');
+
+  :root {
+    --bg:        #0a0a0a;
+    --bg2:       #111111;
+    --bg3:       #1a1a1a;
+    --border:    #2a2a2a;
+    --border2:   #3a3a3a;
+    --text:      #d4cfc8;
+    --text2:     #7a7570;
+    --accent:    #c0392b;
+    --accent2:   #e74c3c;
+    --gold:      #c9a84c;
+    --mono:      'Share Tech Mono', monospace;
+    --serif:     'Noto Serif KR', serif;
+    --sans:      'Noto Sans KR', sans-serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* 스크린 전환 */
+  .screen { display: none; min-height: 100vh; }
+  .screen.active { display: flex; flex-direction: column; }
+
+  /* ============================================
+     🎬 인트로 화면
+  ============================================ */
+  #screen-intro {
+    align-items: center;
+    justify-content: center;
+    background: var(--bg);
+    position: relative;
+    overflow: hidden;
+  }
+
+  #screen-intro::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255,255,255,0.01) 2px, rgba(255,255,255,0.01) 4px);
+    pointer-events: none;
+  }
+
+  .intro-content {
+    text-align: center;
+    z-index: 1;
+    padding: 40px;
+    max-width: 600px;
+  }
+
+  .case-badge {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 4px;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 24px;
+    opacity: 0;
+    animation: fadeUp 0.8s ease forwards 0.3s;
+  }
+
+  .intro-title {
+    font-family: var(--serif);
+    font-size: clamp(36px, 6vw, 64px);
+    font-weight: 700;
+    line-height: 1.1;
+    margin-bottom: 16px;
+    opacity: 0;
+    animation: fadeUp 0.8s ease forwards 0.6s;
+  }
+
+  .intro-title span {
+    display: block;
+    font-size: 0.45em;
+    font-family: var(--mono);
+    color: var(--text2);
+    letter-spacing: 2px;
+    margin-bottom: 8px;
+  }
+
+  .intro-divider {
+    width: 60px;
+    height: 1px;
+    background: var(--accent);
+    margin: 24px auto;
+    opacity: 0;
+    animation: fadeUp 0.8s ease forwards 0.9s;
+  }
+
+  .intro-message {
+    background: var(--bg3);
+    border: 1px solid var(--border2);
+    border-left: 3px solid var(--accent);
+    padding: 20px 24px;
+    text-align: left;
+    margin-bottom: 32px;
+    opacity: 0;
+    animation: fadeUp 0.8s ease forwards 1.2s;
+  }
+
+  .intro-message .sender {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text2);
+    margin-bottom: 10px;
+    letter-spacing: 1px;
+  }
+
+  .intro-message .sender strong {
+    color: var(--gold);
+  }
+
+  .intro-message p {
+    font-size: 14px;
+    line-height: 1.8;
+    color: var(--text);
+  }
+
+  .intro-message p em {
+    color: var(--accent2);
+    font-style: normal;
+  }
+
+  .btn-start {
+    background: var(--accent);
+    color: white;
+    border: none;
+    padding: 14px 48px;
+    font-family: var(--mono);
+    font-size: 13px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.2s;
+    opacity: 0;
+    animation: fadeUp 0.8s ease forwards 1.5s;
+  }
+
+  .btn-start:hover {
+    background: var(--accent2);
+    transform: translateY(-2px);
+  }
+
+  /* ============================================
+     🎮 게임 레이아웃
+  ============================================ */
+  #screen-game {
+    flex-direction: row;
+    min-height: 100vh;
+  }
+
+  /* 왼쪽: 현장 뷰 */
+  .game-scene {
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+    background: #050505;
+  }
+
+  /* ============================================
+     🖼️ 씬 이미지 영역
+     이미지 교체 방법:
+     각 스테이지 div의 background-image URL을 바꾸거나
+     <img> 태그의 src를 교체하면 됩니다.
+  ============================================ */
+  .scene-image {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    display: none;
+  }
+
+  .scene-image.active { display: block; }
+
+  .scene-bg {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+  }
+
+  /* 씬 배경 이미지 */
+  .scene-bg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+  }
+
+  /* 이미지가 없을 때 플레이스홀더 */
+  .scene-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 16px;
+    background: var(--bg2);
+    border: 2px dashed var(--border2);
+  }
+
+  .scene-placeholder .ph-icon {
+    font-size: 48px;
+    opacity: 0.3;
+  }
+
+  .scene-placeholder .ph-text {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--text2);
+    letter-spacing: 2px;
+    text-align: center;
+  }
+
+  /* 핫스팟: 클릭 가능한 영역 */
+  .hotspot {
+    position: absolute;
+    cursor: pointer;
+    border: 2px solid transparent;
+    border-radius: 4px;
+    transition: all 0.2s;
+  }
+
+  .hotspot:hover {
+    border-color: var(--gold);
+    background: rgba(201, 168, 76, 0.1);
+  }
+
+  .hotspot:hover .hotspot-label {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .hotspot-label {
+    position: absolute;
+    bottom: calc(100% + 8px);
+    left: 50%;
+    transform: translateX(-50%) translateY(4px);
+    background: var(--bg);
+    border: 1px solid var(--gold);
+    color: var(--gold);
+    font-family: var(--mono);
+    font-size: 11px;
+    padding: 4px 10px;
+    white-space: nowrap;
+    opacity: 0;
+    transition: all 0.2s;
+    pointer-events: none;
+    letter-spacing: 1px;
+  }
+
+  /* 잠긴 핫스팟 */
+  .hotspot.locked {
+    cursor: not-allowed;
+  }
+
+  .hotspot.locked:hover {
+    border-color: var(--text2);
+    background: rgba(122, 117, 112, 0.1);
+  }
+
+  .hotspot.locked:hover .hotspot-label {
+    color: var(--text2);
+    border-color: var(--text2);
+  }
+
+  /* 씬 하단 정보 */
+  .scene-footer {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 16px 24px;
+    background: linear-gradient(transparent, rgba(0,0,0,0.9));
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+  }
+
+  .scene-location {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text2);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+
+  .scene-location strong {
+    display: block;
+    font-size: 16px;
+    color: var(--text);
+    font-family: var(--serif);
+    letter-spacing: 0;
+    margin-bottom: 4px;
+  }
+
+  /* 오른쪽: 패널 */
+  .game-panel {
+    width: 360px;
+    background: var(--bg2);
+    border-left: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  /* 패널 헤더 */
+  .panel-header {
+    padding: 20px 24px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .panel-header .case-id {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--accent);
+    letter-spacing: 3px;
+  }
+
+  .panel-header .stage-indicator {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text2);
+    letter-spacing: 1px;
+  }
+
+  /* 탭 */
+  .panel-tabs {
+    display: flex;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .panel-tab {
+    flex: 1;
+    padding: 12px;
+    background: none;
+    border: none;
+    color: var(--text2);
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: all 0.2s;
+    border-bottom: 2px solid transparent;
+    text-transform: uppercase;
+  }
+
+  .panel-tab.active {
+    color: var(--gold);
+    border-bottom-color: var(--gold);
+  }
+
+  /* 탭 내용 */
+  .panel-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px;
+  }
+
+  .panel-content::-webkit-scrollbar { width: 4px; }
+  .panel-content::-webkit-scrollbar-track { background: transparent; }
+  .panel-content::-webkit-scrollbar-thumb { background: var(--border2); }
+
+  .tab-pane { display: none; }
+  .tab-pane.active { display: block; }
+
+  /* 현황 탭 */
+  .stage-list { list-style: none; }
+
+  .stage-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .stage-item:last-child { border-bottom: none; }
+
+  .stage-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    border: 2px solid var(--border2);
+    margin-top: 5px;
+    flex-shrink: 0;
+    transition: all 0.3s;
+  }
+
+  .stage-dot.done { background: var(--gold); border-color: var(--gold); }
+  .stage-dot.current { background: var(--accent); border-color: var(--accent); box-shadow: 0 0 8px var(--accent); }
+
+  .stage-info { flex: 1; }
+
+  .stage-name {
+    font-size: 13px;
+    color: var(--text);
+    margin-bottom: 3px;
+  }
+
+  .stage-name.locked-text { color: var(--text2); }
+
+  .stage-sub {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text2);
+    letter-spacing: 1px;
+  }
+
+  /* 단서 탭 */
+  .clue-empty {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--text2);
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 1px;
+  }
+
+  .clue-item {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    padding: 14px 16px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .clue-item:hover { border-color: var(--gold); }
+
+  .clue-item-title {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--gold);
+    letter-spacing: 1px;
+    margin-bottom: 6px;
+    text-transform: uppercase;
+  }
+
+  .clue-item-desc {
+    font-size: 12px;
+    color: var(--text2);
+    line-height: 1.6;
+  }
+
+  .clue-new-badge {
+    display: inline-block;
+    background: var(--accent);
+    color: white;
+    font-family: var(--mono);
+    font-size: 9px;
+    padding: 2px 6px;
+    letter-spacing: 1px;
+    margin-left: 8px;
+    vertical-align: middle;
+  }
+
+  /* ============================================
+     🔒 모달: 퍼즐 / 단서 상세 / 알림
+  ============================================ */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.85);
+    z-index: 100;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    backdrop-filter: blur(4px);
+  }
+
+  .modal-overlay.open { display: flex; }
+
+  .modal-box {
+    background: var(--bg2);
+    border: 1px solid var(--border2);
+    max-width: 500px;
+    width: 100%;
+    max-height: 80vh;
+    overflow-y: auto;
+    position: relative;
+    animation: modalIn 0.25s ease;
+  }
+
+  @keyframes modalIn {
+    from { opacity: 0; transform: scale(0.96) translateY(8px); }
+    to   { opacity: 1; transform: scale(1) translateY(0); }
+  }
+
+  .modal-header {
+    padding: 20px 24px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .modal-title {
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 2px;
+    color: var(--gold);
+    text-transform: uppercase;
+  }
+
+  .modal-close {
+    background: none;
+    border: none;
+    color: var(--text2);
+    font-size: 20px;
+    cursor: pointer;
+    line-height: 1;
+    padding: 4px;
+    transition: color 0.2s;
+  }
+
+  .modal-close:hover { color: var(--text); }
+
+  .modal-body { padding: 24px; }
+
+  /* 퍼즐 모달 */
+  .puzzle-desc {
+    font-size: 13px;
+    line-height: 1.9;
+    color: var(--text);
+    margin-bottom: 20px;
+    padding: 16px;
+    background: var(--bg3);
+    border-left: 3px solid var(--accent);
+  }
+
+  .puzzle-image {
+    width: 100%;
+    margin-bottom: 20px;
+    border: 1px solid var(--border);
+  }
+
+  .puzzle-input-wrap {
+    display: flex;
+    gap: 8px;
+    margin-top: 16px;
+  }
+
+  .puzzle-input {
+    flex: 1;
+    background: var(--bg3);
+    border: 1px solid var(--border2);
+    color: var(--text);
+    font-family: var(--mono);
+    font-size: 20px;
+    padding: 12px 16px;
+    letter-spacing: 6px;
+    text-align: center;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .puzzle-input:focus { border-color: var(--gold); }
+  .puzzle-input.error { border-color: var(--accent); animation: shake 0.3s ease; }
+  .puzzle-input.success { border-color: #27ae60; }
+
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-6px); }
+    75% { transform: translateX(6px); }
+  }
+
+  .btn-submit {
+    background: var(--accent);
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 2px;
+    cursor: pointer;
+    transition: background 0.2s;
+    text-transform: uppercase;
+  }
+
+  .btn-submit:hover { background: var(--accent2); }
+
+  .puzzle-feedback {
+    margin-top: 12px;
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 1px;
+    min-height: 20px;
+    text-align: center;
+  }
+
+  .puzzle-feedback.ok { color: #27ae60; }
+  .puzzle-feedback.fail { color: var(--accent2); }
+
+  /* 단서 상세 모달 */
+  .clue-detail-image {
+    width: 100%;
+    margin-bottom: 16px;
+    border: 1px solid var(--border);
+  }
+
+  .clue-detail-text {
+    font-size: 13px;
+    line-height: 1.9;
+    color: var(--text);
+  }
+
+  .clue-detail-highlight {
+    display: inline-block;
+    background: rgba(201, 168, 76, 0.15);
+    border: 1px solid var(--gold);
+    color: var(--gold);
+    font-family: var(--mono);
+    padding: 2px 8px;
+    font-size: 12px;
+    margin: 4px 2px;
+  }
+
+  /* 알림 모달 (잠김 등) */
+  .notice-icon {
+    text-align: center;
+    font-size: 36px;
+    margin-bottom: 16px;
+  }
+
+  .notice-text {
+    text-align: center;
+    font-size: 13px;
+    line-height: 1.9;
+    color: var(--text2);
+  }
+
+  .notice-text strong { color: var(--text); display: block; margin-bottom: 8px; font-size: 15px; }
+
+  .btn-ok {
+    display: block;
+    width: 100%;
+    margin-top: 20px;
+    padding: 12px;
+    background: none;
+    border: 1px solid var(--border2);
+    color: var(--text2);
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 2px;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-transform: uppercase;
+  }
+
+  .btn-ok:hover { border-color: var(--text); color: var(--text); }
+
+  /* 이미지 확대 모달 */
+  .zoom-image-wrap {
+    position: relative;
+  }
+
+  .zoom-image {
+    width: 100%;
+    display: block;
+  }
+
+  /* ============================================
+     🏁 엔딩 화면
+  ============================================ */
+  #screen-ending {
+    align-items: center;
+    justify-content: center;
+    background: var(--bg);
+    padding: 60px 20px;
+  }
+
+  .ending-content {
+    max-width: 680px;
+    width: 100%;
+  }
+
+  .ending-badge {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 4px;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 16px;
+    text-align: center;
+  }
+
+  .ending-title {
+    font-family: var(--serif);
+    font-size: 36px;
+    text-align: center;
+    margin-bottom: 40px;
+  }
+
+  .timeline {
+    position: relative;
+    padding-left: 24px;
+  }
+
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 6px;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: var(--border2);
+  }
+
+  .timeline-item {
+    position: relative;
+    padding-bottom: 28px;
+    opacity: 0;
+    transform: translateX(-10px);
+    transition: all 0.5s ease;
+  }
+
+  .timeline-item.visible {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  .timeline-item::before {
+    content: '';
+    position: absolute;
+    left: -21px;
+    top: 6px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--accent);
+    border: 2px solid var(--bg);
+  }
+
+  .timeline-date {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--accent);
+    letter-spacing: 2px;
+    margin-bottom: 6px;
+  }
+
+  .timeline-text {
+    font-size: 14px;
+    line-height: 1.7;
+    color: var(--text);
+  }
+
+  .ending-message {
+    margin-top: 48px;
+    padding: 28px;
+    border: 1px solid var(--border2);
+    border-left: 3px solid var(--gold);
+    text-align: center;
+    font-family: var(--serif);
+    font-size: 15px;
+    line-height: 1.9;
+    color: var(--text2);
+    opacity: 0;
+    transition: opacity 1s ease 2s;
+  }
+
+  .ending-message.visible { opacity: 1; }
+
+  /* ============================================
+     ✨ 유틸리티 애니메이션
+  ============================================ */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* 단서 획득 토스트 */
+  .toast {
+    position: fixed;
+    bottom: 32px;
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: var(--bg2);
+    border: 1px solid var(--gold);
+    color: var(--gold);
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 2px;
+    padding: 12px 24px;
+    z-index: 200;
+    opacity: 0;
+    transition: all 0.3s;
+    pointer-events: none;
+    white-space: nowrap;
+  }
+
+  .toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  /* 반응형 */
+  @media (max-width: 768px) {
+    #screen-game { flex-direction: column; }
+    .game-panel { width: 100%; height: 50vh; border-left: none; border-top: 1px solid var(--border); }
+    .game-scene { height: 50vh; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ============================================
+     🎬 인트로 화면
+============================================ -->
+<div id="screen-intro" class="screen active">
+  <div class="intro-content">
+    <div class="case-badge">CASE 01 — 2024.11</div>
+    <h1 class="intro-title">
+      <span>미제 사건 파일</span>
+      접속 기록
+    </h1>
+    <div class="intro-divider"></div>
+    <div class="intro-message">
+      <div class="sender">수신: 탐정 귀하 &nbsp;|&nbsp; 발신: <strong>김서연 (전 직장 동료)</strong></div>
+      <p>
+        그건 자살이 아니에요.<br>
+        오피스텔 호수는 <em>1103호</em>입니다.<br><br>
+        이준혁은 뭔가를 알고 있었어요.<br>
+        직접 가서 확인해주세요. 제발.
+      </p>
+    </div>
+    <button class="btn-start" onclick="startGame()">▶ 수사 시작</button>
+  </div>
+</div>
+
+<!-- ============================================
+     🎮 게임 화면
+============================================ -->
+<div id="screen-game" class="screen">
+
+  <!-- 왼쪽: 현장 뷰 -->
+  <div class="game-scene">
+
+    <!-- =========================================
+         스테이지 1: 오피스텔 복도
+         🖼️ 이미지 교체: scene-placeholder를 지우고
+         <img class="scene-bg" src="your-image.jpg" alt="복도"> 추가
+    ========================================= -->
+    <div class="scene-image active" id="scene-1">
+      <!-- 🖼️ 이미지 교체: 아래 img src 경로만 바꾸면 됩니다 -->
+      <img class="scene-bg" src="images/stage1_corridor.jpg" alt="오피스텔 복도">
+
+      <!-- 핫스팟: CCTV 모니터 — 왼쪽 상단 TV -->
+      <div class="hotspot" id="hs-cctv"
+           style="left:1%; top:1%; width:13%; height:20%;"
+           onclick="inspectCCTV()">
+        <div class="hotspot-label">📷 복도 CCTV</div>
+      </div>
+
+      <!-- 핫스팟: 현관문 1103호 — 왼쪽 중앙 -->
+      <div class="hotspot" id="hs-door"
+           style="left:18%; top:8%; width:19%; height:78%;"
+           onclick="openDoorLock()">
+        <div class="hotspot-label">🚪 현관문 — 도어락</div>
+      </div>
+
+      <!-- 핫스팟: 화분 — 복도 중앙 안쪽 -->
+      <div class="hotspot" id="hs-pot"
+           style="left:51%; top:52%; width:10%; height:32%;"
+           onclick="inspectPot()">
+        <div class="hotspot-label">🪴 화분</div>
+      </div>
+
+      <!-- 핫스팟: 우편함 — 오른쪽 벽 -->
+      <div class="hotspot" id="hs-mailbox"
+           style="left:78%; top:18%; width:20%; height:52%;"
+           onclick="inspectMailbox()">
+        <div class="hotspot-label">📬 우편함</div>
+      </div>
+
+      <div class="scene-footer">
+        <div class="scene-location">
+          <strong>오피스텔 복도 — 1103호 앞</strong>
+          STAGE 01 / 05
+        </div>
+      </div>
+    </div>
+
+    <!-- =========================================
+         스테이지 2: 방 내부
+         🖼️ 이미지 교체: scene-placeholder를 지우고
+         <img class="scene-bg" src="your-image.jpg" alt="방 내부"> 추가
+    ========================================= -->
+    <div class="scene-image" id="scene-2">
+      <div class="scene-placeholder">
+        <div class="ph-icon">🏠</div>
+        <div class="ph-text">STAGE 2 — 방 내부<br>이미지를 교체해주세요</div>
+      </div>
+
+      <!-- 핫스팟: 창문 -->
+      <div class="hotspot"
+           style="left:60%; top:10%; width:22%; height:30%;"
+           onclick="inspectWindow()">
+        <div class="hotspot-label">🪟 창문</div>
+      </div>
+
+      <!-- 핫스팟: 냉장고 위 메모 -->
+      <div class="hotspot"
+           style="left:5%; top:15%; width:15%; height:25%;"
+           onclick="inspectFridge()">
+        <div class="hotspot-label">❄️ 냉장고 위 메모</div>
+      </div>
+
+      <!-- 핫스팟: 벽 액자 -->
+      <div class="hotspot"
+           style="left:30%; top:10%; width:20%; height:30%;"
+           onclick="inspectPainting()">
+        <div class="hotspot-label">🖼️ 벽의 액자</div>
+      </div>
+
+      <!-- 핫스팟: 욕실 (거울) -->
+      <div class="hotspot"
+           style="left:82%; top:30%; width:12%; height:35%;"
+           onclick="inspectMirror()">
+        <div class="hotspot-label">🚿 욕실</div>
+      </div>
+
+      <div class="scene-footer">
+        <div class="scene-location">
+          <strong>1103호 — 방 내부</strong>
+          STAGE 02 / 05
+        </div>
+      </div>
+    </div>
+
+    <!-- =========================================
+         스테이지 3: 피해자 컴퓨터
+         🖼️ 이미지 교체: scene-placeholder를 지우고
+         <img class="scene-bg" src="your-image.jpg" alt="컴퓨터"> 추가
+    ========================================= -->
+    <div class="scene-image" id="scene-3">
+      <div class="scene-placeholder">
+        <div class="ph-icon">💻</div>
+        <div class="ph-text">STAGE 3 — 피해자 컴퓨터<br>이미지를 교체해주세요</div>
+      </div>
+
+      <!-- 핫스팟: 노트북 화면 -->
+      <div class="hotspot"
+           style="left:25%; top:20%; width:50%; height:50%;"
+           onclick="openComputer()">
+        <div class="hotspot-label">💻 노트북 — 잠금화면</div>
+      </div>
+
+      <!-- 핫스팟: 책상 위 유니폼 -->
+      <div class="hotspot"
+           style="left:75%; top:15%; width:15%; height:30%;"
+           onclick="inspectUniform()">
+        <div class="hotspot-label">⚾ 야구 유니폼</div>
+      </div>
+
+      <div class="scene-footer">
+        <div class="scene-location">
+          <strong>1103호 — 책상</strong>
+          STAGE 03 / 05
+        </div>
+      </div>
+    </div>
+
+    <!-- 스테이지 4, 5는 별도 UI로 처리 (웹페이지 / 구글맵) -->
+    <div class="scene-image" id="scene-4">
+      <div class="scene-placeholder">
+        <div class="ph-icon">🌐</div>
+        <div class="ph-text">STAGE 4 — 숨겨진 웹페이지<br>darkfile-1103.netlify.app</div>
+      </div>
+      <div class="hotspot"
+           style="left:30%; top:35%; width:40%; height:20%;"
+           onclick="openWebpage()">
+        <div class="hotspot-label">🌐 웹페이지 접속</div>
+      </div>
+      <div class="scene-footer">
+        <div class="scene-location">
+          <strong>숨겨진 웹페이지</strong>
+          STAGE 04 / 05
+        </div>
+      </div>
+    </div>
+
+    <div class="scene-image" id="scene-5">
+      <div class="scene-placeholder">
+        <div class="ph-icon">🗺️</div>
+        <div class="ph-text">STAGE 5 — 위성 추적<br>IP 위치 확인</div>
+      </div>
+      <div class="hotspot"
+           style="left:30%; top:35%; width:40%; height:20%;"
+           onclick="openMap()">
+        <div class="hotspot-label">🗺️ 위성 지도 열기</div>
+      </div>
+      <div class="scene-footer">
+        <div class="scene-location">
+          <strong>IP 위치 추적</strong>
+          STAGE 05 / 05
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /game-scene -->
+
+  <!-- 오른쪽: 패널 -->
+  <div class="game-panel">
+    <div class="panel-header">
+      <div class="case-id">CASE 01 — 접속 기록</div>
+      <div class="stage-indicator" id="stage-indicator">STAGE 1 / 5</div>
+    </div>
+
+    <div class="panel-tabs">
+      <button class="panel-tab active" onclick="switchTab('progress')">진행 현황</button>
+      <button class="panel-tab" onclick="switchTab('clues')">단서 <span id="clue-count">(0)</span></button>
+    </div>
+
+    <div class="panel-content">
+      <!-- 진행 현황 탭 -->
+      <div class="tab-pane active" id="tab-progress">
+        <ul class="stage-list">
+          <li class="stage-item">
+            <div class="stage-dot current" id="dot-1"></div>
+            <div class="stage-info">
+              <div class="stage-name" id="sname-1">오피스텔 복도</div>
+              <div class="stage-sub">도어락 해제 필요</div>
+            </div>
+          </li>
+          <li class="stage-item">
+            <div class="stage-dot" id="dot-2"></div>
+            <div class="stage-info">
+              <div class="stage-name locked-text" id="sname-2">방 내부</div>
+              <div class="stage-sub" id="ssub-2">🔒 잠김</div>
+            </div>
+          </li>
+          <li class="stage-item">
+            <div class="stage-dot" id="dot-3"></div>
+            <div class="stage-info">
+              <div class="stage-name locked-text" id="sname-3">피해자 컴퓨터</div>
+              <div class="stage-sub" id="ssub-3">🔒 잠김</div>
+            </div>
+          </li>
+          <li class="stage-item">
+            <div class="stage-dot" id="dot-4"></div>
+            <div class="stage-info">
+              <div class="stage-name locked-text" id="sname-4">숨겨진 웹페이지</div>
+              <div class="stage-sub" id="ssub-4">🔒 잠김</div>
+            </div>
+          </li>
+          <li class="stage-item">
+            <div class="stage-dot" id="dot-5"></div>
+            <div class="stage-info">
+              <div class="stage-name locked-text" id="sname-5">위성 추적</div>
+              <div class="stage-sub" id="ssub-5">🔒 잠김</div>
+            </div>
+          </li>
+        </ul>
+      </div>
+
+      <!-- 단서 탭 -->
+      <div class="tab-pane" id="tab-clues">
+        <div class="clue-empty" id="clue-empty">아직 수집된 단서가 없습니다.</div>
+        <div id="clue-list"></div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /screen-game -->
+
+<!-- ============================================
+     🏁 엔딩 화면
+============================================ -->
+<div id="screen-ending" class="screen">
+  <div class="ending-content">
+    <div class="ending-badge">— 사건의 전말 —</div>
+    <h2 class="ending-title">접속 기록</h2>
+    <div class="timeline" id="timeline"></div>
+    <div class="ending-message" id="ending-message">
+      "이준혁은 혼자였지만, 틀리지 않았습니다.<br>
+      이 기록은 이제 당신의 손에 있습니다."
+    </div>
+  </div>
+</div>
+
+<!-- ============================================
+     🔒 모달들
+============================================ -->
+
+<!-- 범용 알림 모달 -->
+<div class="modal-overlay" id="modal-notice">
+  <div class="modal-box" style="max-width:360px;">
+    <div class="modal-header">
+      <span class="modal-title" id="notice-title">알림</span>
+      <button class="modal-close" onclick="closeModal('modal-notice')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="notice-icon" id="notice-icon">🔒</div>
+      <div class="notice-text" id="notice-text"></div>
+      <button class="btn-ok" onclick="closeModal('modal-notice')">확인</button>
+    </div>
+  </div>
+</div>
+
+<!-- 퍼즐 모달 -->
+<div class="modal-overlay" id="modal-puzzle">
+  <div class="modal-box">
+    <div class="modal-header">
+      <span class="modal-title" id="puzzle-title">퍼즐</span>
+      <button class="modal-close" onclick="closeModal('modal-puzzle')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="puzzle-desc" id="puzzle-desc"></div>
+      <!-- 🖼️ 퍼즐 힌트 이미지: puzzle-img src를 교체 -->
+      <img class="puzzle-image" id="puzzle-img" src="" alt="퍼즐 힌트" style="display:none;">
+      <div class="puzzle-input-wrap">
+        <input class="puzzle-input" id="puzzle-input" type="text" maxlength="8"
+               placeholder="- - - -" autocomplete="off"
+               onkeydown="if(event.key==='Enter') checkPuzzle()">
+        <button class="btn-submit" onclick="checkPuzzle()">확인</button>
+      </div>
+      <div class="puzzle-feedback" id="puzzle-feedback"></div>
+    </div>
+  </div>
+</div>
+
+<!-- 단서 상세 모달 -->
+<div class="modal-overlay" id="modal-clue">
+  <div class="modal-box">
+    <div class="modal-header">
+      <span class="modal-title" id="clue-title">단서</span>
+      <button class="modal-close" onclick="closeModal('modal-clue')">✕</button>
+    </div>
+    <div class="modal-body">
+      <!-- 🖼️ 단서 이미지: clue-detail-img src를 교체 -->
+      <img class="clue-detail-image" id="clue-detail-img" src="" alt="단서" style="display:none;">
+      <div class="clue-detail-text" id="clue-detail-text"></div>
+    </div>
+  </div>
+</div>
+
+<!-- 이미지 확대 모달 -->
+<div class="modal-overlay" id="modal-zoom">
+  <div class="modal-box" style="max-width:700px;">
+    <div class="modal-header">
+      <span class="modal-title" id="zoom-title">확대 보기</span>
+      <button class="modal-close" onclick="closeModal('modal-zoom')">✕</button>
+    </div>
+    <div class="modal-body" style="padding:0;">
+      <div class="zoom-image-wrap">
+        <!-- 🖼️ 확대 이미지: zoom-img src를 교체 -->
+        <img class="zoom-image" id="zoom-img" src="" alt="확대">
+        <div id="zoom-overlay-text" style="padding:16px; font-size:13px; line-height:1.8; color:var(--text2);"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 단서 획득 토스트 -->
+<div class="toast" id="toast"></div>
+
+<!-- ============================================
+     🎮 게임 로직 (JavaScript)
+============================================ -->
+<script>
+/* ============================================
+   📦 게임 상태
+============================================ */
+const state = {
+  currentStage: 1,
+  clues: [],        // 획득한 단서 목록
+  flags: {          // 각종 진행 상태 플래그
+    cctvWatched:    false,
+    mailboxRead:    false,
+    potFound:       false,
+    doorUnlocked:   false,
+    windowChecked:  false,
+    fridgeRead:     false,
+    paintingSolved: false,
+    mirrorRead:     false,
+    computerOpen:   false,
+    uniformChecked: false,
+    urlFound:       false,
+    usbUsed:        false,
+    webpageEntered: false,
+    mapChecked:     false,
+  }
+};
+
+/* ============================================
+   🗄️ 단서 데이터베이스
+   ✏️ 여기서 단서 텍스트를 수정하세요
+============================================ */
+const CLUES = {
+  letter: {
+    id: 'letter',
+    title: '우편함 편지',
+    desc: '발신인 없는 편지. 봉투 소인: 2024.10.27',
+    detail: `
+      <p style="margin-bottom:12px;">손으로 쓴 짧은 편지.</p>
+      <p style="font-family:var(--serif); font-size:15px; line-height:2; color:var(--text);">
+        "고마워. 네가 옳았어.<br>— 김서연 (전 직장 동료)"
+      </p>
+      <p style="margin-top:16px; color:var(--text2);">
+        봉투 소인 날짜: <span class="clue-detail-highlight">2024.10.27</span><br>
+        발신인 주소는 없음.
+      </p>
+    `
+  },
+  usb: {
+    id: 'usb',
+    title: 'USB 드라이브',
+    desc: '화분 흙 속 방수 케이스 안에 숨겨져 있었다.',
+    detail: `
+      <p>검은색 소형 USB. 라벨에 손글씨:</p>
+      <p style="margin:16px 0; font-family:var(--mono); color:var(--gold); font-size:14px; letter-spacing:2px;">
+        "비밀번호: 서연이 나한테 처음 보낸 날짜"
+      </p>
+      <p style="color:var(--text2); font-size:12px;">
+        컴퓨터에 연결하면 파일을 열 수 있을 것 같다.
+      </p>
+    `
+  },
+  cctv: {
+    id: 'cctv',
+    title: 'CCTV 영상 기록',
+    desc: '2024.11.03 23:14 — 이준혁이 귀가하는 마지막 장면',
+    detail: `
+      <p>복도 CCTV 마지막 기록.</p>
+      <p style="margin:12px 0; font-family:var(--mono); font-size:12px; color:var(--text2);">
+        타임스탬프: <span class="clue-detail-highlight">2024.11.03 / 23:14</span>
+      </p>
+      <p>이준혁이 도어락을 누르는 장면이 흐릿하게 잡혀있다.<br>
+      손가락 움직임 패턴: <span class="clue-detail-highlight">좌상→우하→우상→중앙</span></p>
+      <p style="margin-top:12px; color:var(--text2); font-size:12px;">
+        도어락 키패드: 1 2 3 / 4 5 6 / 7 8 9 / 0<br>
+        좌상=1, 우하=9, 우상=3, 중앙=5
+      </p>
+    `
+  },
+  fridge_note: {
+    id: 'fridge_note',
+    title: '냉장고 위 메모지',
+    desc: '이준혁이 서연에게 남긴 듯한 메모.',
+    detail: `
+      <p style="font-family:var(--serif); font-size:15px; line-height:2;">
+        "서연에게 —<br>
+        파일은 3곳에 나눠뒀어.<br>
+        너만 알고 있어."
+      </p>
+    `
+  },
+  window_scratch: {
+    id: 'window_scratch',
+    title: '창문 틀 긁힌 자국',
+    desc: '창문 바깥쪽에서 발견된 긁힌 자국. 안에서 떨어진 게 아닐 수 있다.',
+    detail: `
+      <p>창문 틀을 확대해보니 <strong style="color:var(--accent2);">바깥쪽에 긁힌 자국</strong>이 선명하다.</p>
+      <p style="margin-top:12px; color:var(--text2);">
+        자살로 뛰어내렸다면 안쪽에 자국이 있어야 한다.<br>
+        이건 외부에서 누군가 창문을 열었다는 의미일 수 있다.
+      </p>
+    `
+  },
+  business_card: {
+    id: 'business_card',
+    title: '명함 — 박성진 이사',
+    desc: '벽면 금고 안에서 발견. 뒷면에 손글씨 메모.',
+    detail: `
+      <p style="font-family:var(--mono); font-size:13px; line-height:2; color:var(--text2);">
+        ㈜넥스코어<br>
+        <strong style="color:var(--text); font-size:16px;">박성진 이사</strong><br>
+        park.sj@nexcore.com
+      </p>
+      <div style="margin-top:16px; padding:12px; border:1px solid var(--border2); border-left:3px solid var(--accent);">
+        <p style="font-size:12px; color:var(--text2); margin-bottom:6px;">뒷면 손글씨 (정우혁):</p>
+        <p style="font-family:var(--serif);">"다음엔 없어. — 정우혁"</p>
+      </div>
+    `
+  },
+  mirror_msg: {
+    id: 'mirror_msg',
+    title: '욕실 거울 메시지',
+    desc: '립스틱으로 쓰인 좌우 반전 글씨. 복원: "PW: Baseball"',
+    detail: `
+      <p>거울에 립스틱으로 쓰인 글씨. 좌우가 반전되어 있어 읽기 어렵다.</p>
+      <p style="margin:16px 0; text-align:center;">
+        <span style="font-family:var(--mono); font-size:18px; color:var(--gold); letter-spacing:4px;">
+          PW: Baseball
+        </span>
+      </p>
+      <p style="color:var(--text2); font-size:12px;">
+        컴퓨터 비밀번호가 야구와 관련된 것임을 알려주는 힌트.
+      </p>
+    `
+  },
+  url_note: {
+    id: 'url_note',
+    title: '메모장 — 암호화된 URL',
+    desc: '컴퓨터 메모장 파일. 암호 규칙을 풀면 접속 주소가 나온다.',
+    detail: `
+      <div style="font-family:var(--mono); font-size:12px; line-height:2; color:var(--text2); background:var(--bg3); padding:16px;">
+        이름: darkfile<br>
+        날짜: 11월 03일 → <span class="clue-detail-highlight">1103</span><br>
+        플랫폼: netlify.app
+      </div>
+      <p style="margin-top:12px; color:var(--text2); font-size:12px;">
+        조합하면: <span class="clue-detail-highlight">darkfile-1103.netlify.app</span>
+      </p>
+    `
+  },
+  server_log: {
+    id: 'server_log',
+    title: '서버 로그 — 넥스코어',
+    desc: '수신처 IP: 211.XXX.XXX.47 / 누적 약 8,900만 건',
+    detail: `
+      <div style="font-family:var(--mono); font-size:11px; line-height:2; color:var(--text2); background:var(--bg3); padding:16px;">
+        NEXCORE DATA EXPORT LOG<br>
+        ─────────────────────<br>
+        2024.10.01 &nbsp; exported: 2,847,203 users<br>
+        2024.09.01 &nbsp; exported: 2,791,445 users<br>
+        ...<br>
+        2019.04.01 &nbsp; exported: 341,882 users ← 최초<br>
+        ─────────────────────<br>
+        수신처 IP: <span class="clue-detail-highlight">211.XXX.XXX.47</span>
+      </div>
+    `
+  },
+  internal_mail: {
+    id: 'internal_mail',
+    title: '내부 메일 — 박성진 → 경찰청',
+    desc: '2024.11.03 22:47 발송. 사건 당일 밤.',
+    detail: `
+      <div style="font-family:var(--mono); font-size:12px; line-height:2; color:var(--text2); background:var(--bg3); padding:16px;">
+        보낸 사람: park.sj@nexcore.com<br>
+        받는 사람: [경찰청 내부]<br>
+        날짜: <span class="clue-detail-highlight">2024.11.03 22:47</span><br>
+        ─────────────────────<br>
+        <span style="color:var(--text);">
+          "오늘 밤 안에 처리해주십시오.<br>
+          증거가 외부로 나가기 전에."
+        </span>
+      </div>
+      <p style="margin-top:12px; color:var(--accent2); font-size:12px;">
+        경찰 내부에 넥스코어 측 인물이 있었다.<br>
+        자살 종결의 이유가 여기 있다.
+      </p>
+    `
+  }
+};
+
+/* ============================================
+   🔒 퍼즐 데이터베이스
+   ✏️ 정답(answer)과 설명(desc)을 여기서 수정하세요
+============================================ */
+let currentPuzzle = null;
+const PUZZLES = {
+  doorlock: {
+    title: '도어락 — 1103호',
+    desc: `CCTV 영상에서 이준혁이 도어락을 누르는 장면을 분석했다.<br><br>
+           손가락 움직임 순서:<br>
+           <strong style="color:var(--gold);">좌상단 → 우하단 → 우상단 → 중앙</strong><br><br>
+           도어락 키패드:<br>
+           <span style="font-family:var(--mono); letter-spacing:4px;">1 2 3<br>4 5 6<br>7 8 9<br>&nbsp; 0</span><br><br>
+           4자리 번호는?`,
+    answer: '1935',
+    onSuccess: () => {
+      addClue('cctv');
+      advanceStage(2);
+      showToast('🚪 1103호 진입');
+    }
+  },
+  painting: {
+    title: '벽의 추상화',
+    desc: `액자를 확대해보니 붓터치처럼 보이는 선들 사이에<br>
+           숫자가 교묘하게 숨겨져 있다.<br><br>
+           그림의 <strong style="color:var(--gold);">네 귀퉁이</strong>를 자세히 보면<br>
+           각각 숫자가 하나씩 새겨져 있다.<br><br>
+           좌상 → 우상 → 좌하 → 우하 순서로 읽으면?`,
+    /* 🖼️ 퍼즐 힌트 이미지가 있다면: imgSrc: 'images/painting_hint.jpg' */
+    answer: '4721',
+    onSuccess: () => {
+      addClue('business_card');
+      state.flags.paintingSolved = true;
+      showToast('🖼️ 액자 뒤 벽면 금고 발견!');
+    }
+  },
+  computer_pw: {
+    title: '윈도우 잠금화면',
+    desc: `잠금화면 하단 <strong style="color:var(--gold);">"비밀번호 힌트 보기"</strong>를 눌렀다.<br><br>
+           힌트: <em style="color:var(--text2);">"내가 제일 좋아하는 선수"</em><br><br>
+           선반의 야구 유니폼:<br>
+           등번호 <span class="clue-detail-highlight">29</span> / 이름 <span class="clue-detail-highlight">PARK</span><br><br>
+           (욕실 거울의 "PW: Baseball" — 야구와 관련된 것임을 확인)<br><br>
+           비밀번호를 입력하세요. (영문+숫자)`,
+    answer: 'PARK29',
+    onSuccess: () => {
+      state.flags.computerOpen = true;
+      showToast('💻 컴퓨터 잠금 해제');
+      openBrowser();
+    }
+  },
+  webpage_pw: {
+    title: 'darkfile-1103 — 비밀번호',
+    desc: `페이지가 비밀번호를 요구한다.<br><br>
+           USB 파일의 힌트:<br>
+           <em style="color:var(--text2);">"비밀번호: 서연이 나한테 처음 보낸 날짜"</em><br><br>
+           우편함 편지 봉투 소인:<br>
+           <span class="clue-detail-highlight">2024.10.27</span><br><br>
+           날짜만 입력하세요. (4자리)`,
+    answer: '1027',
+    onSuccess: () => {
+      state.flags.webpageEntered = true;
+      showToast('🔓 아카이브 접속 성공');
+      openArchive();
+    }
+  }
+};
+
+/* ============================================
+   🎮 게임 시작
+============================================ */
+function startGame() {
+  showScreen('screen-game');
+}
+
+/* ============================================
+   🚪 스테이지 1: 복도 액션들
+============================================ */
+function inspectCCTV() {
+  state.flags.cctvWatched = true;
+  showClueDetail({
+    title: 'CCTV 모니터',
+    text: `
+      <p style="margin-bottom:12px; font-family:var(--mono); font-size:11px; color:var(--text2);">
+        REC ● &nbsp; 2024.11.03 23:14:07
+      </p>
+      <p>흑백 영상 속 이준혁이 도어락 앞에 서있다.<br>
+      손가락이 움직인다.</p>
+      <p style="margin-top:12px; font-family:var(--mono); color:var(--gold);">
+        좌상단 → 우하단 → 우상단 → 중앙
+      </p>
+      <p style="margin-top:12px; color:var(--text2); font-size:12px;">
+        도어락 번호를 알아낼 수 있을 것 같다.
+      </p>
+    `
+  });
+}
+
+function inspectMailbox() {
+  if (!state.flags.mailboxRead) {
+    state.flags.mailboxRead = true;
+    addClue('letter');
+    showToast('📬 편지 발견');
+  }
+  showClueDetail(CLUES.letter);
+}
+
+function inspectPot() {
+  if (!state.flags.potFound) {
+    state.flags.potFound = true;
+    addClue('usb');
+    showToast('💾 USB 발견');
+  }
+  showClueDetail(CLUES.usb);
+}
+
+function openDoorLock() {
+  if (!state.flags.cctvWatched) {
+    showNotice('🔒', 'CCTV를 먼저 확인하세요', '복도 CCTV 영상에서 힌트를 얻어야 할 것 같습니다.');
+    return;
+  }
+  openPuzzle('doorlock');
+}
+
+/* ============================================
+   🏠 스테이지 2: 방 내부 액션들
+============================================ */
+function inspectWindow() {
+  if (state.currentStage < 2) { showLocked(); return; }
+  if (!state.flags.windowChecked) {
+    state.flags.windowChecked = true;
+    addClue('window_scratch');
+    showToast('🪟 이상한 점 발견');
+  }
+  showClueDetail(CLUES.window_scratch);
+}
+
+function inspectFridge() {
+  if (state.currentStage < 2) { showLocked(); return; }
+  if (!state.flags.fridgeRead) {
+    state.flags.fridgeRead = true;
+    addClue('fridge_note');
+    showToast('📝 메모 발견');
+  }
+  showClueDetail(CLUES.fridge_note);
+}
+
+function inspectPainting() {
+  if (state.currentStage < 2) { showLocked(); return; }
+  if (state.flags.paintingSolved) {
+    showClueDetail(CLUES.business_card);
+    return;
+  }
+  openPuzzle('painting');
+}
+
+function inspectMirror() {
+  if (state.currentStage < 2) { showLocked(); return; }
+  if (!state.flags.mirrorRead) {
+    state.flags.mirrorRead = true;
+    addClue('mirror_msg');
+    showToast('🪞 거울 메시지 발견');
+    // 거울 확인 후 컴퓨터 접근 가능
+    if (state.flags.paintingSolved) checkStage2Complete();
+  }
+  showClueDetail(CLUES.mirror_msg);
+}
+
+function checkStage2Complete() {
+  if (state.flags.paintingSolved && state.flags.mirrorRead && state.currentStage === 2) {
+    setTimeout(() => {
+      showNotice('🔑', '단서 충분', '이제 책상으로 이동해 컴퓨터를 확인해보세요.');
+      advanceStage(3);
+    }, 800);
+  }
+}
+
+/* ============================================
+   💻 스테이지 3: 컴퓨터 액션들
+============================================ */
+function inspectUniform() {
+  if (state.currentStage < 3) { showLocked(); return; }
+  showClueDetail({
+    title: '야구 유니폼',
+    text: `
+      <p>선반에 걸린 야구 유니폼.</p>
+      <p style="margin:16px 0; font-family:var(--mono); font-size:18px; color:var(--gold); letter-spacing:4px;">
+        #29 &nbsp; PARK
+      </p>
+      <p style="color:var(--text2); font-size:12px;">
+        LG 트윈스 팬이었던 것 같다.
+      </p>
+    `
+  });
+}
+
+function openComputer() {
+  if (state.currentStage < 3) { showLocked(); return; }
+  openPuzzle('computer_pw');
+}
+
+function openBrowser() {
+  closeModal('modal-puzzle');
+  showClueDetail({
+    title: '브라우저 접속 기록',
+    text: `
+      <div style="font-family:var(--mono); font-size:12px; line-height:2.2; background:var(--bg3); padding:16px;">
+        <span style="color:var(--text2);">09:14</span> &nbsp; google.com<br>
+        <span style="color:var(--text2);">15:03</span> &nbsp; <span style="background:#1a0000; color:var(--accent2); padding:2px 8px;">████████████████.com</span>
+      </div>
+      <p style="margin-top:16px; color:var(--text2); font-size:12px;">
+        가려진 URL을 복원해야 한다.<br>
+        메모장 파일에 힌트가 있을 것 같다.
+      </p>
+      <button class="btn-ok" style="margin-top:12px;" onclick="openMemopad()">📄 메모장 열기</button>
+    `
+  });
+}
+
+function openMemopad() {
+  closeModal('modal-clue');
+  showClueDetail({
+    title: '메모장 — notepad.txt',
+    text: `
+      <div style="font-family:var(--mono); font-size:13px; line-height:2.2; background:var(--bg3); padding:16px; color:var(--text2);">
+        이름: <span style="color:var(--text);">darkfile</span><br>
+        날짜: 11월 03일 → <span class="clue-detail-highlight">1103</span><br>
+        플랫폼: <span style="color:var(--text);">netlify.app</span>
+      </div>
+      <p style="margin-top:16px; color:var(--gold); font-family:var(--mono); font-size:13px; letter-spacing:2px;">
+        darkfile-1103.netlify.app
+      </p>
+      <p style="margin-top:8px; color:var(--text2); font-size:12px;">
+        USB를 연결해야 접속할 수 있을 것 같다.
+      </p>
+    `
+  });
+  if (!state.flags.urlFound) {
+    state.flags.urlFound = true;
+    addClue('url_note');
+    checkStage3Complete();
+  }
+}
+
+function checkStage3Complete() {
+  if (state.flags.urlFound && state.flags.usbUsed !== false && state.currentStage === 3) {
+    state.flags.usbUsed = true;
+    setTimeout(() => {
+      advanceStage(4);
+      showToast('🌐 웹페이지 접속 준비 완료');
+    }, 600);
+  }
+}
+
+/* ============================================
+   🌐 스테이지 4: 웹페이지
+============================================ */
+function openWebpage() {
+  if (state.currentStage < 4) { showLocked(); return; }
+  if (!state.flags.webpageEntered) {
+    openPuzzle('webpage_pw');
+  } else {
+    openArchive();
+  }
+}
+
+function openArchive() {
+  closeModal('modal-puzzle');
+  closeModal('modal-clue');
+
+  // 아카이브 UI를 모달로 표시
+  document.getElementById('clue-title').textContent = 'NEXCORE EVIDENCE ARCHIVE';
+  document.getElementById('clue-detail-img').style.display = 'none';
+  document.getElementById('clue-detail-text').innerHTML = `
+    <div style="font-family:var(--mono); font-size:11px; color:var(--text2); margin-bottom:16px;">
+      마지막 업데이트: 2024.11.03
+    </div>
+
+    <div style="border:1px solid var(--border); margin-bottom:8px;">
+      <div style="padding:14px 16px; cursor:pointer; transition:background 0.2s;"
+           onmouseover="this.style.background='var(--bg3)'"
+           onmouseout="this.style.background=''"
+           onclick="viewPDF('contract')">
+        <span style="font-family:var(--mono); color:var(--gold); font-size:11px;">📄 FILE 01</span>
+        <span style="margin-left:12px; font-size:13px;">거래 계약서.pdf</span>
+      </div>
+    </div>
+
+    <div style="border:1px solid var(--border); margin-bottom:8px;">
+      <div style="padding:14px 16px; cursor:pointer; transition:background 0.2s;"
+           onmouseover="this.style.background='var(--bg3)'"
+           onmouseout="this.style.background=''"
+           onclick="viewPDF('serverlog')">
+        <span style="font-family:var(--mono); color:var(--gold); font-size:11px;">📄 FILE 02</span>
+        <span style="margin-left:12px; font-size:13px;">서버 로그.pdf</span>
+      </div>
+    </div>
+
+    <div style="border:1px solid var(--border); margin-bottom:8px;" id="file3-row">
+      <div style="padding:14px 16px; cursor:pointer; transition:background 0.2s;"
+           onmouseover="this.style.background='var(--bg3)'"
+           onmouseout="this.style.background=''"
+           onclick="viewPDF('mail')">
+        <span style="font-family:var(--mono); color:var(--text2); font-size:11px;">📄 FILE 03</span>
+        <span style="margin-left:12px; font-size:13px; color:var(--text2);">내부 메일.pdf &nbsp; 🔒</span>
+      </div>
+    </div>
+
+    <div style="margin-top:16px; padding:12px; background:var(--bg3); font-size:11px; color:var(--text2); font-family:var(--mono);">
+      💡 페이지를 <strong style="color:var(--text);">드래그</strong>해보세요. 숨겨진 내용이 있을 수 있습니다.
+    </div>
+
+    <div style="margin-top:8px; padding:12px; user-select:text;"
+         onmouseup="checkHiddenText(this)">
+      <span style="color:var(--bg2); user-select:text; font-family:var(--mono); font-size:11px;">
+        file03_password: 최초 수출 월(두자리) + 연도 끝 두자리 = 04 + 19 = 0419
+      </span>
+    </div>
+  `;
+  document.getElementById('modal-clue').classList.add('open');
+}
+
+function checkHiddenText(el) {
+  const selected = window.getSelection().toString();
+  if (selected.length > 5) {
+    showToast('👁️ 숨겨진 텍스트 발견!');
+    unlockFile3();
+  }
+}
+
+function viewPDF(type) {
+  if (type === 'contract') {
+    document.getElementById('clue-detail-text').innerHTML = `
+      <div style="background:white; color:#111; padding:24px; font-family:'Noto Sans KR',sans-serif; font-size:12px; line-height:2;">
+        <div style="text-align:center; margin-bottom:20px; font-size:16px; font-weight:bold; border-bottom:2px solid #111; padding-bottom:12px;">
+          개인정보 데이터 공급 계약서
+        </div>
+        <p><strong>공급자:</strong> ㈜넥스코어</p>
+        <p><strong>수급자:</strong> ㈜애드브릿지</p>
+        <p><strong>계약일:</strong> 2019년 3월 15일</p>
+        <hr style="border-color:#ddd; margin:12px 0;">
+        <p><strong>공급 항목:</strong> 월간 활성 사용자 위치정보, 검색 키워드, 구매 패턴 데이터</p>
+        <p><strong>공급 주기:</strong> 매월 1일</p>
+        <p><strong>단가:</strong> 사용자 1인당 ₩340</p>
+        <p><strong>계약 기간:</strong> 자동 갱신</p>
+        <hr style="border-color:#ddd; margin:12px 0;">
+        <p><strong>서명:</strong> 박성진 (넥스코어 이사) &nbsp;/&nbsp; 최영민 (애드브릿지 대표)</p>
+      </div>
+      <button class="btn-ok" style="margin-top:12px;" onclick="openArchive()">← 목록으로</button>
+    `;
+    addClue('server_log');
+  } else if (type === 'serverlog') {
+    document.getElementById('clue-detail-text').innerHTML = `
+      <div style="font-family:var(--mono); font-size:11px; line-height:2; color:var(--text2); background:var(--bg3); padding:16px;">
+        NEXCORE DATA EXPORT LOG<br>
+        ─────────────────────────<br>
+        2024.10.01 &nbsp; exported: 2,847,203 users<br>
+        2024.09.01 &nbsp; exported: 2,791,445 users<br>
+        2024.08.01 &nbsp; exported: 2,698,001 users<br>
+        ...<br>
+        <span style="color:var(--gold);">2019.04.01 &nbsp; exported: 341,882 users ← 최초 기록</span><br>
+        ─────────────────────────<br>
+        총 누적: 약 <strong style="color:var(--accent2);">8,900만 건</strong><br>
+        수신처 IP: <span class="clue-detail-highlight">211.XXX.XXX.47</span>
+      </div>
+      <p style="margin-top:12px; color:var(--text2); font-size:12px;">
+        최초 수출: <span class="clue-detail-highlight">2019년 04월</span>
+      </p>
+      <button class="btn-ok" style="margin-top:12px;" onclick="openArchive()">← 목록으로</button>
+    `;
+  } else if (type === 'mail') {
+    if (!state.flags.file3Unlocked) {
+      // 파일 3 잠금 해제 퍼즐
+      document.getElementById('clue-detail-text').innerHTML = `
+        <p style="color:var(--text2); margin-bottom:16px;">이 파일은 별도 비밀번호로 잠겨있다.</p>
+        <p style="font-size:12px; color:var(--text2); margin-bottom:12px;">
+          힌트: 최초 수출 월(두 자리) + 연도 끝 두 자리<br>
+          <em>페이지를 드래그해서 숨겨진 힌트를 찾으세요.</em>
+        </p>
+        <div class="puzzle-input-wrap">
+          <input class="puzzle-input" id="file3-input" type="text" maxlength="4"
+                 placeholder="- - - -" style="font-size:16px;"
+                 onkeydown="if(event.key==='Enter') checkFile3()">
+          <button class="btn-submit" onclick="checkFile3()">확인</button>
+        </div>
+        <div id="file3-feedback" class="puzzle-feedback"></div>
+        <button class="btn-ok" style="margin-top:12px;" onclick="openArchive()">← 목록으로</button>
+      `;
+    } else {
+      showMailContent();
+    }
+  }
+}
+
+function checkFile3() {
+  const val = document.getElementById('file3-input').value.trim();
+  if (val === '0419') {
+    state.flags.file3Unlocked = true;
+    showMailContent();
+  } else {
+    document.getElementById('file3-feedback').textContent = '틀렸습니다. 다시 시도해보세요.';
+    document.getElementById('file3-feedback').className = 'puzzle-feedback fail';
+  }
+}
+
+function showMailContent() {
+  addClue('internal_mail');
+  document.getElementById('clue-detail-text').innerHTML = `
+    <div style="font-family:var(--mono); font-size:12px; line-height:2; background:var(--bg3); padding:16px;">
+      보낸 사람: park.sj@nexcore.com<br>
+      받는 사람: [경찰청 내부]<br>
+      날짜: <span class="clue-detail-highlight">2024.11.03 22:47</span><br>
+      ─────────────────────<br>
+      <span style="color:var(--text); font-family:var(--serif); font-size:14px; line-height:2;">
+        "오늘 밤 안에 처리해주십시오.<br>
+        증거가 외부로 나가기 전에."
+      </span>
+    </div>
+    <p style="margin-top:12px; color:var(--accent2); font-size:12px;">
+      경찰이 연루됐다. 자살 종결의 이유가 여기 있다.
+    </p>
+    <p style="margin-top:12px; color:var(--text2); font-size:12px;">
+      남은 단서: 서버 수신처 IP <span class="clue-detail-highlight">211.XXX.XXX.47</span> 위치 추적
+    </p>
+    <button class="btn-ok" style="margin-top:16px; border-color:var(--accent); color:var(--accent2);"
+            onclick="closeModal('modal-clue'); advanceStage(5);">
+      📡 위성 추적 시작 →
+    </button>
+  `;
+}
+
+function unlockFile3() {
+  // 드래그로 숨겨진 텍스트 발견 시 힌트 표시
+}
+
+/* ============================================
+   🗺️ 스테이지 5: 구글맵
+============================================ */
+function openMap() {
+  if (state.currentStage < 5) { showLocked(); return; }
+  showClueDetail({
+    title: 'IP 위성 추적 — 211.XXX.XXX.47',
+    text: `
+      <p style="margin-bottom:16px; font-size:12px; color:var(--text2);">
+        서버 로그의 수신처 IP를 추적했다.<br>
+        위치: <strong style="color:var(--text);">서울 강남구 테헤란로 인근</strong>
+      </p>
+      <div style="width:100%; height:300px; border:1px solid var(--border); overflow:hidden; position:relative;">
+        <iframe
+          width="100%" height="100%"
+          style="border:0;"
+          loading="lazy"
+          allowfullscreen
+          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3165.4!2d127.0!3d37.5!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMzfCsDMwJzAwLjAiTiAxMjfCsDAwJzAwLjAiRQ!5e1!3m2!1sko!2skr!4v1700000000000!5m2!1sko!2skr"
+          referrerpolicy="no-referrer-when-downgrade">
+        </iframe>
+      </div>
+      <p style="margin-top:12px; color:var(--text2); font-size:12px;">
+        위성뷰로 전환해 옥상을 자세히 살펴보세요.
+      </p>
+      <button class="btn-ok" style="margin-top:16px; border-color:var(--gold); color:var(--gold);"
+              onclick="closeModal('modal-clue'); showEnding();">
+        📋 수사 완료 — 전말 확인 →
+      </button>
+    `
+  });
+}
+
+/* ============================================
+   🏁 엔딩
+============================================ */
+function showEnding() {
+  showScreen('screen-ending');
+
+  const events = [
+    { date: '2019. 03', text: '넥스코어-애드브릿지, 불법 사용자 데이터 거래 시작. 계약 당사자: 박성진 이사.' },
+    { date: '2024. 09', text: '이준혁, 서버 유지보수 중 우연히 데이터 수출 로그를 발견한다.' },
+    { date: '2024. 10', text: '증거 파일을 3곳에 분산 은닉. 신뢰할 수 있는 동료 김서연에게만 알린다.' },
+    { date: '2024. 10. 27', text: '김서연, 이준혁에게 첫 메시지 전송. "고마워. 네가 옳았어."' },
+    { date: '2024. 11. 03', text: '이준혁, 내부고발 사이트 접속. 이 순간 넥스코어 측에 발각된다.' },
+    { date: '2024. 11. 03 &nbsp; 22:47', text: '박성진 이사, 경찰청 내부 연락. "오늘 밤 안에 처리해달라."' },
+    { date: '2024. 11. 03 &nbsp; 23:14', text: 'CCTV 마지막 장면. 이준혁이 귀가한다. 이후 영상 없음.' },
+    { date: '2024. 11. 04', text: '경찰, 현장 감식 없이 자살로 신속 종결.' },
+    { date: '2024. 11. 10', text: '김서연, 당신에게 익명으로 제보한다. 그녀 역시 쫓기고 있다.' },
+  ];
+
+  const timeline = document.getElementById('timeline');
+  timeline.innerHTML = events.map((e, i) => `
+    <div class="timeline-item" style="transition-delay:${i * 0.15}s">
+      <div class="timeline-date">${e.date}</div>
+      <div class="timeline-text">${e.text}</div>
+    </div>
+  `).join('');
+
+  setTimeout(() => {
+    document.querySelectorAll('.timeline-item').forEach(el => el.classList.add('visible'));
+    setTimeout(() => {
+      document.getElementById('ending-message').classList.add('visible');
+    }, events.length * 150 + 500);
+  }, 300);
+}
+
+/* ============================================
+   🛠️ 공통 유틸 함수들
+============================================ */
+
+// 스테이지 진행
+function advanceStage(n) {
+  if (n <= state.currentStage) return;
+  state.currentStage = n;
+  updateUI();
+
+  // 씬 전환
+  document.querySelectorAll('.scene-image').forEach(el => el.classList.remove('active'));
+  const nextScene = document.getElementById(`scene-${n}`);
+  if (nextScene) nextScene.classList.add('active');
+}
+
+// UI 업데이트
+function updateUI() {
+  document.getElementById('stage-indicator').textContent = `STAGE ${state.currentStage} / 5`;
+
+  const dots = [1,2,3,4,5];
+  dots.forEach(i => {
+    const dot = document.getElementById(`dot-${i}`);
+    const name = document.getElementById(`sname-${i}`);
+    const sub  = document.getElementById(`ssub-${i}`);
+    dot.className = 'stage-dot';
+    name.className = 'stage-name';
+    if (i < state.currentStage) {
+      dot.classList.add('done');
+    } else if (i === state.currentStage) {
+      dot.classList.add('current');
+    } else {
+      name.classList.add('locked-text');
+      if (sub) sub.textContent = '🔒 잠김';
+    }
+  });
+}
+
+// 단서 추가
+function addClue(id) {
+  if (state.clues.find(c => c.id === id)) return;
+  const clue = CLUES[id];
+  if (!clue) return;
+  state.clues.push({ ...clue, isNew: true });
+  updateCluePanel();
+}
+
+// 단서 패널 업데이트
+function updateCluePanel() {
+  const count = state.clues.length;
+  document.getElementById('clue-count').textContent = `(${count})`;
+  document.getElementById('clue-empty').style.display = count === 0 ? 'block' : 'none';
+
+  const list = document.getElementById('clue-list');
+  list.innerHTML = state.clues.map(c => `
+    <div class="clue-item" onclick="viewClue('${c.id}')">
+      <div class="clue-item-title">
+        ${c.title}
+        ${c.isNew ? '<span class="clue-new-badge">NEW</span>' : ''}
+      </div>
+      <div class="clue-item-desc">${c.desc}</div>
+    </div>
+  `).join('');
+}
+
+function viewClue(id) {
+  const clue = state.clues.find(c => c.id === id);
+  if (!clue) return;
+  clue.isNew = false;
+  updateCluePanel();
+  showClueDetail(clue);
+}
+
+// 퍼즐 열기
+function openPuzzle(key) {
+  currentPuzzle = PUZZLES[key];
+  document.getElementById('puzzle-title').textContent = currentPuzzle.title;
+  document.getElementById('puzzle-desc').innerHTML = currentPuzzle.desc;
+  document.getElementById('puzzle-input').value = '';
+  document.getElementById('puzzle-input').className = 'puzzle-input';
+  document.getElementById('puzzle-feedback').textContent = '';
+  document.getElementById('puzzle-feedback').className = 'puzzle-feedback';
+
+  if (currentPuzzle.imgSrc) {
+    document.getElementById('puzzle-img').src = currentPuzzle.imgSrc;
+    document.getElementById('puzzle-img').style.display = 'block';
+  } else {
+    document.getElementById('puzzle-img').style.display = 'none';
+  }
+
+  document.getElementById('modal-puzzle').classList.add('open');
+  setTimeout(() => document.getElementById('puzzle-input').focus(), 100);
+}
+
+// 퍼즐 정답 확인
+function checkPuzzle() {
+  if (!currentPuzzle) return;
+  const val = document.getElementById('puzzle-input').value.trim().toUpperCase();
+  const answer = currentPuzzle.answer.toUpperCase();
+
+  if (val === answer) {
+    document.getElementById('puzzle-input').classList.add('success');
+    document.getElementById('puzzle-feedback').textContent = '✓ 정답입니다.';
+    document.getElementById('puzzle-feedback').className = 'puzzle-feedback ok';
+    setTimeout(() => {
+      closeModal('modal-puzzle');
+      currentPuzzle.onSuccess();
+    }, 800);
+  } else {
+    document.getElementById('puzzle-input').classList.add('error');
+    document.getElementById('puzzle-feedback').textContent = '✗ 틀렸습니다. 다시 생각해보세요.';
+    document.getElementById('puzzle-feedback').className = 'puzzle-feedback fail';
+    setTimeout(() => {
+      document.getElementById('puzzle-input').classList.remove('error');
+    }, 500);
+  }
+}
+
+// 단서 상세 모달
+function showClueDetail(clue) {
+  document.getElementById('clue-title').textContent = clue.title || clue.id;
+  const img = document.getElementById('clue-detail-img');
+  if (clue.imgSrc) {
+    img.src = clue.imgSrc;
+    img.style.display = 'block';
+  } else {
+    img.style.display = 'none';
+  }
+  document.getElementById('clue-detail-text').innerHTML = clue.detail || clue.text || '';
+  document.getElementById('modal-clue').classList.add('open');
+}
+
+// 잠김 알림
+function showLocked() {
+  showNotice('🔒', '아직 확인할 수 없습니다', '단서가 더 필요합니다. 현재 위치를 먼저 살펴보세요.');
+}
+
+// 범용 알림
+function showNotice(icon, title, text) {
+  document.getElementById('notice-icon').textContent = icon;
+  document.getElementById('notice-title').textContent = title;
+  document.getElementById('notice-text').innerHTML = `<strong>${title}</strong>${text}`;
+  document.getElementById('modal-notice').classList.add('open');
+}
+
+// 모달 닫기
+function closeModal(id) {
+  document.getElementById(id).classList.remove('open');
+}
+
+// 탭 전환
+function switchTab(tab) {
+  document.querySelectorAll('.panel-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+  document.getElementById(`tab-${tab}`).classList.add('active');
+  event.target.classList.add('active');
+}
+
+// 화면 전환
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+// 토스트
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// 오버레이 클릭으로 모달 닫기
+document.querySelectorAll('.modal-overlay').forEach(overlay => {
+  overlay.addEventListener('click', e => {
+    if (e.target === overlay) overlay.classList.remove('open');
+  });
+});
+</script>
+
+</body>
+</html>
