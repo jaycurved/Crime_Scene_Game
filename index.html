@@ -61,8 +61,9 @@ html,body{background:var(--bg);color:var(--text);font-family:var(--sans);height:
 
 /* 라벨: 검은 바 없이 글자만, stroke로 가독성 */
 .hs-lbl{
-  font-family:'Share Tech Mono',monospace;
-  font-size:22px;
+  font-family:'Noto Serif KR','나눔명조','Batang',serif;
+  font-weight:600;
+  font-size:24px;
   fill:#f0d060;
   paint-order:stroke fill;
   stroke:#000;
@@ -72,7 +73,7 @@ html,body{background:var(--bg);color:var(--text);font-family:var(--sans);height:
   transition:opacity .2s;
   pointer-events:none;
   dominant-baseline:hanging;
-  letter-spacing:1px;
+  letter-spacing:2px;
 }
 .hs-group:hover .hs-lbl,
 .hs-group:focus .hs-lbl{ opacity:1; }
