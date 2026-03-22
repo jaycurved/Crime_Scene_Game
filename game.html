@@ -402,7 +402,20 @@ html,body{background:var(--bg);color:var(--text);font-family:var(--sans);height:
   border-top:1px solid var(--border);
   display:flex;align-items:center;gap:4px;flex-wrap:wrap;
   font-size:10px;color:var(--text3);font-family:var(--mono);
-}padding:14px 8px;background:var(--bg3);border:1px solid var(--border2);color:var(--text);font-family:var(--mono);font-size:18px;cursor:pointer;border-radius:4px;transition:all .1s;}
+}
+
+/* 키패드 버튼 */
+.kp-btn{
+  padding:14px 8px;
+  background:var(--bg3);
+  border:1px solid var(--border2);
+  color:var(--text);
+  font-family:var(--mono);
+  font-size:18px;
+  cursor:pointer;
+  border-radius:4px;
+  transition:all .1s;
+}
 .kp-btn:hover{background:var(--border2);color:var(--gold);}
 .kp-btn:active{transform:scale(.92);}
 
@@ -758,6 +771,13 @@ html,body{background:var(--bg);color:var(--text);font-family:var(--sans);height:
             <!-- 힌트 없음 — 방 안에서 직접 찾아야 -->
             <div id="win-pw-error" style="display:none;margin-top:10px;color:#ff6b6b;font-size:12px;font-family:'Segoe UI',sans-serif;">
               비밀번호가 올바르지 않습니다.
+            </div>
+
+            <!-- 힌트 코드 -->
+            <div style="margin-top:20px;display:flex;align-items:center;justify-content:center;gap:6px;font-family:monospace;font-size:10px;color:rgba(255,255,255,.25);">
+              <span>💡</span>
+              <span onclick="copyHintCode('CF005')" style="cursor:pointer;padding:2px 8px;border:1px solid rgba(255,255,255,.2);border-radius:2px;letter-spacing:1px;transition:all .15s;" onmouseover="this.style.color='rgba(255,255,255,.7)'" onmouseout="this.style.color='rgba(255,255,255,.25)'">CF005</span>
+              <span onclick="copyHintCode('CF006')" style="cursor:pointer;padding:2px 8px;border:1px solid rgba(255,255,255,.2);border-radius:2px;letter-spacing:1px;transition:all .15s;" onmouseover="this.style.color='rgba(255,255,255,.7)'" onmouseout="this.style.color='rgba(255,255,255,.25)'">CF006</span>
             </div>
           </div>
 
