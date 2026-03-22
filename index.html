@@ -56,24 +56,41 @@ html,body{background:var(--bg);color:var(--text);font-family:var(--sans);height:
 /* SVG 핫스팟 레이어 */
 .hotspot-svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible;}
 
-.hs-rect{fill:transparent;stroke:transparent;stroke-width:3;cursor:pointer;transition:fill .2s,stroke .2s;rx:4;}
-.hs-group:hover .hs-rect,.hs-group:focus .hs-rect{fill:rgba(201,168,76,.13);stroke:var(--gold);}
+.hs-rect{fill:transparent;stroke:transparent;stroke-width:3;cursor:pointer;transition:fill .2s,stroke .2s;}
+.hs-group:hover .hs-rect,.hs-group:focus .hs-rect{fill:rgba(201,168,76,.10);stroke:var(--gold);}
 
-/* 라벨: SVG text — foreignObject 대신 사용, 모든 브라우저에서 정확히 표시됨 */
-.hs-lbl-bg{opacity:0;transition:opacity .2s;pointer-events:none;}
-.hs-lbl-txt{
+/* 라벨: 검은 바 없이 글자만, stroke로 가독성 */
+.hs-lbl{
   font-family:'Share Tech Mono',monospace;
-  font-size:20px;
-  fill:#c9a84c;
+  font-size:22px;
+  fill:#f0d060;
+  paint-order:stroke fill;
+  stroke:#000;
+  stroke-width:5px;
+  stroke-linejoin:round;
   opacity:0;
   transition:opacity .2s;
   pointer-events:none;
   dominant-baseline:hanging;
+  letter-spacing:1px;
 }
-.hs-group:hover .hs-lbl-bg,
-.hs-group:focus .hs-lbl-bg{ opacity:1; }
-.hs-group:hover .hs-lbl-txt,
-.hs-group:focus .hs-lbl-txt{ opacity:1; }
+.hs-group:hover .hs-lbl,
+.hs-group:focus .hs-lbl{ opacity:1; }
+
+/* 인트로 포스터 전체화면 */
+#screen-intro{position:relative;align-items:center;justify-content:center;overflow:hidden;padding:0;}
+.intro-poster{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;}
+.intro-overlay{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(0,0,0,.55) 0%,rgba(0,0,0,.2) 40%,rgba(0,0,0,.75) 100%);}
+.intro-wrap{position:relative;z-index:2;max-width:540px;width:100%;text-align:center;padding:40px 24px;}
+
+/* 타이머 */
+.timer-bar{position:fixed;bottom:0;left:0;right:0;height:40px;background:rgba(10,10,10,.93);border-top:1px solid var(--border2);display:none;align-items:center;justify-content:center;gap:12px;z-index:150;}
+.timer-bar.active{display:flex;}
+.timer-label{font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--text2);letter-spacing:3px;text-transform:uppercase;}
+.timer-display{font-family:'Share Tech Mono',monospace;font-size:18px;color:var(--gold);letter-spacing:4px;transition:color .3s;}
+.timer-display.warn{color:var(--accent2);}
+.timer-display.danger{color:var(--accent);animation:timerPulse .8s ease infinite;}
+@keyframes timerPulse{0%,100%{opacity:1;}50%{opacity:.4;}}
 
 .scene-footer{position:absolute;bottom:0;left:0;right:0;padding:10px 16px;background:linear-gradient(transparent,rgba(0,0,0,.85));pointer-events:none;}
 .scene-location{font-family:var(--mono);font-size:10px;color:var(--text2);letter-spacing:2px;}
@@ -190,6 +207,10 @@ html,body{background:var(--bg);color:var(--text);font-family:var(--sans);height:
 
 <!-- 인트로 -->
 <div id="screen-intro" class="screen active">
+  <!-- 🖼️ 포스터 이미지: src를 ./images/poster.jpeg 로 교체 -->
+  <img class="intro-poster" src="./images/poster.jpeg" alt="포스터"
+       onerror="this.style.display='none'">
+  <div class="intro-overlay"></div>
   <div class="intro-wrap">
     <div class="case-badge">CASE 01 — 2024.11</div>
     <h1 class="intro-title"><span>미제 사건 파일</span>접속 기록</h1>
@@ -224,29 +245,25 @@ html,body{background:var(--bg);color:var(--text);font-family:var(--sans);height:
           <!-- CCTV (왼쪽 상단 TV) -->
           <g class="hs-group" onclick="inspectCCTV()" tabindex="0" role="button">
             <rect class="hs-rect" x="238" y="10" width="148" height="190"/>
-            <rect class="hs-lbl-bg" x="238" y="10" width="148" height="28" fill="rgba(10,10,10,.88)"/>
-            <text class="hs-lbl-txt" x="246" y="14">CCTV</text>
+            <text class="hs-lbl" x="242" y="14">CCTV</text>
           </g>
 
           <!-- 현관문 -->
           <g class="hs-group" onclick="openDoorLock()" tabindex="0" role="button">
             <rect class="hs-rect" x="391" y="150" width="150" height="700"/>
-            <rect class="hs-lbl-bg" x="391" y="150" width="150" height="28" fill="rgba(10,10,10,.88)"/>
-            <text class="hs-lbl-txt" x="399" y="154">현관문</text>
+            <text class="hs-lbl" x="395" y="154">현관문</text>
           </g>
 
           <!-- 화분 -->
           <g class="hs-group" onclick="inspectPot()" tabindex="0" role="button">
             <rect class="hs-rect" x="920" y="460" width="80" height="180"/>
-            <rect class="hs-lbl-bg" x="920" y="460" width="80" height="28" fill="rgba(10,10,10,.88)"/>
-            <text class="hs-lbl-txt" x="928" y="464">화분</text>
+            <text class="hs-lbl" x="924" y="464">화분</text>
           </g>
 
           <!-- 우편함 -->
           <g class="hs-group" onclick="inspectMailbox()" tabindex="0" role="button">
             <rect class="hs-rect" x="1150" y="260" width="360" height="280"/>
-            <rect class="hs-lbl-bg" x="1150" y="260" width="148" height="28" fill="rgba(10,10,10,.88)"/>
-            <text class="hs-lbl-txt" x="1158" y="264">우편함</text>
+            <text class="hs-lbl" x="1154" y="264">우편함</text>
           </g>
 
         </svg>
@@ -264,23 +281,19 @@ html,body{background:var(--bg);color:var(--text);font-family:var(--sans);height:
         <svg class="hotspot-svg" viewBox="0 0 1600 900">
           <g class="hs-group" onclick="inspectWindow()" tabindex="0" role="button">
             <rect class="hs-rect" x="950" y="40" width="390" height="400"/>
-            <rect class="hs-lbl-bg" x="950" y="40" width="100" height="28" fill="rgba(10,10,10,.88)"/>
-            <text class="hs-lbl-txt" x="958" y="44">창문</text>
+            <text class="hs-lbl" x="954" y="44">창문</text>
           </g>
           <g class="hs-group" onclick="inspectFridge()" tabindex="0" role="button">
             <rect class="hs-rect" x="30" y="70" width="250" height="340"/>
-            <rect class="hs-lbl-bg" x="30" y="70" width="190" height="28" fill="rgba(10,10,10,.88)"/>
-            <text class="hs-lbl-txt" x="38" y="74">냉장고 위 메모</text>
+            <text class="hs-lbl" x="34" y="74">냉장고 위 메모</text>
           </g>
           <g class="hs-group" onclick="inspectPainting()" tabindex="0" role="button">
             <rect class="hs-rect" x="440" y="50" width="360" height="380"/>
-            <rect class="hs-lbl-bg" x="440" y="50" width="120" height="28" fill="rgba(10,10,10,.88)"/>
-            <text class="hs-lbl-txt" x="448" y="54">벽의 액자</text>
+            <text class="hs-lbl" x="444" y="54">벽의 액자</text>
           </g>
           <g class="hs-group" onclick="inspectMirror()" tabindex="0" role="button">
             <rect class="hs-rect" x="1350" y="180" width="220" height="500"/>
-            <rect class="hs-lbl-bg" x="1350" y="180" width="80" height="28" fill="rgba(10,10,10,.88)"/>
-            <text class="hs-lbl-txt" x="1358" y="184">욕실</text>
+            <text class="hs-lbl" x="1354" y="184">욕실</text>
           </g>
         </svg>
         <div class="scene-footer">
@@ -296,13 +309,11 @@ html,body{background:var(--bg);color:var(--text);font-family:var(--sans);height:
         <svg class="hotspot-svg" viewBox="0 0 1600 900">
           <g class="hs-group" onclick="openComputer()" tabindex="0" role="button">
             <rect class="hs-rect" x="380" y="140" width="830" height="570"/>
-            <rect class="hs-lbl-bg" x="380" y="140" width="210" height="28" fill="rgba(10,10,10,.88)"/>
-            <text class="hs-lbl-txt" x="388" y="144">노트북 — 잠금화면</text>
+            <text class="hs-lbl" x="384" y="144">노트북 — 잠금화면</text>
           </g>
           <g class="hs-group" onclick="inspectUniform()" tabindex="0" role="button">
             <rect class="hs-rect" x="1240" y="50" width="320" height="440"/>
-            <rect class="hs-lbl-bg" x="1240" y="50" width="160" height="28" fill="rgba(10,10,10,.88)"/>
-            <text class="hs-lbl-txt" x="1248" y="54">야구 유니폼</text>
+            <text class="hs-lbl" x="1244" y="54">야구 유니폼</text>
           </g>
         </svg>
         <div class="scene-footer">
@@ -399,6 +410,10 @@ html,body{background:var(--bg);color:var(--text);font-family:var(--sans);height:
         <button class="btn-submit" onclick="checkPuzzle()">확인</button>
       </div>
       <div class="puzzle-feedback" id="puzzle-feedback"></div>
+      <button class="btn-ok" id="hint-btn"
+              style="margin-top:14px;border-color:var(--border2);color:var(--text2);font-size:11px;"
+              onclick="showHint()">💡 힌트 보기</button>
+      <div id="hint-box" style="display:none;margin-top:12px;padding:12px 14px;background:var(--bg3);border-left:3px solid var(--gold);font-size:12px;line-height:1.8;color:var(--text2);"></div>
     </div>
   </div>
 </div>
@@ -415,6 +430,12 @@ html,body{background:var(--bg);color:var(--text);font-family:var(--sans);height:
 </div>
 
 <div class="toast" id="toast"></div>
+
+<!-- 타이머 바 -->
+<div class="timer-bar" id="timer-bar">
+  <span class="timer-label">⏱ TIME</span>
+  <span class="timer-display" id="timer-display">60:00</span>
+</div>
 
 <script>
 const S={stage:1,clues:[],f:{cctvSeen:false,mailboxRead:false,potFound:false,windowSeen:false,fridgeRead:false,paintingSolved:false,mirrorRead:false,computerOpen:false,uniformSeen:false,urlFound:false,webpageEntered:false,file3Unlocked:false}};
@@ -434,10 +455,34 @@ const CLUES={
 
 let curPuzzle=null;
 const PUZZLES={
-  doorlock:{title:'도어락 — 1103호',desc:`CCTV 영상에서 이준혁이 도어락을 누르는 장면을 분석했다.<br><br>손가락 움직임 순서:<br><strong style="color:var(--gold);">좌상단 → 우하단 → 우상단 → 중앙</strong><br><br>도어락 키패드:<br><span style="font-family:var(--mono);letter-spacing:6px;">1 2 3<br>4 5 6<br>7 8 9<br>&nbsp;&nbsp;0</span><br><br>4자리 번호는?`,answer:'1935',onSuccess(){addClue('cctv');advanceStage(2);showToast('🚪 1103호 진입');}},
-  painting:{title:'벽의 추상화',desc:`액자를 확대해보니 붓터치처럼 보이는 선들 사이에 숫자가 교묘하게 숨겨져 있다.<br><br>그림의 <strong style="color:var(--gold);">네 귀퉁이</strong>를 자세히 보면 각각 숫자가 하나씩 새겨져 있다.<br><br>좌상 → 우상 → 좌하 → 우하 순서로 읽으면?`,answer:'4721',onSuccess(){addClue('business_card');S.f.paintingSolved=true;showToast('🖼️ 액자 뒤 벽면 금고 발견!');checkStage2();}},
-  computer_pw:{title:'윈도우 잠금화면',desc:`잠금화면 하단 <strong style="color:var(--gold);">"비밀번호 힌트 보기"</strong>를 눌렀다.<br><br>힌트: <em style="color:var(--text2);">"내가 제일 좋아하는 선수"</em><br><br>선반의 야구 유니폼:<br>등번호 <span class="clue-hl">29</span> / 이름 <span class="clue-hl">PARK</span><br><br>비밀번호 입력 (영문+숫자)`,answer:'PARK29',onSuccess(){S.f.computerOpen=true;showToast('💻 컴퓨터 잠금 해제');closeModal('modal-puzzle');openBrowser();}},
-  webpage_pw:{title:'darkfile-1103 — 비밀번호',desc:`페이지가 비밀번호를 요구한다.<br><br>USB 파일의 힌트:<br><em style="color:var(--text2);">"비밀번호: 서연이 나한테 처음 보낸 날짜"</em><br><br>우편함 편지 봉투 소인:<br><span class="clue-hl">2024.10.27</span><br><br>날짜만 입력하세요 (4자리)`,answer:'1027',onSuccess(){S.f.webpageEntered=true;showToast('🔓 아카이브 접속 성공');closeModal('modal-puzzle');openArchive();}}
+  doorlock:{
+    title:'도어락 — 1103호',
+    desc:`CCTV 영상에서 이준혁이 도어락을 누르는 장면을 분석했다.<br><br>손가락 움직임 순서:<br><strong style="color:var(--gold);">좌상단 → 우하단 → 우상단 → 중앙</strong><br><br>도어락 키패드:<br><span style="font-family:var(--mono);letter-spacing:6px;">1 2 3<br>4 5 6<br>7 8 9<br>&nbsp;&nbsp;0</span><br><br>4자리 번호는?`,
+    hint:'키패드에서 좌상단은 1, 우하단은 9, 우상단은 3, 중앙은 5예요. 순서대로 이어붙이면 됩니다.',
+    answer:'1935',
+    onSuccess(){addClue('cctv');advanceStage(2);showToast('🚪 1103호 진입');}
+  },
+  painting:{
+    title:'벽의 추상화',
+    desc:`액자를 확대해보니 붓터치처럼 보이는 선들 사이에 숫자가 교묘하게 숨겨져 있다.<br><br>그림의 <strong style="color:var(--gold);">네 귀퉁이</strong>를 자세히 보면 각각 숫자가 하나씩 새겨져 있다.<br><br>좌상 → 우상 → 좌하 → 우하 순서로 읽으면?`,
+    hint:'그림 귀퉁이 순서대로 숫자를 읽으면 4자리가 나옵니다. 좌상=4, 우상=7, 좌하=2, 우하=1.',
+    answer:'4721',
+    onSuccess(){addClue('business_card');S.f.paintingSolved=true;showToast('🖼️ 액자 뒤 벽면 금고 발견!');checkStage2();}
+  },
+  computer_pw:{
+    title:'윈도우 잠금화면',
+    desc:`잠금화면 하단 <strong style="color:var(--gold);">"비밀번호 힌트 보기"</strong>를 눌렀다.<br><br>힌트: <em style="color:var(--text2);">"내가 제일 좋아하는 선수"</em><br><br>선반의 야구 유니폼:<br>등번호 <span class="clue-hl">29</span> / 이름 <span class="clue-hl">PARK</span><br><br>비밀번호 입력 (영문+숫자)`,
+    hint:'성(PARK)과 등번호(29)를 붙이면 됩니다. 대문자로 입력하세요.',
+    answer:'PARK29',
+    onSuccess(){S.f.computerOpen=true;showToast('💻 컴퓨터 잠금 해제');closeModal('modal-puzzle');openBrowser();}
+  },
+  webpage_pw:{
+    title:'darkfile-1103 — 비밀번호',
+    desc:`페이지가 비밀번호를 요구한다.<br><br>USB 파일의 힌트:<br><em style="color:var(--text2);">"비밀번호: 서연이 나한테 처음 보낸 날짜"</em><br><br>우편함 편지 봉투 소인:<br><span class="clue-hl">2024.10.27</span><br><br>날짜만 입력하세요 (4자리)`,
+    hint:'봉투 소인의 월(10)과 일(27)을 붙이면 됩니다. → 1027',
+    answer:'1027',
+    onSuccess(){S.f.webpageEntered=true;showToast('🔓 아카이브 접속 성공');closeModal('modal-puzzle');openArchive();}
+  }
 };
 
 // SVG 핫스팟 키보드 접근성
@@ -445,7 +490,47 @@ document.querySelectorAll('.hs-group').forEach(g=>{
   g.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' ')g.click();});
 });
 
-function startGame(){showScreen('screen-game');}
+/* ============================================
+   타이머 (60분)
+============================================ */
+let timerSec = 3600;
+let timerInterval = null;
+
+function startTimer(){
+  document.getElementById('timer-bar').classList.add('active');
+  timerInterval = setInterval(()=>{
+    timerSec--;
+    const m = Math.floor(timerSec/60);
+    const s = timerSec%60;
+    const disp = document.getElementById('timer-display');
+    disp.textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+    disp.className = 'timer-display';
+    if(timerSec<=600) disp.classList.add('warn');   // 10분 이하: 주황
+    if(timerSec<=180) disp.classList.add('danger');  // 3분 이하: 빨강+깜빡
+    if(timerSec<=0){
+      clearInterval(timerInterval);
+      disp.textContent = '00:00';
+      showNotice('⏰','시간 초과','60분이 모두 지났습니다. 수사를 완료하지 못했습니다.');
+    }
+  },1000);
+}
+
+function startGame(){
+  showScreen('screen-game');
+  startTimer();
+}
+
+/* ============================================
+   힌트
+============================================ */
+function showHint(){
+  if(!curPuzzle||!curPuzzle.hint) return;
+  const box = document.getElementById('hint-box');
+  const btn = document.getElementById('hint-btn');
+  box.style.display = 'block';
+  box.innerHTML = `💡 <strong style="color:var(--gold);">힌트</strong><br><br>${curPuzzle.hint}`;
+  btn.style.display = 'none';
+}
 
 // 스테이지 1
 function inspectCCTV(){S.f.cctvSeen=true;showInfo('CCTV 모니터',`<p style="font-family:var(--mono);font-size:11px;color:var(--text2);margin-bottom:12px;">REC ● &nbsp;2024.11.03 23:14:07</p><p>흑백 영상 속 이준혁이 도어락 앞에 서있다.<br>손가락이 움직인다.</p><p style="margin-top:12px;font-family:var(--mono);color:var(--gold);">좌상단 → 우하단 → 우상단 → 중앙</p><p style="margin-top:12px;color:var(--text2);font-size:12px;">도어락 번호를 알아낼 수 있을 것 같다.</p>`);}
@@ -492,7 +577,10 @@ function renderClues(){const n=S.clues.length;document.getElementById('clue-coun
 function viewClue(id){const c=S.clues.find(x=>x.id===id);if(!c)return;c.isNew=false;renderClues();showClueDetail(id);}
 function showClueDetail(id){const c=CLUES[id];if(!c)return;document.getElementById('clue-title').textContent=c.title;document.getElementById('clue-img').style.display='none';document.getElementById('clue-text').innerHTML=c.detail||c.desc||'';document.getElementById('modal-clue').classList.add('open');}
 function showInfo(title,html){document.getElementById('clue-title').textContent=title;document.getElementById('clue-img').style.display='none';document.getElementById('clue-text').innerHTML=html;document.getElementById('modal-clue').classList.add('open');}
-function openPuzzle(key){curPuzzle=PUZZLES[key];document.getElementById('puzzle-title').textContent=curPuzzle.title;document.getElementById('puzzle-desc').innerHTML=curPuzzle.desc;const inp=document.getElementById('puzzle-input');inp.value='';inp.className='puzzle-input';const img=document.getElementById('puzzle-img');if(curPuzzle.imgSrc){img.src=curPuzzle.imgSrc;img.style.display='block';}else{img.style.display='none';}document.getElementById('puzzle-feedback').textContent='';document.getElementById('puzzle-feedback').className='puzzle-feedback';document.getElementById('modal-puzzle').classList.add('open');setTimeout(()=>inp.focus(),120);}
+function openPuzzle(key){curPuzzle=PUZZLES[key];document.getElementById('puzzle-title').textContent=curPuzzle.title;document.getElementById('puzzle-desc').innerHTML=curPuzzle.desc;const inp=document.getElementById('puzzle-input');inp.value='';inp.className='puzzle-input';const img=document.getElementById('puzzle-img');if(curPuzzle.imgSrc){img.src=curPuzzle.imgSrc;img.style.display='block';}else{img.style.display='none';}document.getElementById('puzzle-feedback').textContent='';document.getElementById('puzzle-feedback').className='puzzle-feedback';
+// 힌트 초기화
+document.getElementById('hint-box').style.display='none';document.getElementById('hint-btn').style.display='block';
+document.getElementById('modal-puzzle').classList.add('open');setTimeout(()=>inp.focus(),120);}
 function checkPuzzle(){if(!curPuzzle)return;const v=document.getElementById('puzzle-input').value.trim().toUpperCase();const a=curPuzzle.answer.toUpperCase();const inp=document.getElementById('puzzle-input');const fb=document.getElementById('puzzle-feedback');if(v===a){inp.classList.add('ok');fb.textContent='✓ 정답입니다.';fb.className='puzzle-feedback ok';setTimeout(()=>{closeModal('modal-puzzle');curPuzzle.onSuccess();},800);}else{inp.classList.add('err');fb.textContent='✗ 틀렸습니다. 다시 생각해보세요.';fb.className='puzzle-feedback fail';setTimeout(()=>inp.classList.remove('err'),500);}}
 function showLocked(){showNotice('🔒','아직 확인할 수 없습니다','단서가 더 필요합니다. 현재 위치를 먼저 살펴보세요.');}
 function showNotice(icon,title,text){document.getElementById('notice-icon').textContent=icon;document.getElementById('notice-title').textContent=title;document.getElementById('notice-text').innerHTML=`<strong>${title}</strong>${text}`;document.getElementById('modal-notice').classList.add('open');}
