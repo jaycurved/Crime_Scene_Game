@@ -380,6 +380,20 @@ html,body{background:var(--bg);color:var(--text);font-family:var(--sans);height:
 .dial-btn{background:var(--bg3);border:1px solid var(--border2);color:var(--text);width:52px;height:38px;font-size:18px;cursor:pointer;transition:all .15s;border-radius:3px;}
 .dial-btn:hover{background:var(--border2);color:var(--gold);}
 .dial-btn:active{transform:scale(.95);}
+
+/* 키패드 버튼 */
+.kp-btn{padding:14px 8px;background:var(--bg3);border:1px solid var(--border2);color:var(--text);font-family:var(--mono);font-size:18px;cursor:pointer;border-radius:4px;transition:all .1s;}
+.kp-btn:hover{background:var(--border2);color:var(--gold);}
+.kp-btn:active{transform:scale(.92);}
+
+/* 힌트 탭 */
+.hint-item{border:1px solid var(--border);margin-bottom:10px;border-radius:2px;}
+.hint-item-header{padding:10px 12px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-size:12px;color:var(--text);background:var(--bg2);transition:background .15s;}
+.hint-item-header:hover{background:var(--bg3);}
+.hint-label{font-family:var(--mono);font-size:10px;color:var(--text2);letter-spacing:1px;}
+.hint-item-body{display:none;padding:12px;font-size:12px;color:var(--text2);line-height:1.8;background:var(--bg);border-top:1px solid var(--border);}
+.hint-item-body.open{display:block;}
+.hint-used-badge{font-family:var(--mono);font-size:9px;color:var(--accent2);letter-spacing:1px;}
 .dial-num{width:52px;height:64px;background:var(--bg);border:2px solid var(--border2);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:30px;color:var(--gold);border-radius:3px;}
 
 /* ============================================
@@ -909,24 +923,24 @@ html,body{background:var(--bg);color:var(--text);font-family:var(--sans);height:
                       </div>
                     </div>
                     <!-- 지도 영역 -->
-                    <div id="maploc-map" style="flex:1;display:flex;align-items:center;justify-content:center;background:#d4e8e4;min-height:300px;position:relative;">
-                      <div id="maploc-placeholder" style="text-align:center;color:#7aab9e;">
+                    <div id="maploc-map" style="flex:1;display:flex;align-items:center;justify-content:center;background:#1a1a1a;position:relative;overflow:hidden;">
+                      <div id="maploc-placeholder" style="text-align:center;color:#7aab9e;z-index:1;">
                         <div style="font-size:40px;margin-bottom:8px;">🗺</div>
                         <div style="font-size:13px;font-family:monospace;">좌표를 입력하면 위성 사진이 표시됩니다</div>
                       </div>
-                      <div id="maploc-result" style="display:none;width:100%;height:100%;flex-direction:column;align-items:center;justify-content:center;">
+                      <div id="maploc-result" style="display:none;position:absolute;inset:0;">
                         <!--
-                          🖼️ 위성 사진 이미지: ./images/satellite.jpeg 로 교체
-                          숫자 04217이 보이는 위성 사진 이미지를 넣으면 됩니다
+                          🖼️ 위성 사진: ./images/satellite.jpeg
+                          숫자 04217이 보이는 이미지를 넣으세요
                         -->
                         <img id="satellite-img" src="./images/satellite.jpeg" alt="위성 사진"
-                          style="max-width:100%;max-height:100%;object-fit:contain;"
+                          style="width:100%;height:100%;object-fit:cover;cursor:zoom-in;"
+                          onclick="zoomSatellite()"
                           onerror="this.style.display='none';document.getElementById('satellite-placeholder').style.display='flex';">
-                        <div id="satellite-placeholder" style="display:none;flex-direction:column;align-items:center;gap:12px;padding:32px;">
-                          <div style="background:#2c2c2c;color:#4ade80;font-family:monospace;font-size:12px;padding:16px 24px;border:1px solid #444;line-height:2;text-align:center;">
-                            SATELLITE VIEW<br>
-                            <span style="color:#fff;">37.5195° N, 127.0572° E</span><br>
-                            <span style="color:#888;font-size:10px;">images/satellite.jpeg 를 넣어주세요</span>
+                        <div id="satellite-placeholder" style="display:none;position:absolute;inset:0;align-items:center;justify-content:center;background:#111;">
+                          <div style="background:#1a1a1a;color:#4ade80;font-family:monospace;font-size:12px;padding:20px 28px;border:1px solid #333;line-height:2.2;text-align:center;">
+                            SATELLITE VIEW — 37.5195°N 127.0572°E<br>
+                            <span style="color:#888;font-size:10px;">images/satellite.jpeg 파일을 넣어주세요</span>
                           </div>
                         </div>
                       </div>
@@ -1071,6 +1085,7 @@ git token - check .env
     <div class="panel-tabs">
       <button class="panel-tab active" onclick="switchTab('progress',this)">진행 현황</button>
       <button class="panel-tab" onclick="switchTab('clues',this)">단서 <span id="clue-count">(0)</span></button>
+      <button class="panel-tab" onclick="switchTab('hints',this)">💡 힌트 <span id="hint-count" style="color:var(--accent2);"></span></button>
     </div>
     <div class="panel-content">
       <div class="tab-pane active" id="tab-progress">
@@ -1108,6 +1123,13 @@ git token - check .env
         <div class="clue-empty" id="clue-empty">아직 수집된 단서가 없습니다.</div>
         <div id="clue-list"></div>
       </div>
+      <!-- 힌트 탭 -->
+      <div class="tab-pane" id="tab-hints">
+        <div style="font-family:var(--mono);font-size:10px;color:var(--text2);letter-spacing:1px;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid var(--border);">
+          💡 힌트를 사용하면 횟수가 기록됩니다
+        </div>
+        <div id="hint-list"></div>
+      </div>
     </div>
   </div>
 </div>
@@ -1119,6 +1141,9 @@ git token - check .env
     <h2 class="ending-title">접속 기록</h2>
     <div class="timeline" id="timeline"></div>
     <div class="ending-msg" id="ending-msg">"이준혁은 혼자였지만, 틀리지 않았습니다.<br>이 기록은 이제 당신의 손에 있습니다."</div>
+
+    <!-- 기록 표시 -->
+    <div id="ending-record" style="margin-top:28px;padding:20px 24px;border:1px solid var(--border2);border-left:3px solid var(--gold);opacity:0;"></div>
 
     <div style="
       margin-top:40px;padding:16px 24px;
@@ -1172,8 +1197,10 @@ git token - check .env
               <div style="width:48px;height:48px;border-radius:14px;background:#333;display:flex;align-items:center;justify-content:center;font-size:24px;">📷</div>
               <div style="font-size:10px;color:rgba(255,255,255,.8);">카메라</div>
             </div>
-            <div style="display:flex;flex-direction:column;align-items:center;gap:4px;opacity:.4;">
-              <div style="width:48px;height:48px;border-radius:14px;background:#2ecc71;display:flex;align-items:center;justify-content:center;font-size:24px;">📱</div>
+            <!-- 전화 아이콘 — 처음엔 비활성, 통화 후 활성화 -->
+            <div id="phone-call-icon" onclick="phoneCallIconClick()"
+              style="display:flex;flex-direction:column;align-items:center;gap:4px;opacity:.4;cursor:default;">
+              <div style="width:48px;height:48px;border-radius:14px;background:#2ecc71;display:flex;align-items:center;justify-content:center;font-size:24px;">📞</div>
               <div style="font-size:10px;color:rgba(255,255,255,.8);">전화</div>
             </div>
             <div style="display:flex;flex-direction:column;align-items:center;gap:4px;opacity:.4;">
@@ -1425,6 +1452,44 @@ git token - check .env
   </div>
 </div>
 
+<!-- 키패드 UI 모달 -->
+<div class="modal-overlay" id="modal-keypad">
+  <div class="modal-box" style="max-width:320px;">
+    <div class="modal-header">
+      <span class="modal-title" id="keypad-title">키패드</span>
+      <button class="modal-close" onclick="closeModal('modal-keypad')">✕</button>
+    </div>
+    <div class="modal-body" style="text-align:center;">
+      <p id="keypad-desc" style="font-size:12px;color:var(--text2);margin-bottom:16px;line-height:1.8;"></p>
+
+      <!-- 디스플레이 -->
+      <div id="keypad-display" style="
+        background:var(--bg);border:1px solid var(--border2);
+        padding:12px 16px;font-family:var(--mono);
+        font-size:24px;color:var(--gold);letter-spacing:8px;
+        text-align:center;margin-bottom:16px;min-height:52px;
+      ">——</div>
+      <div id="keypad-feedback" style="font-size:12px;color:var(--accent2);min-height:16px;margin-bottom:12px;font-family:var(--mono);"></div>
+
+      <!-- 키패드 버튼 -->
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;max-width:220px;margin:0 auto;">
+        <button class="kp-btn" onclick="kpPress('1')">1</button>
+        <button class="kp-btn" onclick="kpPress('2')">2</button>
+        <button class="kp-btn" onclick="kpPress('3')">3</button>
+        <button class="kp-btn" onclick="kpPress('4')">4</button>
+        <button class="kp-btn" onclick="kpPress('5')">5</button>
+        <button class="kp-btn" onclick="kpPress('6')">6</button>
+        <button class="kp-btn" onclick="kpPress('7')">7</button>
+        <button class="kp-btn" onclick="kpPress('8')">8</button>
+        <button class="kp-btn" onclick="kpPress('9')">9</button>
+        <button class="kp-btn" onclick="kpClear()" style="font-size:11px;color:var(--text2);">C</button>
+        <button class="kp-btn" onclick="kpPress('0')">0</button>
+        <button class="kp-btn" onclick="kpConfirm()" style="background:var(--accent);color:white;">✓</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- 모달: 알림 -->
 <div class="modal-overlay" id="modal-notice">
   <div class="modal-box" style="max-width:340px;">
@@ -1501,7 +1566,11 @@ const S={stage:1,viewStage:1,clues:[],
 const CLUES={
   cctv:{title:'CCTV 영상 기록',desc:'2024.11.03 23:14 — 이준혁 마지막 귀가 장면',detail:`<p>복도 CCTV 마지막 기록.</p><p style="margin:12px 0;font-family:var(--mono);font-size:12px;color:var(--text2);">타임스탬프: <span class="clue-hl">2024.11.03 / 23:14</span></p><p>이준혁이 도어락을 누르는 장면이 흐릿하게 잡혀있다.<br>손가락 움직임: <span class="clue-hl">좌상→우하→우상→중앙</span></p><p style="margin-top:12px;color:var(--text2);font-size:12px;">도어락 키패드: 1 2 3 / 4 5 6 / 7 8 9 / 0</p>`},
   letter:{title:'우편함 편지',desc:'발신인 없는 편지. 봉투 소인: 2024.10.27',detail:`<p>손으로 쓴 짧은 편지.</p><p style="margin:14px 0;font-family:var(--serif);font-size:15px;line-height:2;">"고마워. 네가 옳았어.<br>— 김서연 (전 직장 동료)"</p><p style="color:var(--text2);">봉투 소인: <span class="clue-hl">2024.10.27</span></p>`},
-  usb:{title:'USB 드라이브',desc:'화분 흙 속 방수 케이스 안에 숨겨져 있었다.',detail:`<p>검은색 소형 USB. 라벨에 손글씨:</p><p style="margin:14px 0;font-family:var(--mono);color:var(--gold);font-size:14px;letter-spacing:2px;">"비밀번호: 서연이 나한테 처음 보낸 날짜"</p><p style="color:var(--text2);font-size:12px;">컴퓨터에 연결하면 파일을 열 수 있을 것 같다.</p>`},
+  usb:{title:'USB 드라이브',desc:'화분 흙 속 방수 케이스 안에 숨겨져 있었다.',detail:`
+    <img src="./images/usb_clue.jpeg" alt="USB 단서" style="width:100%;display:block;margin-bottom:12px;" onerror="this.style.display='none'">
+    <p>흙 속에서 방수 케이스를 발견했다.<br>안에 소형 USB가 들어있다.</p>
+    <p style="margin-top:10px;color:var(--text2);font-size:12px;">컴퓨터에 연결하면 무언가 열 수 있을 것 같다.</p>
+  `},
   window_scratch:{
     title:'창문 — 외부 발자국',
     desc:'창문 바깥 난간에 등산화 발자국. 외부 침입 흔적.',
@@ -1884,6 +1953,118 @@ function phoneOpenMemo(key){
 /* ============================================
    메일 나가기 — 방으로 이동 + 전화 트리거
 ============================================ */
+/* ============================================
+   키패드 UI
+============================================ */
+let _kpState = { answer:'', maxLen:4, input:'', onSuccess:null };
+
+function openKeypad({ title='키패드', desc='', answer, maxLen=4, onSuccess }){
+  _kpState = { answer, maxLen, input:'', onSuccess };
+  document.getElementById('keypad-title').textContent = title;
+  document.getElementById('keypad-desc').innerHTML = (desc||'').replace(/\n/g,'<br>');
+  document.getElementById('keypad-display').textContent = '—'.repeat(maxLen);
+  document.getElementById('keypad-feedback').textContent = '';
+  document.getElementById('modal-keypad').classList.add('open');
+}
+
+function kpPress(n){
+  if(_kpState.input.length >= _kpState.maxLen) return;
+  _kpState.input += n;
+  const shown = _kpState.input + '—'.repeat(_kpState.maxLen - _kpState.input.length);
+  document.getElementById('keypad-display').textContent = shown;
+}
+
+function kpClear(){
+  _kpState.input = '';
+  document.getElementById('keypad-display').textContent = '—'.repeat(_kpState.maxLen);
+  document.getElementById('keypad-feedback').textContent = '';
+}
+
+function kpConfirm(){
+  const fb = document.getElementById('keypad-feedback');
+  if(_kpState.input === _kpState.answer){
+    fb.style.color = '#4ade80';
+    fb.textContent = '✓ 정확합니다';
+    setTimeout(()=>{ closeModal('modal-keypad'); if(_kpState.onSuccess) _kpState.onSuccess(); }, 600);
+  } else {
+    fb.style.color = 'var(--accent2)';
+    fb.textContent = '✗ 틀렸습니다';
+    const d = document.getElementById('keypad-display');
+    d.style.color = 'var(--accent2)';
+    setTimeout(()=>{ kpClear(); d.style.color='var(--gold)'; }, 700);
+  }
+}
+
+/* ============================================
+   엔딩 트리거 (1108호 키패드 성공)
+============================================ */
+function triggerEnding(){
+  clearInterval(timerInterval);
+  const elapsed = 3600 - timerSec;
+  const m = String(Math.floor(elapsed/60)).padStart(2,'0');
+  const s = String(elapsed%60).padStart(2,'0');
+  try{
+    const bgm=document.getElementById('bgm');
+    if(bgm){ bgm.pause(); bgm.src='./audio/bgm_ending.mp3'; bgm.play().catch(()=>{}); }
+  }catch(e){}
+  showEnding(`${m}:${s}`);
+}
+
+/* ============================================
+   힌트 시스템
+============================================ */
+let hintUsedCount = 0;
+
+const HINTS = [
+  {id:'h_doorlock', title:'🚪 도어락 비밀번호', text:'복도 CCTV를 확인해보세요. 이준혁이 도어락을 누르는 장면이 있습니다.'},
+  {id:'h_doorlock2', title:'🚪 도어락 — 추가 힌트', text:'CCTV 손가락 순서: 좌상단→우하단→우상단→중앙. 키패드에서 각각 어떤 숫자인지 확인하세요.'},
+  {id:'h_light', title:'💡 방 탐색 시작', text:'방에 불이 꺼져 있습니다. 왼쪽 벽의 스위치를 찾아보세요.'},
+  {id:'h_wardrobe', title:'🔒 옷장 자물쇠', text:'방 안의 액자를 클릭해서 확대해보세요. 그림 안에 무언가 숨겨져 있습니다.'},
+  {id:'h_wardrobe2', title:'🔒 옷장 자물쇠 — 추가 힌트', text:'액자 네 귀퉁이 숫자를 좌상→우상→좌하→우하 순서로 읽으면 4자리 비밀번호가 나옵니다.'},
+  {id:'h_laptop', title:'💻 컴퓨터 비밀번호', text:'포스트잇에 PW 일부가 보입니다. 나머지는 옷장 안에서 찾을 수 있습니다. 옷장을 열려면 자물쇠를 풀어야 합니다.'},
+  {id:'h_laptop2', title:'💻 컴퓨터 비밀번호 — 추가 힌트', text:'포스트잇: ????29 / 액자 뒷면: "이름 먼저, 번호 다음" / 유니폼의 이름과 번호를 조합하세요.'},
+  {id:'h_darkfile', title:'🌐 darkfile 접속 주소', text:'컴퓨터 메모장(notepad.txt)을 열면 웹 주소가 있습니다. Chrome 주소창에 입력하세요.'},
+  {id:'h_darkfile2', title:'🌐 darkfile 접속키', text:'접속키는 핸드폰 메모 앱 → "기억해야 할 것들" 메모에 있습니다.'},
+  {id:'h_mailpw', title:'✉️ 메일 비밀번호', text:'darkfile의 export_log_dump.txt를 열면 각 줄에 색깔로 강조된 숫자들이 있습니다. 수식을 찾아보세요.'},
+  {id:'h_mailpw2', title:'✉️ 메일 비밀번호 — 추가 힌트', text:'로그 맨 아래 줄: A = 10 × 2^4. 계산하면 4자리 숫자가 나옵니다.'},
+  {id:'h_phone', title:'📞 전화 받기', text:'메일을 확인하고 나가기를 누르면 방 내부로 이동합니다. 그때 핸드폰에 전화가 옵니다.'},
+  {id:'h_maploc', title:'🗺 위성 지도 접속', text:'전화에서 좌표를 들었나요? Chrome에서 maploc.app에 접속한 후 좌표를 입력하세요.'},
+  {id:'h_ending', title:'🚪 1108호 진입', text:'위성사진에서 5자리 숫자를 찾으세요. 복도로 돌아가 우측 끝 문 키패드에 입력하면 됩니다.'},
+];
+
+function renderHintList(){
+  const list = document.getElementById('hint-list');
+  if(!list) return;
+  list.innerHTML = HINTS.map(h=>`
+    <div class="hint-item">
+      <div class="hint-item-header" onclick="toggleHint('${h.id}')">
+        <span style="font-size:12px;">${h.title}</span>
+        <span class="hint-label" id="hint-status-${h.id}">클릭하여 확인</span>
+      </div>
+      <div class="hint-item-body" id="hint-body-${h.id}">${h.text}</div>
+    </div>
+  `).join('');
+}
+
+function toggleHint(id){
+  const body=document.getElementById('hint-body-'+id);
+  const status=document.getElementById('hint-status-'+id);
+  if(!body) return;
+  const opening = !body.classList.contains('open');
+  body.classList.toggle('open');
+  if(opening && status && status.textContent==='클릭하여 확인'){
+    hintUsedCount++;
+    status.textContent='힌트 사용됨';
+    status.className='hint-used-badge';
+    updateHintCount();
+  }
+}
+
+function updateHintCount(){
+  const el=document.getElementById('hint-count');
+  if(el) el.textContent = hintUsedCount>0?`(${hintUsedCount}회 사용)`:'';
+}
+
 function mailGoBack(){
   // 컴퓨터 창 닫고 방 내부로
   closeWin('win-browser');
@@ -1912,13 +2093,29 @@ function playCallRecording(){
 }
 
 function unlockCallReplay(){
+  // 핸드폰 전화 아이콘 활성화
+  const icon = document.getElementById('phone-call-icon');
+  if(icon){
+    icon.style.opacity = '1';
+    icon.style.cursor = 'pointer';
+  }
+  // 구버전 버튼도 업데이트 (혹시 있으면)
   const btn = document.getElementById('call-replay-btn');
-  if(!btn) return;
-  btn.disabled = false;
-  btn.style.cursor = 'pointer';
-  btn.style.color = 'var(--gold)';
-  btn.style.borderColor = 'var(--gold)';
-  btn.textContent = '🎙 통화 녹음 재생';
+  if(btn){
+    btn.disabled = false;
+    btn.style.cursor = 'pointer';
+    btn.style.color = 'var(--gold)';
+    btn.style.borderColor = 'var(--gold)';
+    btn.textContent = '🎙 통화 녹음 재생';
+  }
+}
+
+function phoneCallIconClick(){
+  if(!S.f.callReceived){
+    // 비활성
+    return;
+  }
+  playCallRecording();
 }
 
 function triggerIncomingCall(){
@@ -2167,7 +2364,14 @@ function inspectSecretRoom(){
     showNotice('🔒','진입할 수 없습니다','지금은 이 문을 열 수 없습니다.');
     return;
   }
-  showComingSoon();
+  // 1108호 키패드 엔딩
+  openKeypad({
+    title:'1108호 — 키패드',
+    desc:'좌표에서 얻은 번호를 입력하세요.\n(5자리)',
+    answer:'04217',
+    maxLen: 5,
+    onSuccess(){ triggerEnding(); }
+  });
 }
 
 function showComingSoon(){
@@ -2364,6 +2568,7 @@ function startGame(){
   showScreen('screen-game');
   if(bgmEl) bgmEl.play().catch(()=>{});
   startTimer();
+  renderHintList();
 }
 
 /* ============================================
@@ -2427,11 +2632,13 @@ function inspectCCTV(){
 function inspectMailbox(){if(!S.f.mailboxRead){S.f.mailboxRead=true;addClue('letter');showToast('📬 편지 발견');}showClueDetail('letter');}
 function inspectPot(){if(!S.f.potFound){S.f.potFound=true;addClue('usb');showToast('💾 USB 발견');}showClueDetail('usb');}
 function openDoorLock(){
-  if(S.solved.doorlock){
-    goToStage(2);
-    return;
-  }
-  openPuzzle('doorlock');
+  if(S.solved.doorlock){ goToStage(2); return; }
+  openKeypad({
+    title:'도어락 — 1103호',
+    desc:'4자리 비밀번호를 입력하세요.',
+    answer:'1935',
+    onSuccess(){ S.solved.doorlock=true; addClue('cctv'); advanceStage(2); showToast('🚪 1103호 진입'); }
+  });
 }
 
 // 스테이지 2
@@ -2440,6 +2647,11 @@ function openDoorLock(){
 ============================================ */
 function openLaptop(){
   if(S.stage < 2){ showLocked(); return; }
+  // 불이 꺼져있으면 클릭 불가
+  if(!roomLightOn){
+    showToast('💡 먼저 불을 켜야 합니다');
+    return;
+  }
 
   // 스테이지3 아직 안 열렸으면 진행
   if(S.stage === 2){
@@ -2926,7 +3138,32 @@ function showMailContent(){addClue('internal_mail');showInfo('내부 메일.pdf'
 function openMap(){if(S.stage<5){showLocked();return;}showInfo('IP 위성 추적 — 211.XXX.XXX.47',`<p style="margin-bottom:14px;font-size:12px;color:var(--text2);">수신처 IP 추적 결과:<br><strong style="color:var(--text);">서울 강남구 테헤란로 인근</strong></p><div style="width:100%;height:260px;border:1px solid var(--border);overflow:hidden;"><iframe width="100%" height="100%" style="border:0;" loading="lazy" allowfullscreen src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3165.4!2d127.0!3d37.5!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMzfCsDMwJzAwLjAiTiAxMjfCsDAwJzAwLjAiRQ!5e1!3m2!1sko!2skr!4v1700000000000!5m2!1sko!2skr" referrerpolicy="no-referrer-when-downgrade"></iframe></div><p style="margin-top:12px;color:var(--text2);font-size:12px;">위성뷰로 전환해 옥상을 자세히 살펴보세요.</p><button class="btn-ok" style="margin-top:14px;border-color:var(--gold);color:var(--gold);" onclick="closeModal('modal-clue');showEnding();">📋 수사 완료 — 전말 확인 →</button>`);}
 
 // 엔딩
-function showEnding(){showScreen('screen-ending');const events=[{d:'2019. 03',t:'코어링크테크놀로지스-타겟웨이브솔루션즈, 불법 사용자 데이터 거래 시작. 계약 당사자: 박성진 이사.'},{d:'2024. 09',t:'이준혁, 서버 유지보수 중 우연히 데이터 수출 로그를 발견한다.'},{d:'2024. 10',t:'증거 파일을 3곳에 분산 은닉. 동료 김서연에게만 알린다.'},{d:'2024. 10. 27',t:'김서연, 이준혁에게 첫 메시지 전송. "고마워. 네가 옳았어."'},{d:'2024. 11. 03',t:'이준혁, 내부고발 사이트 접속. 이 순간 코어링크테크놀로지스 측에 발각된다.'},{d:'2024. 11. 03 &nbsp;22:47',t:'박성진 이사, 경찰청 내부 연락. "오늘 밤 안에 처리해달라."'},{d:'2024. 11. 03 &nbsp;23:14',t:'CCTV 마지막 장면. 이준혁이 귀가한다. 이후 영상 없음.'},{d:'2024. 11. 04',t:'경찰, 현장 감식 없이 자살로 신속 종결.'},{d:'2024. 11. 10',t:'김서연, 당신에게 익명으로 제보한다. 그녀 역시 쫓기고 있다.'}];const tl=document.getElementById('timeline');tl.innerHTML=events.map((e,i)=>`<div class="tl-item" style="transition-delay:${i*.15}s"><div class="tl-date">${e.d}</div><div class="tl-text">${e.t}</div></div>`).join('');setTimeout(()=>{document.querySelectorAll('.tl-item').forEach(el=>el.classList.add('vis'));setTimeout(()=>document.getElementById('ending-msg').classList.add('vis'),events.length*150+500);},300);}
+function showEnding(timeStr){
+  showScreen('screen-ending');
+  const events=[
+    {d:'2019. 03',t:'코어링크테크놀로지스 — 타겟웨이브솔루션즈, 불법 사용자 데이터 거래 시작. 계약 당사자: 박성진 이사.'},
+    {d:'2024. 09',t:'이준혁, 서버 유지보수 중 우연히 데이터 수출 로그를 발견한다.'},
+    {d:'2024. 10',t:'증거 파일을 3곳에 분산 은닉. 동료 김서연에게만 알린다.'},
+    {d:'2024. 10. 27',t:'김서연, 이준혁에게 첫 메시지 전송.'},
+    {d:'2024. 11. 03',t:'이준혁, 내부고발 사이트 접속. 이 순간 코어링크테크놀로지스 측에 발각된다.'},
+    {d:'2024. 11. 03 \u00a022:47',t:'박성진 이사, 경찰청 내부 연락. "오늘 밤 안에 처리해달라."'},
+    {d:'2024. 11. 03 \u00a023:14',t:'CCTV 마지막 장면. 이준혁이 귀가한다. 이후 영상 없음.'},
+    {d:'2024. 11. 04',t:'경찰, 현장 감식 없이 자살로 신속 종결.'},
+    {d:'2024. 11. 10',t:'김서연, 당신에게 익명으로 제보한다. 그녀 역시 쫓기고 있다.'},
+  ];
+  const tl=document.getElementById('timeline');
+  tl.innerHTML=events.map((e,i)=>`<div class="tl-item" style="transition-delay:${i*.15}s"><div class="tl-date">${e.d}</div><div class="tl-text">${e.t}</div></div>`).join('');
+  const recordEl=document.getElementById('ending-record');
+  if(recordEl){
+    recordEl.innerHTML=`<div style="display:flex;gap:32px;justify-content:center;flex-wrap:wrap;"><div style="text-align:center;"><div style="font-family:var(--mono);font-size:10px;color:var(--text3);letter-spacing:2px;margin-bottom:6px;">소요 시간</div><div style="font-family:var(--mono);font-size:22px;color:var(--gold);">${timeStr||'—'}</div></div><div style="text-align:center;"><div style="font-family:var(--mono);font-size:10px;color:var(--text3);letter-spacing:2px;margin-bottom:6px;">힌트 사용</div><div style="font-family:var(--mono);font-size:22px;color:${hintUsedCount>0?'var(--accent2)':'#4ade80'};">${hintUsedCount}회</div></div></div>`;
+    recordEl.style.opacity='0';
+    setTimeout(()=>{recordEl.style.transition='opacity 1s';recordEl.style.opacity='1';},800);
+  }
+  setTimeout(()=>{
+    document.querySelectorAll('.tl-item').forEach(el=>el.classList.add('vis'));
+    setTimeout(()=>document.getElementById('ending-msg').classList.add('vis'),events.length*150+500);
+  },300);
+}
 
 // 유틸
 /* ============================================
