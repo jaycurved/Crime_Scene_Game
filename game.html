@@ -23,8 +23,8 @@ html,body{background:var(--bg);color:var(--text);font-family:var(--sans);height:
 .screen{display:none;width:100%;height:100vh;}
 .screen.active{display:flex;flex-direction:column;}
 
-/* 인트로 */
-#screen-intro{align-items:center;justify-content:center;overflow-y:auto;padding:40px 20px;}
+/* 인트로 — 포스터 전체화면 */
+#screen-intro{position:relative;align-items:center;justify-content:flex-start;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:0;}
 .intro-wrap{max-width:540px;width:100%;text-align:center;}
 .case-badge{font-family:var(--mono);font-size:11px;letter-spacing:4px;color:var(--accent);text-transform:uppercase;margin-bottom:20px;opacity:0;animation:fadeUp .8s ease forwards .3s;}
 .intro-title{font-family:var(--serif);font-size:clamp(30px,6vw,58px);font-weight:700;line-height:1.15;margin-bottom:12px;opacity:0;animation:fadeUp .8s ease forwards .6s;}
@@ -1140,13 +1140,17 @@ document.querySelectorAll('.hs-group').forEach(g=>{
   jpeg / jpg / png 중 있는 파일을 자동으로 찾아서 연결
   파일명만 맞으면 확장자 상관없이 동작
 */
-function loadImg(id, baseName){
+function loadImg(id, baseName, fallbackBase){
   const exts = ['jpeg','jpg','png','webp'];
   const el = document.getElementById(id);
   if(!el) return;
   let i = 0;
   function tryNext(){
-    if(i >= exts.length){ el.style.display='none'; return; }
+    if(i >= exts.length){
+      if(fallbackBase){ loadImgDirect(el, fallbackBase); }
+      else { el.style.display='none'; }
+      return;
+    }
     el.src = `./images/${baseName}.${exts[i]}`;
     el.onerror = ()=>{ i++; tryNext(); };
     el.onload  = ()=>{ el.style.display='block'; };
@@ -1158,7 +1162,7 @@ function loadImg(id, baseName){
 // 페이지 로드 시 이미지 자동 연결
 loadImg('img-poster',  'poster');
 loadImg('img-stage1',  'stage1_corridor');
-loadImg('img-stage2',  'stage2_room_dark'); // 처음엔 어두운 버전
+loadImg('img-stage2',  'stage2_room_dark', 'stage2_room'); // dark 없으면 일반 버전
 loadImg('img-stage3',  'stage3_desk');
 
 /* ============================================
@@ -1371,20 +1375,17 @@ function toggleBGM(){
   bgmMuted = !bgmMuted;
   const btn = document.getElementById('bgm-btn');
   if(bgmMuted){
-    bgmEl.pause();
-    btn.textContent = '✕ BGM';
-    btn.classList.add('muted');
+    if(bgmEl) bgmEl.pause();
+    if(btn){ btn.textContent='✕ BGM'; btn.classList.add('muted'); }
   } else {
-    bgmEl.play().catch(()=>{});
-    btn.textContent = '♪ BGM';
-    btn.classList.remove('muted');
+    if(bgmEl) bgmEl.play().catch(()=>{});
+    if(btn){ btn.textContent='♪ BGM'; btn.classList.remove('muted'); }
   }
 }
 
 function startGame(){
   showScreen('screen-game');
-  // BGM 자동 재생 시도 (브라우저 정책상 사용자 클릭 후 가능)
-  bgmEl.play().catch(()=>{});
+  if(bgmEl) bgmEl.play().catch(()=>{});
   startTimer();
 }
 
