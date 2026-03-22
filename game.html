@@ -568,67 +568,61 @@ html,body{background:var(--bg);color:var(--text);font-family:var(--sans);height:
 
         <svg class="hotspot-svg" viewBox="0 0 1600 900" style="z-index:2;">
 
-          <!-- 스위치 — 항상 클릭 가능 -->
+          <!-- 스위치 — 왼쪽 벽 중앙, 항상 클릭 가능 -->
           <g class="hs-group" id="hs-switch" onclick="toggleLight()" tabindex="0" role="button">
-            <rect class="hs-rect" x="490" y="370" width="80" height="130"/>
-            <text class="hs-lbl" x="494" y="374">스위치</text>
+            <rect class="hs-rect" x="55" y="380" width="90" height="140"/>
+            <text class="hs-lbl" x="59" y="384">스위치</text>
           </g>
 
-          <!-- 노트북 — 항상 클릭 가능 (비밀번호 힌트 없음) -->
+          <!-- 노트북 — 오른쪽 하단 책상, 항상 클릭 가능 -->
           <g class="hs-group" onclick="openLaptop()" tabindex="0" role="button">
-            <rect class="hs-rect" x="920" y="580" width="280" height="200"/>
-            <text class="hs-lbl" x="924" y="584">노트북</text>
+            <rect class="hs-rect" x="1180" y="620" width="360" height="240"/>
+            <text class="hs-lbl" x="1184" y="624">노트북</text>
           </g>
 
           <!-- 불 켜진 후 활성화 그룹 -->
           <g id="hs-light-group" style="pointer-events:none;opacity:0;transition:opacity .5s ease;">
 
-            <!-- 냉장고 위 메모 -->
+            <!-- 냉장고 위 메모 — 왼쪽 하단 냉장고 위 노란 메모 -->
             <g class="hs-group" onclick="inspectFridge()" tabindex="0" role="button">
-              <rect class="hs-rect" x="30" y="70" width="250" height="340"/>
-              <text class="hs-lbl" x="34" y="74">냉장고 위 메모</text>
+              <rect class="hs-rect" x="140" y="460" width="220" height="200"/>
+              <text class="hs-lbl" x="144" y="464">냉장고 위 메모</text>
             </g>
 
-            <!-- 핸드폰 카톡 -->
-            <g class="hs-group" onclick="inspectKakao()" tabindex="0" role="button">
-              <rect class="hs-rect" x="1240" y="620" width="120" height="180"/>
-              <text class="hs-lbl" x="1244" y="624">핸드폰</text>
-            </g>
-
-            <!-- 창문 — 외부 발자국 -->
-            <g class="hs-group" onclick="inspectWindow()" tabindex="0" role="button">
-              <rect class="hs-rect" x="950" y="40" width="390" height="400"/>
-              <text class="hs-lbl" x="954" y="44">창문</text>
-            </g>
-
-            <!-- 액자 — 클릭하면 이미지 확대 -->
+            <!-- 액자 — 중앙 벽 -->
             <g class="hs-group" onclick="zoomPainting()" tabindex="0" role="button">
-              <rect class="hs-rect" x="440" y="50" width="360" height="380"/>
-              <text class="hs-lbl" x="444" y="54">벽의 액자</text>
+              <rect class="hs-rect" x="380" y="190" width="430" height="340"/>
+              <text class="hs-lbl" x="384" y="194">벽의 액자</text>
             </g>
 
-            <!-- 옷장 자물쇠 -->
+            <!-- 옷장 자물쇠 — 중앙 오른쪽 옷장 자물쇠 -->
             <g class="hs-group" onclick="openPadlock()" tabindex="0" role="button">
-              <rect class="hs-rect" x="700" y="350" width="200" height="500"/>
-              <text class="hs-lbl" x="704" y="354">옷장 자물쇠</text>
+              <rect class="hs-rect" x="840" y="420" width="200" height="260"/>
+              <text class="hs-lbl" x="844" y="424">옷장 자물쇠</text>
             </g>
 
-            <!-- 포스트잇 -->
+            <!-- 창문 발자국 — 오른쪽 창문 -->
+            <g class="hs-group" onclick="inspectWindow()" tabindex="0" role="button">
+              <rect class="hs-rect" x="1060" y="80" width="360" height="440"/>
+              <text class="hs-lbl" x="1064" y="84">창문</text>
+            </g>
+
+            <!-- 포스트잇 — 오른쪽 벽 (PW-29) -->
             <g class="hs-group" onclick="inspectPostit()" tabindex="0" role="button">
-              <rect class="hs-rect" x="900" y="560" width="180" height="140"/>
-              <text class="hs-lbl" x="904" y="564">포스트잇</text>
+              <rect class="hs-rect" x="1160" y="480" width="180" height="160"/>
+              <text class="hs-lbl" x="1164" y="484">포스트잇</text>
             </g>
 
-            <!-- 맥거핀: 침대 -->
+            <!-- 핸드폰 — 책상 위 -->
+            <g class="hs-group" onclick="inspectKakao()" tabindex="0" role="button">
+              <rect class="hs-rect" x="1050" y="620" width="160" height="140"/>
+              <text class="hs-lbl" x="1054" y="624">핸드폰</text>
+            </g>
+
+            <!-- 침대 — 중앙 하단 -->
             <g class="hs-group" onclick="inspectBed()" tabindex="0" role="button">
-              <rect class="hs-rect" x="100" y="600" width="320" height="260"/>
-              <text class="hs-lbl" x="104" y="604">침대</text>
-            </g>
-
-            <!-- 맥거핀: 화장실 문 -->
-            <g class="hs-group" onclick="inspectRoomDoor()" tabindex="0" role="button">
-              <rect class="hs-rect" x="1490" y="100" width="110" height="700"/>
-              <text class="hs-lbl" x="1494" y="104">화장실 문</text>
+              <rect class="hs-rect" x="340" y="580" width="680" height="300"/>
+              <text class="hs-lbl" x="344" y="584">침대</text>
             </g>
 
           </g>
