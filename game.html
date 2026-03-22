@@ -1319,30 +1319,32 @@ html,body{background:var(--bg);color:var(--text);font-family:var(--sans);height:
 
 <!-- 유니폼 발견 모달 -->
 <div class="modal-overlay" id="modal-uniform">
-  <div class="modal-box" style="max-width:400px;">
+  <div class="modal-box" style="max-width:440px;">
     <div class="modal-header">
       <span class="modal-title">옷장 내부</span>
       <button class="modal-close" onclick="closeModal('modal-uniform')">✕</button>
     </div>
     <div class="modal-body" style="text-align:center;">
-      <div style="font-size:64px;margin-bottom:16px;">⚾</div>
-      <p style="font-size:14px;color:var(--text);margin-bottom:16px;">
+      <!--
+        🖼️ 유니폼 이미지 교체:
+        ./images/uniform.jpeg 파일을 넣으면 자동으로 이미지가 표시됩니다
+        없으면 텍스트로 대체
+      -->
+      <img id="uniform-img"
+           src="./images/uniform.jpeg"
+           alt="야구 유니폼"
+           style="width:100%;max-height:280px;object-fit:contain;display:block;margin-bottom:14px;"
+           onerror="this.style.display='none';document.getElementById('uniform-fallback').style.display='block';">
+      <div id="uniform-fallback" style="display:none;">
+        <div style="font-size:64px;margin-bottom:16px;">⚾</div>
+        <div style="background:var(--bg3);border:1px solid var(--border2);padding:20px;margin-bottom:16px;font-family:var(--mono);font-size:24px;color:var(--gold);letter-spacing:6px;">
+          PARK &nbsp; #29
+        </div>
+      </div>
+      <p style="font-size:13px;color:var(--text);margin-bottom:8px;">
         자물쇠가 열렸다.<br>옷장 안에 야구 유니폼이 걸려있다.
       </p>
-      <div style="
-        background:var(--bg3);border:1px solid var(--border2);
-        padding:20px;margin-bottom:16px;
-        font-family:var(--mono);font-size:24px;
-        color:var(--gold);letter-spacing:6px;
-      ">
-        PARK &nbsp; #29
-      </div>
-      <p style="font-size:12px;color:var(--text2);line-height:1.8;">
-        이준혁이 제일 좋아하는 선수.<br>
-        포스트잇의 <span style="color:var(--gold);">PW — ████29</span> 와<br>
-        액자 메모의 <span style="color:var(--gold);">"이름 먼저, 번호 다음"</span> 과 연결된다.
-      </p>
-      <button class="btn-ok" onclick="closeModal('modal-uniform')" style="margin-top:16px;">확인</button>
+      <button class="btn-ok" onclick="closeModal('modal-uniform')" style="margin-top:12px;">닫기</button>
     </div>
   </div>
 </div>
@@ -1471,10 +1473,6 @@ const CLUES={
         "답은 항상 네 곁에 있어.<br>
         이름 먼저, 번호 다음."
       </div>
-      <p style="margin-top:14px;color:var(--text2);font-size:12px;">
-        이준혁이 스스로를 위해 남긴 메모 같다.<br>
-        <span style="color:var(--gold);">선반의 유니폼</span>과 연결되는 것 같다.
-      </p>
     `
   },
   postit_clue:{
@@ -1486,16 +1484,15 @@ const CLUES={
         한 장이 반쯤 찢겨 있다.
       </p>
       <div style="background:#fff9c4;color:#333;padding:16px;font-family:'Courier New',monospace;font-size:18px;letter-spacing:4px;text-align:center;border:1px solid #e0d000;">
-        PW — <span style="text-decoration:line-through;color:#aaa;">████</span>29
+        PW — <span style="opacity:.15;">████</span>29
       </div>
       <p style="margin-top:14px;color:var(--text2);font-size:12px;">
-        앞 네 글자가 찢겨나갔다.<br>
-        <span style="color:var(--gold);">액자 뒷면 메모</span>와 <span style="color:var(--gold);">옷장 안 유니폼</span>에 힌트가 있을 것 같다.
+        앞부분이 찢겨나가 일부만 남아있다.
       </p>
     `
   },
   uniform_clue:{
-    title:'야구 유니폼 — PARK #29',
+    title:'야구 유니폼',
     desc:'옷장 자물쇠를 열자 발견. 이준혁이 아끼던 유니폼.',
     detail:`
       <div style="text-align:center;margin-bottom:16px;font-size:48px;">⚾</div>
@@ -1503,9 +1500,8 @@ const CLUES={
         PARK &nbsp; #29
       </div>
       <p style="font-size:12px;color:var(--text2);line-height:1.8;">
-        포스트잇의 <span style="color:var(--gold);">PW — ████29</span><br>
-        액자 메모의 <span style="color:var(--gold);">"이름 먼저, 번호 다음"</span><br>
-        → 이름(PARK) + 번호(29) = <span style="color:var(--accent2);">PARK29</span>
+        이준혁이 즐겨 보던 야구팀의 유니폼이다.<br>
+        오래 간직한 것인지 낡아있다.
       </p>
     `
   },
@@ -1535,14 +1531,8 @@ const PUZZLES={
   computer_pw:{
     key:'computer_pw',
     title:'윈도우 잠금화면',
-    desc:`잠금화면 하단 <strong style="color:var(--gold);">"비밀번호 힌트 보기"</strong>를 눌렀다.<br><br>
-         힌트: <em style="color:var(--text2);">"내가 제일 좋아하는 선수"</em><br><br>
-         방 안 선반의 야구 유니폼:<br>
-         이름 <span class="clue-hl">PARK</span> / 등번호 <span class="clue-hl">29</span><br><br>
-         액자 뒷면 메모:<br>
-         <em style="color:var(--text2);">"이름 먼저, 번호 다음"</em><br><br>
-         비밀번호 입력 (영문+숫자)`,
-    hint:'액자 뒷면 메모 "이름 먼저, 번호 다음" + 유니폼 PARK / 29 → PARK29',
+    desc:`비밀번호를 입력하세요.`,
+    hint:'방 안에서 찾은 단서들을 다시 살펴보세요.',
     answer:'PARK29',
     onSuccess(){S.f.computerOpen=true;showToast('💻 컴퓨터 잠금 해제');closeModal('modal-puzzle');openBrowser();}
   },
@@ -1876,7 +1866,6 @@ function inspectCCTV(){
 function inspectMailbox(){if(!S.f.mailboxRead){S.f.mailboxRead=true;addClue('letter');showToast('📬 편지 발견');}showClueDetail('letter');}
 function inspectPot(){if(!S.f.potFound){S.f.potFound=true;addClue('usb');showToast('💾 USB 발견');}showClueDetail('usb');}
 function openDoorLock(){
-  if(!S.f.cctvSeen){showNotice('🔒','단서가 필요해요','복도 CCTV를 먼저 확인해보세요.');return;}
   if(S.solved.doorlock){
     goToStage(2);
     return;
@@ -2285,20 +2274,20 @@ function browserBack(){
 }
 
 function revealURL(){
-  if(!S.f.potFound){
-    showNotice('🔒','USB가 필요합니다','복도 화분에서 발견한 USB를 먼저 연결해야 합니다.');
-    return;
-  }
-  showInfo('접속 기록 복원',`
-    <p style="margin-bottom:14px;font-size:12px;color:var(--text2);">USB를 연결해 접속 기록을 복원했습니다.</p>
-    <div style="font-family:var(--mono);font-size:13px;background:var(--bg3);padding:14px;line-height:2.2;">
+  showInfo('접속 기록 복원 시도',`
+    <div style="font-family:var(--mono);font-size:12px;background:var(--bg3);padding:14px;line-height:2.2;margin-bottom:14px;">
       <span style="color:var(--text2);">오후 3:03</span> &nbsp;
-      <span style="color:var(--gold);">darkfile-1103.netlify.app</span>
+      <span style="color:var(--accent2);">██████████████████████</span>
     </div>
-    <p style="margin-top:12px;color:var(--text2);font-size:12px;">
-      이 주소로 접속하려면 비밀번호가 필요합니다.<br>
-      메모장에 힌트가 있을 것 같습니다.
+    <p style="color:var(--text2);font-size:12px;line-height:1.8;">
+      기록이 암호화되어 있다.<br>
+      복원하려면 무언가가 필요할 것 같다.
     </p>
+    ${S.f.potFound ? `
+    <div style="margin-top:14px;padding:12px;background:var(--bg3);border-left:3px solid var(--gold);">
+      <p style="font-size:12px;color:var(--text2);margin-bottom:10px;">USB를 연결했다. 접속 기록이 복원됐다.</p>
+      <div style="font-family:var(--mono);font-size:13px;color:var(--gold);letter-spacing:2px;">darkfile-1103.netlify.app</div>
+    </div>` : ''}
   `);
 }
 
