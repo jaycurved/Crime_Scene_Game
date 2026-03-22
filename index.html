@@ -183,6 +183,79 @@ html,body{background:var(--bg);color:var(--text);font-family:var(--sans);height:
 .btn-ok{display:block;width:100%;margin-top:16px;padding:12px;background:none;border:1px solid var(--border2);color:var(--text2);font-family:var(--mono);font-size:12px;letter-spacing:2px;cursor:pointer;transition:all .2s;text-transform:uppercase;touch-action:manipulation;}
 .btn-ok:hover,.btn-ok:active{border-color:var(--text);color:var(--text);}
 
+/* 스테이지 진입 팝업 */
+.stage-popup{
+  position:fixed;
+  inset:0;
+  z-index:250;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:rgba(0,0,0,0);
+  pointer-events:none;
+  transition:background .4s ease;
+}
+.stage-popup.show{ background:rgba(0,0,0,.75); pointer-events:all; }
+
+.stage-popup-inner{
+  text-align:center;
+  opacity:0;
+  transform:translateY(20px);
+  transition:all .5s ease;
+  padding:20px;
+}
+.stage-popup.show .stage-popup-inner{
+  opacity:1;
+  transform:translateY(0);
+}
+
+.stage-popup-num{
+  font-family:'Share Tech Mono',monospace;
+  font-size:11px;
+  color:var(--accent);
+  letter-spacing:4px;
+  text-transform:uppercase;
+  margin-bottom:16px;
+}
+.stage-popup-title{
+  font-family:'Noto Serif KR',serif;
+  font-size:clamp(22px,4vw,36px);
+  color:var(--text);
+  font-weight:700;
+  margin-bottom:12px;
+  line-height:1.4;
+}
+.stage-popup-desc{
+  font-size:13px;
+  color:var(--text2);
+  line-height:1.9;
+  max-width:360px;
+  margin:0 auto 24px;
+}
+.stage-popup-line{
+  width:40px;
+  height:1px;
+  background:var(--accent);
+  margin:16px auto;
+}
+.stage-popup-btn{
+  background:none;
+  border:1px solid var(--gold);
+  color:var(--gold);
+  font-family:'Share Tech Mono',monospace;
+  font-size:12px;
+  letter-spacing:3px;
+  padding:12px 32px;
+  cursor:pointer;
+  transition:all .2s;
+  text-transform:uppercase;
+  touch-action:manipulation;
+}
+.stage-popup-btn:hover,.stage-popup-btn:active{
+  background:var(--gold);
+  color:var(--bg);
+}
+
 /* 엔딩 */
 #screen-ending{align-items:center;justify-content:flex-start;overflow-y:auto;padding:48px 20px 60px;-webkit-overflow-scrolling:touch;}
 .ending-wrap{max-width:640px;width:100%;margin:0 auto;}
@@ -496,6 +569,17 @@ html,body{background:var(--bg);color:var(--text);font-family:var(--sans);height:
 
 <div class="toast" id="toast"></div>
 
+<!-- 스테이지 진입 팝업 -->
+<div class="stage-popup" id="stage-popup">
+  <div class="stage-popup-inner">
+    <div class="stage-popup-num" id="sp-num">STAGE 01</div>
+    <div class="stage-popup-line"></div>
+    <div class="stage-popup-title" id="sp-title"></div>
+    <div class="stage-popup-desc" id="sp-desc"></div>
+    <button class="stage-popup-btn" onclick="closeStagePopup()">▶ 수사 시작</button>
+  </div>
+</div>
+
 <!-- 타이머 바 -->
 <div class="timer-bar" id="timer-bar">
   <span class="timer-label">⏱ TIME</span>
@@ -727,7 +811,57 @@ function openMap(){if(S.stage<5){showLocked();return;}showInfo('IP 위성 추적
 function showEnding(){showScreen('screen-ending');const events=[{d:'2019. 03',t:'넥스코어-애드브릿지, 불법 사용자 데이터 거래 시작. 계약 당사자: 박성진 이사.'},{d:'2024. 09',t:'이준혁, 서버 유지보수 중 우연히 데이터 수출 로그를 발견한다.'},{d:'2024. 10',t:'증거 파일을 3곳에 분산 은닉. 동료 김서연에게만 알린다.'},{d:'2024. 10. 27',t:'김서연, 이준혁에게 첫 메시지 전송. "고마워. 네가 옳았어."'},{d:'2024. 11. 03',t:'이준혁, 내부고발 사이트 접속. 이 순간 넥스코어 측에 발각된다.'},{d:'2024. 11. 03 &nbsp;22:47',t:'박성진 이사, 경찰청 내부 연락. "오늘 밤 안에 처리해달라."'},{d:'2024. 11. 03 &nbsp;23:14',t:'CCTV 마지막 장면. 이준혁이 귀가한다. 이후 영상 없음.'},{d:'2024. 11. 04',t:'경찰, 현장 감식 없이 자살로 신속 종결.'},{d:'2024. 11. 10',t:'김서연, 당신에게 익명으로 제보한다. 그녀 역시 쫓기고 있다.'}];const tl=document.getElementById('timeline');tl.innerHTML=events.map((e,i)=>`<div class="tl-item" style="transition-delay:${i*.15}s"><div class="tl-date">${e.d}</div><div class="tl-text">${e.t}</div></div>`).join('');setTimeout(()=>{document.querySelectorAll('.tl-item').forEach(el=>el.classList.add('vis'));setTimeout(()=>document.getElementById('ending-msg').classList.add('vis'),events.length*150+500);},300);}
 
 // 유틸
-function advanceStage(n){if(n<=S.stage)return;S.stage=n;updateUI();document.querySelectorAll('.scene-slide').forEach(el=>el.classList.remove('active'));const next=document.getElementById(`scene-${n}`);if(next)next.classList.add('active');}
+/* ============================================
+   스테이지 진입 팝업 데이터
+   ✏️ 문구 수정은 여기서
+============================================ */
+const STAGE_INTRO = {
+  2:{
+    num:'STAGE 02',
+    title:'1103호 내부',
+    desc:'도어락이 열렸다.\n삐걱거리는 소리와 함께 문이 열린다.\n안으로 들어왔다. 형광등이 깜빡이고,\n창문은 열려있다.'
+  },
+  3:{
+    num:'STAGE 03',
+    title:'피해자의 책상',
+    desc:'방 안쪽 책상으로 이동했다.\n노트북이 잠금화면 상태로 켜져있다.\n그가 마지막으로 무엇을 보려 했는지\n알아낼 수 있을 것 같다.'
+  },
+  4:{
+    num:'STAGE 04',
+    title:'숨겨진 웹페이지',
+    desc:'URL을 복원했다.\nUSB를 연결하고 브라우저를 열었다.\n이준혁이 숨겨둔 무언가가\n이 페이지 안에 있다.'
+  },
+  5:{
+    num:'STAGE 05',
+    title:'위성 추적',
+    desc:'내부 메일의 수신처 IP를 추적했다.\n서버의 실제 위치가 특정됐다.\n마지막 단서가 저기 있다.'
+  }
+};
+
+function showStagePopup(n){
+  const data = STAGE_INTRO[n];
+  if(!data) return;
+  document.getElementById('sp-num').textContent   = data.num;
+  document.getElementById('sp-title').textContent = data.title;
+  document.getElementById('sp-desc').innerHTML    = data.desc.replace(/\n/g,'<br>');
+  const popup = document.getElementById('stage-popup');
+  popup.classList.add('show');
+}
+
+function closeStagePopup(){
+  document.getElementById('stage-popup').classList.remove('show');
+}
+
+function advanceStage(n){
+  if(n<=S.stage)return;
+  S.stage=n;
+  updateUI();
+  document.querySelectorAll('.scene-slide').forEach(el=>el.classList.remove('active'));
+  const next=document.getElementById(`scene-${n}`);
+  if(next)next.classList.add('active');
+  // 스테이지 진입 팝업 (1스테이지는 게임 시작이라 제외)
+  if(n >= 2) setTimeout(()=>showStagePopup(n), 300);
+}
 function updateUI(){document.getElementById('stage-ind').textContent=`STAGE ${S.stage} / 5`;[1,2,3,4,5].forEach(i=>{const dot=document.getElementById(`dot-${i}`);const sn=document.getElementById(`sn-${i}`);dot.className='stage-dot';sn.className='stage-name';if(i<S.stage)dot.classList.add('done');else if(i===S.stage)dot.classList.add('current');else sn.classList.add('locked');});}
 function addClue(id){if(S.clues.find(c=>c.id===id))return;const c=CLUES[id];if(!c)return;S.clues.push({id,...c,isNew:true});renderClues();}
 function renderClues(){const n=S.clues.length;document.getElementById('clue-count').textContent=`(${n})`;document.getElementById('clue-empty').style.display=n?'none':'block';document.getElementById('clue-list').innerHTML=S.clues.map(c=>`<div class="clue-item" onclick="viewClue('${c.id}')"><div class="clue-item-title">${c.title}${c.isNew?'<span class="new-badge">NEW</span>':''}</div><div class="clue-item-desc">${c.desc}</div></div>`).join('');}
