@@ -1830,18 +1830,32 @@ function openDoorLock(){
 
 // 스테이지 2
 /* ============================================
-   노트북 — 언제든 접근 가능, 비밀번호 힌트 없음
+   노트북 — 스테이지2에서 클릭 시 스테이지3으로 이동
 ============================================ */
 function openLaptop(){
-  // 이미 풀었으면 바로 데스크탑
-  if(S.solved.computer_pw){
-    document.getElementById('win-lockscreen').style.display='none';
-    document.getElementById('win-desktop').style.display='flex';
-    return;
+  if(S.stage < 2){ showLocked(); return; }
+
+  // 스테이지3 아직 안 열렸으면 진행
+  if(S.stage === 2){
+    advanceStage(3);
+  } else {
+    // 이미 3이상이면 화면만 전환
+    S.viewStage = 3;
+    document.querySelectorAll('.scene-slide').forEach(el=>el.classList.remove('active'));
+    document.getElementById('scene-3').classList.add('active');
+    updateUI();
   }
-  // 잠금화면 — 힌트 없이 바로 입력창
-  document.getElementById('win-lockscreen').style.display='flex';
-  document.getElementById('win-desktop').style.display='none';
+
+  // 잠금화면 / 데스크탑 상태 복원
+  setTimeout(()=>{
+    if(S.solved.computer_pw){
+      document.getElementById('win-lockscreen').style.display='none';
+      document.getElementById('win-desktop').style.display='flex';
+    } else {
+      document.getElementById('win-lockscreen').style.display='flex';
+      document.getElementById('win-desktop').style.display='none';
+    }
+  }, 400);
 }
 
 /* ============================================
