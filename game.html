@@ -1295,8 +1295,16 @@ git token - check .env
 <div id="screen-ending" class="screen">
   <div class="ending-wrap">
     <div class="ending-badge">— 사건의 전말 —</div>
-    <h2 class="ending-title">접속 기록</h2>
-    <div class="timeline" id="timeline"></div>
+    <h2 class="ending-title">1103호, 그 밤</h2>
+
+    <!-- 이야기 본문 (JS로 채움) -->
+    <div id="ending-story" style="
+      font-family:var(--serif);
+      font-size:15px;
+      line-height:2;
+      color:var(--text);
+    "></div>
+
     <div class="ending-msg" id="ending-msg">"이준혁은 혼자였지만, 틀리지 않았습니다.<br>이 기록은 이제 당신의 손에 있습니다."</div>
 
     <!-- 기록 표시 -->
@@ -3352,29 +3360,78 @@ function openMap(){if(S.stage<5){showLocked();return;}showInfo('IP 위성 추적
 // 엔딩
 function showEnding(timeStr){
   showScreen('screen-ending');
-  const events=[
-    {d:'2019. 03',t:'코어링크테크놀로지스 — 타겟웨이브솔루션즈, 불법 사용자 데이터 거래 시작. 계약 당사자: 박성진 이사.'},
-    {d:'2024. 09',t:'이준혁, 서버 유지보수 중 우연히 데이터 수출 로그를 발견한다.'},
-    {d:'2024. 10',t:'증거 파일을 3곳에 분산 은닉. 동료 김서연에게만 알린다.'},
-    {d:'2024. 10. 27',t:'김서연, 이준혁에게 첫 메시지 전송.'},
-    {d:'2024. 11. 03',t:'이준혁, 내부고발 사이트 접속. 이 순간 코어링크테크놀로지스 측에 발각된다.'},
-    {d:'2024. 11. 03 \u00a022:47',t:'박성진 이사, 경찰청 내부 연락. "오늘 밤 안에 처리해달라."'},
-    {d:'2024. 11. 03 \u00a023:14',t:'CCTV 마지막 장면. 이준혁이 귀가한다. 이후 영상 없음.'},
-    {d:'2024. 11. 04',t:'경찰, 현장 감식 없이 자살로 신속 종결.'},
-    {d:'2024. 11. 10',t:'김서연, 당신에게 익명으로 제보한다. 그녀 역시 쫓기고 있다.'},
+
+  const STORY = [
+    {
+      label: '발단',
+      text: `2019년 봄, ㈜코어링크테크놀로지스는 조용히 거래를 시작했다. 상대는 광고 데이터 전문 기업 ㈜타겟웨이브솔루션즈. 계약서에는 "마케팅 협력"이라고 적혀 있었지만, 실제로 넘어가는 것은 달랐다. 수백만 명의 사용자 위치정보, 검색 기록, 구매 패턴. 당사자들은 아무것도 알지 못했다. 계약의 중심에는 데이터사업부 총괄 이사 <strong>박성진</strong>이 있었다.`
+    },
+    {
+      label: '발견',
+      text: `2024년 9월, 프리랜서 개발자 <strong>이준혁</strong>은 코어링크테크놀로지스의 서버 유지보수 작업을 맡았다. 단순한 점검이었다. 그런데 로그 파일 하나가 눈에 걸렸다. 매달 1일 새벽 0시, 수백만 건의 데이터가 외부 IP로 조용히 흘러나가고 있었다. 5년째. 누적 약 8,900만 건. 그는 손이 떨리는 걸 느꼈다.`
+    },
+    {
+      label: '준비',
+      text: `이준혁은 섣불리 움직이지 않았다. 한 달 동안 증거를 모았다. 계약서 사본, 서버 로그 덤프, 내부 메일 파편들. 들키면 안 됐다. 파일을 세 곳에 나눠 숨겼다. 그 중 하나가 화분 흙 속 USB였고, 다른 하나는 지금 당신이 접속한 이 서버였다. 그리고 동료 <strong>김서연</strong>에게만 조용히 알렸다. 혹시 자신에게 무슨 일이 생기면, 알아야 하는 사람이 있어야 했다.`
+    },
+    {
+      label: '노출',
+      text: `2024년 11월 3일, 이준혁은 내부고발 신청 페이지에 접속했다. 그 순간 서버 이상 감지 알림이 울렸다. 박성진 이사에게 경보가 갔다. 이준혁의 계정은 즉시 플래그 처리됐다. 그날 밤 22시 47분, 박성진은 경찰청 내부 연락처에 짧은 메일을 보냈다. <em>"오늘 밤 안에 처리해주십시오. 자살로 처리하는 방향으로 정리해 주시면 됩니다."</em>`
+    },
+    {
+      label: '그 밤',
+      text: `23시 14분, 복도 CCTV에 이준혁이 찍혔다. 도어락을 누르고 집으로 들어가는 장면. 그게 마지막이었다. 다음 날 아침, 경찰은 현장 감식도 제대로 하지 않고 자살로 종결했다. 창문이 열려 있었다는 것만 기록에 남겼다. 12층 창문 바깥에 등산화 발자국이 있었다는 사실은 기록되지 않았다.`
+    },
+    {
+      label: '제보',
+      text: `일주일 후, 김서연은 당신에게 익명으로 제보했다. 그녀 역시 감시당하고 있다는 걸 알면서도. 그리고 지금, 당신은 이준혁이 남긴 증거를 모두 찾았다. 그가 혼자서 지켜내려 했던 진실이 이제 당신의 손에 있다.`
+    },
   ];
-  const tl=document.getElementById('timeline');
-  tl.innerHTML=events.map((e,i)=>`<div class="tl-item" style="transition-delay:${i*.15}s"><div class="tl-date">${e.d}</div><div class="tl-text">${e.t}</div></div>`).join('');
-  const recordEl=document.getElementById('ending-record');
-  if(recordEl){
-    recordEl.innerHTML=`<div style="display:flex;gap:32px;justify-content:center;flex-wrap:wrap;"><div style="text-align:center;"><div style="font-family:var(--mono);font-size:10px;color:var(--text3);letter-spacing:2px;margin-bottom:6px;">소요 시간</div><div style="font-family:var(--mono);font-size:22px;color:var(--gold);">${timeStr||'—'}</div></div><div style="text-align:center;"><div style="font-family:var(--mono);font-size:10px;color:var(--text3);letter-spacing:2px;margin-bottom:6px;">힌트 사용</div><div style="font-family:var(--mono);font-size:22px;color:${hintUsedCount>0?'var(--accent2)':'#4ade80'};">${hintUsedCount}회</div></div></div>`;
-    recordEl.style.opacity='0';
-    setTimeout(()=>{recordEl.style.transition='opacity 1s';recordEl.style.opacity='1';},800);
+
+  const storyEl = document.getElementById('ending-story');
+  if(storyEl){
+    storyEl.innerHTML = STORY.map((s, i) => `
+      <div class="story-para" style="
+        opacity:0;
+        transform:translateY(14px);
+        transition:opacity .7s ease, transform .7s ease;
+        transition-delay:${i * 0.4}s;
+        margin-bottom:32px;
+      ">
+        <div style="
+          font-family:var(--mono);font-size:10px;
+          color:var(--accent);letter-spacing:3px;
+          margin-bottom:10px;
+        ">${s.label}</div>
+        <p style="margin:0;">${s.text}</p>
+      </div>
+    `).join('');
   }
+
+  // 기록 표시
+  const recordEl = document.getElementById('ending-record');
+  if(recordEl){
+    recordEl.innerHTML = `
+      <div style="display:flex;gap:32px;justify-content:center;flex-wrap:wrap;">
+        <div style="text-align:center;">
+          <div style="font-family:var(--mono);font-size:10px;color:var(--text3);letter-spacing:2px;margin-bottom:6px;">소요 시간</div>
+          <div style="font-family:var(--mono);font-size:22px;color:var(--gold);">${timeStr||'—'}</div>
+        </div>
+        <div style="text-align:center;">
+          <div style="font-family:var(--mono);font-size:10px;color:var(--text3);letter-spacing:2px;margin-bottom:6px;">힌트 사용</div>
+          <div style="font-family:var(--mono);font-size:22px;color:${hintUsedCount>0?'var(--accent2)':'#4ade80'};">${hintUsedCount}회</div>
+        </div>
+      </div>
+    `;
+    recordEl.style.opacity='0';
+    setTimeout(()=>{ recordEl.style.transition='opacity 1s'; recordEl.style.opacity='1'; }, STORY.length*400+800);
+  }
+
+  // 단락 순차 페이드인
   setTimeout(()=>{
-    document.querySelectorAll('.tl-item').forEach(el=>el.classList.add('vis'));
-    setTimeout(()=>document.getElementById('ending-msg').classList.add('vis'),events.length*150+500);
-  },300);
+    document.querySelectorAll('.story-para').forEach(el=>{ el.style.opacity='1'; el.style.transform='translateY(0)'; });
+    setTimeout(()=>document.getElementById('ending-msg').classList.add('vis'), STORY.length*400+600);
+  }, 300);
 }
 
 // 유틸
