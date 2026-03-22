@@ -739,11 +739,11 @@ html,body{background:var(--bg);color:var(--text);font-family:var(--sans);height:
             </div>
 
             <!-- 창: 브라우저 (처음엔 숨김) -->
-            <div id="win-browser" class="win-window" style="display:none;left:120px;top:30px;width:680px;height:460px;">
+            <div id="win-browser" class="win-window" style="display:none;left:80px;top:20px;width:700px;height:480px;">
               <div class="win-titlebar" onmousedown="startDrag(event,'win-browser')">
                 <div style="display:flex;align-items:center;gap:8px;">
                   <span style="font-size:14px;">🌐</span>
-                  <span>Google Chrome</span>
+                  <span id="browser-tab-title">방문 기록 - Chrome</span>
                 </div>
                 <div class="win-titlebar-btns">
                   <span onclick="minimizeWin('win-browser')">─</span>
@@ -751,32 +751,94 @@ html,body{background:var(--bg);color:var(--text);font-family:var(--sans);height:
                 </div>
               </div>
               <!-- 주소창 -->
-              <div style="background:#f1f3f4;padding:8px 12px;display:flex;align-items:center;gap:8px;border-bottom:1px solid #ddd;">
-                <span style="color:#5f6368;font-size:12px;">←  →  ↻</span>
-                <div style="flex:1;background:white;border:1px solid #ddd;border-radius:20px;padding:4px 12px;font-size:12px;color:#5f6368;">
+              <div style="background:#f1f3f4;padding:6px 12px;display:flex;align-items:center;gap:8px;border-bottom:1px solid #ddd;flex-shrink:0;">
+                <span style="color:#5f6368;font-size:13px;cursor:pointer;" onclick="browserBack()">←</span>
+                <span style="color:#ccc;font-size:13px;">→</span>
+                <span style="color:#5f6368;font-size:13px;">↻</span>
+                <div id="browser-url" style="flex:1;background:white;border:1px solid #ddd;border-radius:20px;padding:4px 14px;font-size:12px;color:#5f6368;">
                   chrome://history
                 </div>
               </div>
-              <!-- 방문 기록 -->
-              <div style="background:white;flex:1;overflow-y:auto;padding:16px;font-size:13px;color:#333;">
-                <div style="font-size:16px;color:#202124;margin-bottom:16px;font-weight:400;">방문 기록</div>
-                <div style="color:#70757a;font-size:12px;margin-bottom:8px;padding-bottom:8px;border-bottom:1px solid #eee;">2024년 11월 3일 일요일</div>
+              <!-- 브라우저 콘텐츠 -->
+              <div id="browser-content" style="background:white;flex:1;overflow-y:auto;font-size:13px;color:#333;">
 
-                <div class="chrome-hist-item" onclick="showInfo('방문 기록',`<p style=\'color:var(--text2);font-size:13px;\'>google.com — 일반 검색. 특별한 내용 없음.</p>`)">
-                  <span class="chrome-hist-favicon">🔍</span>
-                  <div>
-                    <div style="color:#1a0dab;">Google</div>
-                    <div style="font-size:11px;color:#70757a;">https://google.com &nbsp;·&nbsp; 오전 9:14</div>
+                <!-- 방문 기록 화면 (기본) -->
+                <div id="browser-history" style="padding:16px;">
+                  <div style="font-size:16px;color:#202124;margin-bottom:4px;font-weight:400;">방문 기록</div>
+                  <div style="font-size:12px;color:#70757a;margin-bottom:16px;">검색 및 방문한 페이지</div>
+
+                  <div style="color:#70757a;font-size:11px;margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid #eee;text-transform:uppercase;letter-spacing:1px;">2024년 11월 3일 일요일</div>
+
+                  <!-- 검색 기록 항목들 -->
+                  <div class="chrome-hist-item" onclick="showSearchResult('whistleblow')">
+                    <span class="chrome-hist-favicon">🔍</span>
+                    <div style="flex:1;">
+                      <div style="color:#1a0dab;">내부고발 방법 절차 - Google 검색</div>
+                      <div style="font-size:11px;color:#70757a;">https://google.com/search?q=내부고발+방법+절차 &nbsp;·&nbsp; 오전 9:14</div>
+                    </div>
+                    <div style="font-size:11px;color:#aaa;flex-shrink:0;">오전 9:14</div>
                   </div>
+
+                  <div class="chrome-hist-item" onclick="showSearchResult('whistleblowsite')">
+                    <span class="chrome-hist-favicon">🌐</span>
+                    <div style="flex:1;">
+                      <div style="color:#1a0dab;">공익신고자 보호 - 국민권익위원회</div>
+                      <div style="font-size:11px;color:#70757a;">https://www.acrc.go.kr/whistleblower &nbsp;·&nbsp; 오전 9:22</div>
+                    </div>
+                    <div style="font-size:11px;color:#aaa;flex-shrink:0;">오전 9:22</div>
+                  </div>
+
+                  <div class="chrome-hist-item" onclick="showSearchResult('datalaw')">
+                    <span class="chrome-hist-favicon">🔍</span>
+                    <div style="flex:1;">
+                      <div style="color:#1a0dab;">개인정보 불법 판매 처벌 - Google 검색</div>
+                      <div style="font-size:11px;color:#70757a;">https://google.com/search?q=개인정보+불법+판매+처벌 &nbsp;·&nbsp; 오전 10:03</div>
+                    </div>
+                    <div style="font-size:11px;color:#aaa;flex-shrink:0;">오전 10:03</div>
+                  </div>
+
+                  <div class="chrome-hist-item" onclick="showSearchResult('nexcore')">
+                    <span class="chrome-hist-favicon">🔍</span>
+                    <div style="flex:1;">
+                      <div style="color:#1a0dab;">넥스코어 개인정보 - Google 검색</div>
+                      <div style="font-size:11px;color:#70757a;">https://google.com/search?q=넥스코어+개인정보 &nbsp;·&nbsp; 오전 11:47</div>
+                    </div>
+                    <div style="font-size:11px;color:#aaa;flex-shrink:0;">오전 11:47</div>
+                  </div>
+
+                  <div class="chrome-hist-item" onclick="showSearchResult('parkseongiin')">
+                    <span class="chrome-hist-favicon">🔍</span>
+                    <div style="flex:1;">
+                      <div style="color:#1a0dab;">박성진 넥스코어 이사 - Google 검색</div>
+                      <div style="font-size:11px;color:#70757a;">https://google.com/search?q=박성진+넥스코어+이사 &nbsp;·&nbsp; 오후 1:22</div>
+                    </div>
+                    <div style="font-size:11px;color:#aaa;flex-shrink:0;">오후 1:22</div>
+                  </div>
+
+                  <div class="chrome-hist-item" onclick="showSearchResult('sqllog')">
+                    <span class="chrome-hist-favicon">🔍</span>
+                    <div style="flex:1;">
+                      <div style="color:#1a0dab;">mysql export log 무단 접근 확인 - Google 검색</div>
+                      <div style="font-size:11px;color:#70757a;">https://google.com/search?q=mysql+export+log+무단+접근 &nbsp;·&nbsp; 오후 2:11</div>
+                    </div>
+                    <div style="font-size:11px;color:#aaa;flex-shrink:0;">오후 2:11</div>
+                  </div>
+
+                  <div style="color:#70757a;font-size:11px;margin:12px 0 8px;padding-bottom:6px;border-bottom:1px solid #eee;text-transform:uppercase;letter-spacing:1px;">삭제된 기록</div>
+
+                  <div class="chrome-hist-item" style="background:#fff8f8;" onclick="revealURL()">
+                    <span class="chrome-hist-favicon" style="filter:grayscale(1);opacity:.4;">⬛</span>
+                    <div style="flex:1;">
+                      <div style="color:#aaa;letter-spacing:3px;font-size:12px;">██████████████████████</div>
+                      <div style="font-size:11px;color:#c0392b;">오후 3:03 &nbsp;·&nbsp; 삭제된 기록 — USB 연결 후 복원 가능</div>
+                    </div>
+                    <div style="font-size:11px;color:#aaa;flex-shrink:0;">오후 3:03</div>
+                  </div>
+
                 </div>
 
-                <div class="chrome-hist-item" style="background:#fff3f3;" onclick="revealURL()">
-                  <span class="chrome-hist-favicon">⬛</span>
-                  <div>
-                    <div style="color:#777;letter-spacing:2px;">██████████████████</div>
-                    <div style="font-size:11px;color:#70757a;">오후 3:03 &nbsp;·&nbsp; <span style="color:#c0392b;">접근 불가 — 클릭하여 복원 시도</span></div>
-                  </div>
-                </div>
+                <!-- 검색 결과 화면 (동적으로 교체) -->
+                <div id="browser-searchresult" style="display:none;padding:12px 16px;"></div>
 
               </div>
             </div>
@@ -2130,6 +2192,98 @@ function updateTaskbar(){
 }
 
 // URL 복원 (가려진 항목 클릭 시)
+/* ============================================
+   브라우저 — 검색 결과 데이터
+============================================ */
+const SEARCH_RESULTS = {
+  whistleblow:{
+    query:'내부고발 방법 절차',
+    results:[
+      {title:'내부고발자 보호 및 신고 방법 — 국민권익위원회',url:'www.acrc.go.kr › whistleblower',desc:'공익신고자 보호법에 따라 부패행위 및 공익침해 행위를 신고한 자는 보호받을 수 있습니다. 신분 보장, 신변보호, 불이익 조치 금지 등...',highlight:false},
+      {title:'직장 내 불법행위 신고 가이드 — 법률 Q&A',url:'lawqa.co.kr › articles › whistleblowing',desc:'내부고발 전 반드시 증거를 확보해야 합니다. 디지털 파일, 이메일, 로그 기록 등을 <strong>안전한 외부 저장소에 백업</strong>하는 것을 권장합니다.',highlight:true},
+      {title:'내부고발 후 보복 당했을 때 대처법',url:'blog.naver.com › lawfirm_k',desc:'신고 후 해고, 감봉, 업무 배제 등 불이익을 받은 경우 즉시 노동위원회에 구제신청을 할 수 있으며...',highlight:false}
+    ]
+  },
+  whistleblowsite:{
+    query:'공익신고자 보호',
+    isPage:true,
+    url:'www.acrc.go.kr/whistleblower',
+    content:`<div style="font-family:'Segoe UI',sans-serif;padding:20px;background:#f5f7fa;min-height:100%;"><div style="background:white;padding:20px;border:1px solid #ddd;border-radius:4px;"><div style="color:#1a5276;font-size:18px;font-weight:bold;margin-bottom:12px;">🏛 공익신고자 보호 제도</div><div style="font-size:13px;color:#333;line-height:2;"><p><strong>「공익신고자 보호법」</strong>에 따라 부패·공익침해 신고자는 보호받습니다.</p><div style="background:#eaf2ff;padding:14px;margin:12px 0;border-left:3px solid #1a5276;border-radius:2px;"><strong>보호 내용</strong><br>· 신분 비밀 보장<br>· 불이익 조치 금지<br>· 신변 보호 조치<br>· 보상금 지급</div><div style="background:#fef9e7;padding:10px;border-left:3px solid #f39c12;font-size:12px;">⚠ 신고 전 증거 자료를 반드시 안전한 장소에 보관하십시오.</div></div></div><div style="margin-top:8px;font-size:11px;color:#c0392b;text-align:right;">※ 2024.11.03 오전 9:22 방문</div></div>`
+  },
+  datalaw:{
+    query:'개인정보 불법 판매 처벌',
+    results:[
+      {title:'개인정보보호법 위반 처벌 규정 — 개인정보보호위원회',url:'pipc.go.kr › law › penalty',desc:'개인정보를 제3자에게 무단으로 제공하거나 <strong>판매한 경우 5년 이하의 징역 또는 5천만원 이하의 벌금</strong>에 처한다. (개인정보보호법 제71조)',highlight:true},
+      {title:'기업 개인정보 불법 유통 사례 — 전자신문',url:'etnews.com › 202309',desc:'최근 국내 IT기업들의 사용자 데이터 불법 거래가 적발되는 사례가 증가하고 있다. 2023년 한 해에만 17건의 기업 개인정보 불법 판매 사건이...',highlight:false},
+      {title:'내부고발로 밝혀진 기업 개인정보 유출 사건들',url:'hani.co.kr › economy › it',desc:'내부 직원의 제보로 시작된 수사에서 해당 기업이 약 2000만 건의 사용자 위치 정보를 광고업체에 판매한 사실이 드러났다...',highlight:false}
+    ]
+  },
+  nexcore:{
+    query:'넥스코어 개인정보',
+    results:[
+      {title:'㈜넥스코어 — 회사 소개',url:'nexcore.co.kr › about',desc:'넥스코어는 2015년 설립된 모바일 플랫폼 기업으로, 월간 활성 사용자 300만 명을 보유한 국내 중견 IT기업입니다.',highlight:false},
+      {title:'넥스코어 개인정보 처리방침',url:'nexcore.co.kr › privacy',desc:'수집 항목: 이름, 이메일, <strong>위치정보</strong>, 검색 기록, 구매 내역. 제3자 제공: 제휴 마케팅사에 한하여 동의 하에 제공 — 단, 통계 목적의 경우 동의 없이 제공 가능.',highlight:true},
+      {title:'넥스코어 앱 위치정보 과도 수집 논란 — IT조선',url:'itchosun.com › 2024 › 09',desc:'넥스코어 앱이 백그라운드에서 지속적으로 위치정보를 수집한다는 사용자 제보가 잇따르고 있다. 회사 측은 "서비스 개선 목적"이라고 해명했으나...',highlight:false}
+    ]
+  },
+  parkseongiin:{
+    query:'박성진 넥스코어 이사',
+    results:[
+      {title:'박성진 — LinkedIn',url:'linkedin.com › in › park-seongjin',desc:'박성진 · <strong>이사 at ㈜넥스코어</strong> · 데이터사업부 총괄 · 서울대학교 경영학과 · 연결 3촌 이상',highlight:true},
+      {title:'넥스코어 데이터사업부 신설 — 전자신문',url:'etnews.com › 2021 › nexcore-data',desc:'넥스코어가 데이터사업부를 신설하고 박성진 전략기획실장을 이사로 승진 발령했다. 박 이사는 <strong>데이터 수익화 전략</strong>을 담당할 예정이며 외부 제휴사와의 협업을 총괄한다.',highlight:false}
+    ]
+  },
+  sqllog:{
+    query:'mysql export log 무단 접근 확인',
+    results:[
+      {title:'MySQL 쿼리 로그로 무단 접근 탐지하기 — DevHacks',url:'devhaks.tistory.com › mysql-audit',desc:'general_log를 활성화하면 모든 쿼리 실행 기록을 확인할 수 있다. SELECT * FROM mysql.general_log WHERE user_host...',highlight:false},
+      {title:'서버 계정 도용 확인 방법 — Stack Overflow',url:'stackoverflow.com › questions › 58823',desc:'performance_schema를 통해 <strong>외부 IP에서 실행된 쿼리를 필터링</strong>할 수 있습니다. 특히 대용량 export 관련 쿼리는 즉시 조사가 필요합니다.',highlight:true},
+      {title:'DB 접근 로그 이상 징후 대응 절차 — KISA',url:'kisa.or.kr › security › db-intrusion',desc:'비정상적인 대용량 export 쿼리 발생 시 즉시 계정 비밀번호를 변경하고 해당 IP를 차단한 뒤 보안팀에 신고해야 합니다.',highlight:false}
+    ]
+  }
+};
+
+function showSearchResult(key){
+  const data = SEARCH_RESULTS[key];
+  if(!data) return;
+  const resultDiv = document.getElementById('browser-searchresult');
+  const historyDiv = document.getElementById('browser-history');
+  const urlBar = document.getElementById('browser-url');
+  const tabTitle = document.getElementById('browser-tab-title');
+  historyDiv.style.display='none';
+  resultDiv.style.display='block';
+  if(data.isPage){
+    urlBar.textContent=data.url;
+    tabTitle.textContent=data.query+' - Chrome';
+    resultDiv.innerHTML=data.content;
+    return;
+  }
+  urlBar.textContent=`https://google.com/search?q=${data.query}`;
+  tabTitle.textContent=`${data.query} - Google 검색`;
+  resultDiv.innerHTML=`
+    <div style="padding:10px 0 8px;border-bottom:1px solid #ebebeb;margin-bottom:10px;display:flex;align-items:center;gap:6px;">
+      <span style="font-size:18px;font-weight:700;color:#4285f4;letter-spacing:-1px;">G</span><span style="color:#ea4335;font-size:18px;font-weight:700;">o</span><span style="color:#fbbc05;font-size:18px;font-weight:700;">o</span><span style="color:#4285f4;font-size:18px;font-weight:700;">g</span><span style="color:#34a853;font-size:18px;font-weight:700;">l</span><span style="color:#ea4335;font-size:18px;font-weight:700;">e</span>
+      <div style="flex:1;border:1px solid #dfe1e5;border-radius:20px;padding:5px 14px;font-size:12px;color:#202124;margin-left:6px;">${data.query}</div>
+    </div>
+    <div style="font-size:11px;color:#70757a;margin-bottom:10px;">검색결과 약 ${(Math.floor(Math.random()*9)+1)*100},000개</div>
+    ${data.results.map(r=>`
+      <div style="margin-bottom:18px;${r.highlight?'background:#fffde7;padding:8px;border-radius:4px;border-left:2px solid #fbbc05;':''}">
+        <div style="font-size:11px;color:#202124;margin-bottom:1px;">${r.url}</div>
+        <div style="font-size:15px;color:#1a0dab;margin-bottom:3px;line-height:1.3;">${r.title}</div>
+        <div style="font-size:12px;color:#4d5156;line-height:1.6;">${r.desc}</div>
+        ${r.highlight?'<div style="font-size:10px;color:#c0392b;margin-top:4px;font-family:monospace;">▶ 이준혁이 이 항목을 오래 확인했습니다</div>':''}
+      </div>
+    `).join('')}
+  `;
+}
+
+function browserBack(){
+  document.getElementById('browser-history').style.display='block';
+  document.getElementById('browser-searchresult').style.display='none';
+  document.getElementById('browser-url').textContent='chrome://history';
+  document.getElementById('browser-tab-title').textContent='방문 기록 - Chrome';
+}
+
 function revealURL(){
   if(!S.f.potFound){
     showNotice('🔒','USB가 필요합니다','복도 화분에서 발견한 USB를 먼저 연결해야 합니다.');
