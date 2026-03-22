@@ -298,6 +298,28 @@ html,body{background:var(--bg);color:var(--text);font-family:var(--sans);height:
 @keyframes fadeUp{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);}}
 
 /* ============================================
+   가상 Windows 데스크탑
+============================================ */
+.win-icon{position:absolute;width:76px;text-align:center;cursor:pointer;padding:6px;border-radius:4px;user-select:none;transition:background .15s;}
+.win-icon:hover{background:rgba(255,255,255,.15);}
+.win-icon:active{background:rgba(255,255,255,.25);}
+.win-icon-img{font-size:36px;margin-bottom:4px;}
+.win-icon-label{font-size:11px;color:white;text-shadow:0 1px 3px rgba(0,0,0,.8);word-break:keep-all;line-height:1.3;}
+
+.win-window{position:absolute;background:white;border:1px solid #999;box-shadow:0 8px 32px rgba(0,0,0,.5);display:flex;flex-direction:column;min-width:200px;min-height:120px;z-index:10;border-radius:8px 8px 0 0;overflow:hidden;}
+
+.win-titlebar{background:#2d2d2d;color:white;padding:8px 12px;font-size:12px;display:flex;justify-content:space-between;align-items:center;cursor:move;user-select:none;flex-shrink:0;}
+
+.win-titlebar-btns{display:flex;gap:2px;}
+.win-titlebar-btns span{width:28px;height:22px;display:flex;align-items:center;justify-content:center;cursor:pointer;border-radius:2px;font-size:12px;transition:background .15s;}
+.win-titlebar-btns span:hover{background:rgba(255,255,255,.2);}
+.win-titlebar-btns span:last-child:hover{background:#e81123;}
+
+.chrome-hist-item{display:flex;align-items:center;gap:12px;padding:8px;border-radius:4px;cursor:pointer;margin-bottom:4px;transition:background .15s;}
+.chrome-hist-item:hover{background:#f1f3f4;}
+.chrome-hist-favicon{font-size:16px;flex-shrink:0;}
+
+/* ============================================
    반응형
 ============================================ */
 @media(max-width:768px){
@@ -524,37 +546,280 @@ html,body{background:var(--bg);color:var(--text);font-family:var(--sans);height:
       </div>
     </div>
 
-    <!-- 스테이지 3 — 컴퓨터 -->
+    <!-- 스테이지 3 — 가상 Windows 데스크탑 -->
     <div class="scene-slide" id="scene-3">
-      <div class="scene-wrap">
-        <img class="scene-img" id="img-stage3" src="" alt="책상">
-        <svg class="hotspot-svg" viewBox="0 0 1600 900">
-          <g class="hs-group" onclick="openComputer()" tabindex="0" role="button">
-            <rect class="hs-rect" x="380" y="140" width="830" height="570"/>
-            <text class="hs-lbl" x="384" y="144">노트북 — 잠금화면</text>
-          </g>
-          <g class="hs-group" onclick="inspectUniform()" tabindex="0" role="button">
-            <rect class="hs-rect" x="1240" y="50" width="320" height="440"/>
-            <text class="hs-lbl" x="1244" y="54">야구 유니폼</text>
-          </g>
-          <!-- 맥거핀: 책상 위 영수증 -->
-          <g class="hs-group" onclick="inspectReceipt()" tabindex="0" role="button">
-            <rect class="hs-rect" x="200" y="600" width="160" height="200"/>
-            <text class="hs-lbl" x="204" y="604">영수증</text>
-          </g>
-          <!-- 맥거핀: 책꽂이 -->
-          <g class="hs-group" onclick="inspectBookshelf()" tabindex="0" role="button">
-            <rect class="hs-rect" x="30" y="100" width="200" height="400"/>
-            <text class="hs-lbl" x="34" y="104">책꽂이</text>
-          </g>
-          <!-- 맥거핀: 핸드폰 -->
-          <g class="hs-group" onclick="inspectPhone()" tabindex="0" role="button">
-            <rect class="hs-rect" x="1100" y="620" width="100" height="180"/>
-            <text class="hs-lbl" x="1104" y="624">핸드폰</text>
-          </g>
-        </svg>
+      <div class="scene-wrap" style="cursor:default;">
+
+        <!-- 잠금화면 -->
+        <div id="win-lockscreen" style="
+          position:absolute;inset:0;
+          background:linear-gradient(135deg,#0d1b2a 0%,#1a2a3a 50%,#0a1520 100%);
+          display:flex;flex-direction:column;
+          align-items:center;justify-content:center;
+          z-index:10;cursor:default;
+          transition:opacity .5s ease;
+        ">
+          <!-- 배경 흐림 효과 -->
+          <div style="position:absolute;inset:0;background:radial-gradient(ellipse at center,rgba(30,60,90,.4) 0%,transparent 70%);"></div>
+
+          <div style="position:relative;z-index:1;text-align:center;">
+            <!-- 시간 -->
+            <div id="win-clock" style="font-family:'Segoe UI',sans-serif;font-size:72px;font-weight:200;color:white;line-height:1;margin-bottom:8px;">23:14</div>
+            <div style="font-family:'Segoe UI',sans-serif;font-size:16px;color:rgba(255,255,255,.7);margin-bottom:48px;">2024년 11월 3일 일요일</div>
+
+            <!-- 잠금 아이콘 -->
+            <div style="width:80px;height:80px;border-radius:50%;border:2px solid rgba(255,255,255,.3);margin:0 auto 24px;display:flex;align-items:center;justify-content:center;font-size:32px;background:rgba(255,255,255,.05);">
+              🔒
+            </div>
+
+            <div style="font-family:'Segoe UI',sans-serif;font-size:18px;color:white;margin-bottom:4px;font-weight:300;">이준혁</div>
+            <div style="font-family:'Segoe UI',sans-serif;font-size:12px;color:rgba(255,255,255,.5);margin-bottom:32px;">로컬 계정</div>
+
+            <!-- 비밀번호 입력 -->
+            <div style="position:relative;width:280px;margin:0 auto;">
+              <input id="win-pw-input" type="password"
+                placeholder="PIN 또는 비밀번호"
+                style="
+                  width:100%;padding:12px 44px 12px 16px;
+                  background:rgba(255,255,255,.1);
+                  border:1px solid rgba(255,255,255,.3);
+                  border-radius:2px;
+                  color:white;font-size:14px;
+                  font-family:'Segoe UI',sans-serif;
+                  outline:none;letter-spacing:2px;
+                "
+                onkeydown="if(event.key==='Enter')tryWinLogin()"
+              >
+              <button onclick="tryWinLogin()" style="
+                position:absolute;right:8px;top:50%;transform:translateY(-50%);
+                background:none;border:none;color:rgba(255,255,255,.6);
+                font-size:16px;cursor:pointer;
+              ">→</button>
+            </div>
+
+            <!-- 힌트 버튼 -->
+            <div id="win-hint-btn" style="margin-top:12px;cursor:pointer;"
+                 onclick="toggleWinHint()">
+              <span style="font-family:'Segoe UI',sans-serif;font-size:12px;color:rgba(255,255,255,.4);text-decoration:underline;">
+                비밀번호 힌트 보기
+              </span>
+            </div>
+            <div id="win-hint-box" style="display:none;margin-top:8px;background:rgba(0,0,0,.4);padding:8px 16px;border-radius:2px;">
+              <span style="font-family:'Segoe UI',sans-serif;font-size:12px;color:rgba(255,255,255,.6);">
+                힌트: 내가 제일 좋아하는 선수
+              </span>
+            </div>
+
+            <div id="win-pw-error" style="display:none;margin-top:10px;color:#ff6b6b;font-size:12px;font-family:'Segoe UI',sans-serif;">
+              비밀번호가 올바르지 않습니다.
+            </div>
+          </div>
+
+          <!-- 하단 버튼들 -->
+          <div style="position:absolute;bottom:24px;right:24px;display:flex;gap:16px;">
+            <div style="color:rgba(255,255,255,.5);font-size:20px;cursor:pointer;" title="전원">⏻</div>
+          </div>
+        </div>
+
+        <!-- 데스크탑 (잠금 해제 후) -->
+        <div id="win-desktop" style="
+          position:absolute;inset:0;
+          background:linear-gradient(135deg,#1a3a5c 0%,#0d2b45 100%);
+          display:none;flex-direction:column;
+          font-family:'Segoe UI',sans-serif;
+          cursor:default;overflow:hidden;
+        ">
+          <!-- 바탕화면 아이콘들 -->
+          <div id="win-desktop-icons" style="flex:1;padding:20px;position:relative;">
+
+            <!-- 아이콘: 내 컴퓨터 -->
+            <div class="win-icon" ondblclick="winIconClick('mypc')" style="left:20px;top:20px;">
+              <div class="win-icon-img">🖥️</div>
+              <div class="win-icon-label">내 PC</div>
+            </div>
+
+            <!-- 아이콘: 휴지통 -->
+            <div class="win-icon" ondblclick="winIconClick('trash')" style="left:20px;top:110px;">
+              <div class="win-icon-img">🗑️</div>
+              <div class="win-icon-label">휴지통</div>
+            </div>
+
+            <!-- 아이콘: Chrome -->
+            <div class="win-icon" ondblclick="winIconClick('chrome')" style="left:20px;top:200px;">
+              <div class="win-icon-img">🌐</div>
+              <div class="win-icon-label">Chrome</div>
+            </div>
+
+            <!-- 아이콘: 메모장 (핵심 단서) -->
+            <div class="win-icon" ondblclick="winIconClick('notepad')" style="left:20px;top:290px;">
+              <div class="win-icon-img">📄</div>
+              <div class="win-icon-label">notepad.txt</div>
+            </div>
+
+            <!-- 아이콘: 폴더 -->
+            <div class="win-icon" ondblclick="winIconClick('folder')" style="left:20px;top:380px;">
+              <div class="win-icon-img">📁</div>
+              <div class="win-icon-label">프로젝트</div>
+            </div>
+
+            <!-- 창: 브라우저 (처음엔 숨김) -->
+            <div id="win-browser" class="win-window" style="display:none;left:120px;top:30px;width:680px;height:460px;">
+              <div class="win-titlebar" onmousedown="startDrag(event,'win-browser')">
+                <div style="display:flex;align-items:center;gap:8px;">
+                  <span style="font-size:14px;">🌐</span>
+                  <span>Google Chrome</span>
+                </div>
+                <div class="win-titlebar-btns">
+                  <span onclick="minimizeWin('win-browser')">─</span>
+                  <span onclick="closeWin('win-browser')">✕</span>
+                </div>
+              </div>
+              <!-- 주소창 -->
+              <div style="background:#f1f3f4;padding:8px 12px;display:flex;align-items:center;gap:8px;border-bottom:1px solid #ddd;">
+                <span style="color:#5f6368;font-size:12px;">←  →  ↻</span>
+                <div style="flex:1;background:white;border:1px solid #ddd;border-radius:20px;padding:4px 12px;font-size:12px;color:#5f6368;">
+                  chrome://history
+                </div>
+              </div>
+              <!-- 방문 기록 -->
+              <div style="background:white;flex:1;overflow-y:auto;padding:16px;font-size:13px;color:#333;">
+                <div style="font-size:16px;color:#202124;margin-bottom:16px;font-weight:400;">방문 기록</div>
+                <div style="color:#70757a;font-size:12px;margin-bottom:8px;padding-bottom:8px;border-bottom:1px solid #eee;">2024년 11월 3일 일요일</div>
+
+                <div class="chrome-hist-item" onclick="showInfo('방문 기록',`<p style=\'color:var(--text2);font-size:13px;\'>google.com — 일반 검색. 특별한 내용 없음.</p>`)">
+                  <span class="chrome-hist-favicon">🔍</span>
+                  <div>
+                    <div style="color:#1a0dab;">Google</div>
+                    <div style="font-size:11px;color:#70757a;">https://google.com &nbsp;·&nbsp; 오전 9:14</div>
+                  </div>
+                </div>
+
+                <div class="chrome-hist-item" style="background:#fff3f3;" onclick="revealURL()">
+                  <span class="chrome-hist-favicon">⬛</span>
+                  <div>
+                    <div style="color:#777;letter-spacing:2px;">██████████████████</div>
+                    <div style="font-size:11px;color:#70757a;">오후 3:03 &nbsp;·&nbsp; <span style="color:#c0392b;">접근 불가 — 클릭하여 복원 시도</span></div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+            <!-- 창: 메모장 (처음엔 숨김) -->
+            <div id="win-notepad" class="win-window" style="display:none;left:200px;top:80px;width:480px;height:320px;">
+              <div class="win-titlebar" onmousedown="startDrag(event,'win-notepad')">
+                <div style="display:flex;align-items:center;gap:8px;">
+                  <span style="font-size:14px;">📄</span>
+                  <span>notepad.txt — 메모장</span>
+                </div>
+                <div class="win-titlebar-btns">
+                  <span onclick="minimizeWin('win-notepad')">─</span>
+                  <span onclick="closeWin('win-notepad')">✕</span>
+                </div>
+              </div>
+              <div style="background:white;flex:1;padding:16px;font-family:'Courier New',monospace;font-size:13px;color:#111;line-height:1.8;overflow-y:auto;white-space:pre-wrap;">이름: darkfile
+날짜: 11월 03일 → 1103
+플랫폼: netlify.app
+
+→ darkfile-1103.netlify.app
+
+* USB 없이는 접속 불가
+* 비번: 서연이 나한테 처음 보낸 날짜
+              </div>
+            </div>
+
+            <!-- 창: 내 PC -->
+            <div id="win-mypc" class="win-window" style="display:none;left:150px;top:50px;width:520px;height:360px;">
+              <div class="win-titlebar" onmousedown="startDrag(event,'win-mypc')">
+                <div style="display:flex;align-items:center;gap:8px;">
+                  <span>🖥️</span><span>내 PC</span>
+                </div>
+                <div class="win-titlebar-btns">
+                  <span onclick="minimizeWin('win-mypc')">─</span>
+                  <span onclick="closeWin('win-mypc')">✕</span>
+                </div>
+              </div>
+              <div style="background:#fafafa;flex:1;padding:16px;display:grid;grid-template-columns:repeat(4,1fr);gap:16px;align-items:start;">
+                <div style="text-align:center;cursor:pointer;" ondblclick="showInfo('C: 드라이브',`<p style=\'color:var(--text2);\'>접근이 제한되어 있습니다.</p>`)">
+                  <div style="font-size:32px;">💾</div>
+                  <div style="font-size:11px;color:#333;margin-top:4px;">로컬 디스크 (C:)</div>
+                  <div style="font-size:10px;color:#999;">238GB / 500GB</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 창: 휴지통 -->
+            <div id="win-trash" class="win-window" style="display:none;left:180px;top:60px;width:480px;height:340px;">
+              <div class="win-titlebar" onmousedown="startDrag(event,'win-trash')">
+                <div style="display:flex;align-items:center;gap:8px;">
+                  <span>🗑️</span><span>휴지통</span>
+                </div>
+                <div class="win-titlebar-btns">
+                  <span onclick="minimizeWin('win-trash')">─</span>
+                  <span onclick="closeWin('win-trash')">✕</span>
+                </div>
+              </div>
+              <div style="background:#fafafa;flex:1;padding:16px;">
+                <div style="color:#999;font-size:12px;margin-bottom:12px;">휴지통이 비어 있습니다.</div>
+              </div>
+            </div>
+
+            <!-- 창: 폴더 -->
+            <div id="win-folder" class="win-window" style="display:none;left:160px;top:40px;width:520px;height:360px;">
+              <div class="win-titlebar" onmousedown="startDrag(event,'win-folder')">
+                <div style="display:flex;align-items:center;gap:8px;">
+                  <span>📁</span><span>프로젝트</span>
+                </div>
+                <div class="win-titlebar-btns">
+                  <span onclick="minimizeWin('win-folder')">─</span>
+                  <span onclick="closeWin('win-folder')">✕</span>
+                </div>
+              </div>
+              <div style="background:#fafafa;flex:1;padding:16px;display:grid;grid-template-columns:repeat(4,1fr);gap:12px;align-items:start;">
+                <div style="text-align:center;">
+                  <div style="font-size:28px;">📁</div>
+                  <div style="font-size:11px;color:#333;margin-top:4px;">nexcore_backup</div>
+                </div>
+                <div style="text-align:center;cursor:pointer;" ondblclick="showInfo('log_export.txt',`<div style=\'font-family:monospace;font-size:12px;color:var(--text2);background:var(--bg3);padding:14px;line-height:2;\'>ACCESS LOG<br>2024.11.03 14:55<br>user: j.lee<br>query: SELECT * FROM export_log<br>result: 847 rows<br><span style=\'color:var(--accent2);\'>WARNING: unauthorized query</span></div>`)">
+                  <div style="font-size:28px;">📋</div>
+                  <div style="font-size:11px;color:#333;margin-top:4px;">log_export.txt</div>
+                </div>
+                <div style="text-align:center;">
+                  <div style="font-size:28px;">🔒</div>
+                  <div style="font-size:11px;color:#999;margin-top:4px;">encrypted.zip</div>
+                </div>
+              </div>
+            </div>
+
+          </div><!-- /desktop-icons -->
+
+          <!-- 작업표시줄 -->
+          <div id="win-taskbar" style="
+            height:40px;background:rgba(0,0,0,.7);
+            display:flex;align-items:center;
+            padding:0 8px;gap:4px;flex-shrink:0;
+            backdrop-filter:blur(20px);border-top:1px solid rgba(255,255,255,.1);
+          ">
+            <!-- 시작 버튼 -->
+            <div style="width:36px;height:36px;display:flex;align-items:center;justify-content:center;cursor:pointer;border-radius:4px;transition:background .2s;"
+                 onmouseover="this.style.background='rgba(255,255,255,.1)'"
+                 onmouseout="this.style.background=''"
+                 onclick="showInfo('시작 메뉴',`<p style=\'color:var(--text2);\'>시작 메뉴가 열리지 않습니다.<br>컴퓨터 상태가 불안정합니다.</p>`)">
+              ⊞
+            </div>
+            <!-- 열린 창 버튼들 -->
+            <div id="taskbar-items" style="display:flex;gap:2px;flex:1;"></div>
+            <!-- 시계 -->
+            <div style="color:white;font-size:11px;text-align:right;padding:0 8px;cursor:default;">
+              <div id="win-taskbar-time">23:14</div>
+              <div style="color:rgba(255,255,255,.6);">2024.11.03</div>
+            </div>
+          </div>
+
+        </div><!-- /win-desktop -->
+
         <div class="scene-footer">
-          <div class="scene-location"><strong>1103호 — 책상</strong>STAGE 03 / 05</div>
+          <div class="scene-location"><strong>1103호 — 피해자 컴퓨터</strong>STAGE 03 / 05</div>
         </div>
       </div>
     </div>
@@ -1116,12 +1381,160 @@ function checkStage2(){if(S.f.paintingSolved&&S.f.mirrorRead&&S.stage===2){setTi
 
 // 스테이지 3
 function inspectUniform(){if(S.stage<3){showLocked();return;}showInfo('야구 유니폼',`<p>선반에 걸린 야구 유니폼.</p><p style="margin:14px 0;font-family:var(--mono);font-size:20px;color:var(--gold);letter-spacing:4px;">#29 &nbsp;PARK</p><p style="color:var(--text2);font-size:12px;">LG 트윈스 팬이었던 것 같다.</p>`);}
-function openComputer(){
-  if(S.stage<3){showLocked();return;}
-  if(S.solved.computer_pw){openBrowser();return;}
-  openPuzzle('computer_pw');
+/* ============================================
+   가상 Windows 데스크탑 로직
+============================================ */
+
+function tryWinLogin(){
+  const val = document.getElementById('win-pw-input').value.trim().toUpperCase();
+  if(val === 'PARK29'){
+    // 잠금화면 페이드 아웃
+    const lock = document.getElementById('win-lockscreen');
+    lock.style.opacity = '0';
+    setTimeout(()=>{ lock.style.display='none'; }, 500);
+    // 데스크탑 표시
+    const desk = document.getElementById('win-desktop');
+    desk.style.display = 'flex';
+    S.f.computerOpen = true;
+    S.solved.computer_pw = true;
+    addClue('url_note');
+    showToast('💻 잠금 해제됨');
+  } else {
+    const err = document.getElementById('win-pw-error');
+    err.style.display = 'block';
+    const inp = document.getElementById('win-pw-input');
+    inp.style.borderColor = '#ff6b6b';
+    setTimeout(()=>{ inp.style.borderColor='rgba(255,255,255,.3)'; }, 1500);
+  }
 }
-function openBrowser(){showInfo('브라우저 접속 기록',`<div style="font-family:var(--mono);font-size:12px;line-height:2.4;background:var(--bg3);padding:14px;"><span style="color:var(--text2);">09:14</span> &nbsp;google.com<br><span style="color:var(--text2);">15:03</span> &nbsp;<span style="background:#1a0000;color:var(--accent2);padding:2px 8px;">████████████████.com</span></div><p style="margin-top:14px;color:var(--text2);font-size:12px;">가려진 URL을 복원해야 한다. 메모장 파일에 힌트가 있을 것 같다.</p><button class="btn-ok" style="margin-top:12px;" onclick="openMemopad()">📄 메모장 열기</button>`);}
+
+function toggleWinHint(){
+  const box = document.getElementById('win-hint-box');
+  box.style.display = box.style.display === 'none' ? 'block' : 'none';
+}
+
+// 아이콘 더블클릭
+function winIconClick(name){
+  const wins = {
+    chrome:  'win-browser',
+    notepad: 'win-notepad',
+    mypc:    'win-mypc',
+    trash:   'win-trash',
+    folder:  'win-folder',
+  };
+  const id = wins[name];
+  if(!id) return;
+  const el = document.getElementById(id);
+  if(el){
+    el.style.display = 'flex';
+    bringToFront(el);
+    updateTaskbar();
+    // 메모장 열면 단서 등록
+    if(name==='notepad' && !S.f.urlFound){
+      S.f.urlFound = true;
+      showToast('📄 메모장에서 단서 발견!');
+      setTimeout(()=>{ advanceStage(4); }, 1200);
+    }
+  }
+}
+
+function closeWin(id){
+  const el = document.getElementById(id);
+  if(el) el.style.display = 'none';
+  updateTaskbar();
+}
+
+function minimizeWin(id){
+  const el = document.getElementById(id);
+  if(el) el.style.display = 'none';
+  updateTaskbar();
+}
+
+function bringToFront(el){
+  document.querySelectorAll('.win-window').forEach(w => w.style.zIndex = '10');
+  el.style.zIndex = '20';
+}
+
+function updateTaskbar(){
+  const bar = document.getElementById('taskbar-items');
+  if(!bar) return;
+  const wins = [
+    {id:'win-browser', label:'🌐 Chrome'},
+    {id:'win-notepad', label:'📄 메모장'},
+    {id:'win-mypc',    label:'🖥️ 내 PC'},
+    {id:'win-trash',   label:'🗑️ 휴지통'},
+    {id:'win-folder',  label:'📁 프로젝트'},
+  ];
+  bar.innerHTML = wins.map(w=>{
+    const el = document.getElementById(w.id);
+    if(!el || el.style.display==='none') return '';
+    return `<div onclick="bringToFront(document.getElementById('${w.id}'))"
+      style="padding:4px 10px;background:rgba(255,255,255,.15);border-radius:3px;
+             font-size:11px;color:white;cursor:pointer;white-space:nowrap;
+             font-family:'Segoe UI',sans-serif;">
+      ${w.label}
+    </div>`;
+  }).join('');
+}
+
+// URL 복원 (가려진 항목 클릭 시)
+function revealURL(){
+  if(!S.f.potFound){
+    showNotice('🔒','USB가 필요합니다','복도 화분에서 발견한 USB를 먼저 연결해야 합니다.');
+    return;
+  }
+  showInfo('접속 기록 복원',`
+    <p style="margin-bottom:14px;font-size:12px;color:var(--text2);">USB를 연결해 접속 기록을 복원했습니다.</p>
+    <div style="font-family:var(--mono);font-size:13px;background:var(--bg3);padding:14px;line-height:2.2;">
+      <span style="color:var(--text2);">오후 3:03</span> &nbsp;
+      <span style="color:var(--gold);">darkfile-1103.netlify.app</span>
+    </div>
+    <p style="margin-top:12px;color:var(--text2);font-size:12px;">
+      이 주소로 접속하려면 비밀번호가 필요합니다.<br>
+      메모장에 힌트가 있을 것 같습니다.
+    </p>
+  `);
+}
+
+// 드래그 이동
+let dragState = null;
+function startDrag(e, id){
+  if(e.target.tagName==='SPAN') return;
+  const el = document.getElementById(id);
+  bringToFront(el);
+  dragState = {
+    el,
+    startX: e.clientX - el.offsetLeft,
+    startY: e.clientY - el.offsetTop
+  };
+}
+document.addEventListener('mousemove', e=>{
+  if(!dragState) return;
+  const parent = dragState.el.parentElement;
+  const pr = parent.getBoundingClientRect();
+  let x = e.clientX - dragState.startX;
+  let y = e.clientY - dragState.startY;
+  x = Math.max(0, Math.min(x, pr.width - dragState.el.offsetWidth));
+  y = Math.max(0, Math.min(y, pr.height - 40 - dragState.el.offsetHeight));
+  dragState.el.style.left = x + 'px';
+  dragState.el.style.top  = y + 'px';
+});
+document.addEventListener('mouseup', ()=>{ dragState = null; });
+
+// openComputer 교체 — 잠금화면이 이미 있으므로 스테이지만 이동
+function openComputer(){
+  if(S.stage<3){ showLocked(); return; }
+  // 이미 풀었으면 데스크탑 바로 표시
+  if(S.solved.computer_pw){
+    document.getElementById('win-lockscreen').style.display = 'none';
+    document.getElementById('win-desktop').style.display = 'flex';
+  }
+}
+
+// openBrowser 교체 — 가상 Chrome 창 열기
+function openBrowser(){
+  winIconClick('chrome');
+}
 function openMemopad(){closeModal('modal-clue');showInfo('메모장 — notepad.txt',`<div style="font-family:var(--mono);font-size:13px;line-height:2.2;background:var(--bg3);padding:14px;color:var(--text2);">이름: <span style="color:var(--text);">darkfile</span><br>날짜: 11월 03일 → <span class="clue-hl">1103</span><br>플랫폼: <span style="color:var(--text);">netlify.app</span></div><p style="margin-top:14px;color:var(--gold);font-family:var(--mono);font-size:13px;letter-spacing:2px;">darkfile-1103.netlify.app</p><p style="margin-top:8px;color:var(--text2);font-size:12px;">USB를 연결해야 접속할 수 있을 것 같다.</p>`);if(!S.f.urlFound){S.f.urlFound=true;addClue('url_note');setTimeout(()=>{advanceStage(4);showToast('🌐 웹페이지 접속 준비 완료');},800);}}
 
 // 스테이지 4
