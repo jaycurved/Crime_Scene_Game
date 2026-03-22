@@ -532,6 +532,12 @@ html,body{background:var(--bg);color:var(--text);font-family:var(--sans);height:
             <text class="hs-lbl" x="564" y="204">옆 호실</text>
           </g>
 
+          <!-- 새 진입문 — 좌표 확인 후 열림 -->
+          <g class="hs-group" onclick="inspectSecretRoom()" tabindex="0" role="button">
+            <rect class="hs-rect" x="1050" y="200" width="100" height="580"/>
+            <text class="hs-lbl" x="1054" y="204">복도 끝 문</text>
+          </g>
+
           <!-- 화분 -->
           <g class="hs-group" onclick="inspectPot()" tabindex="0" role="button">
             <rect class="hs-rect" x="920" y="460" width="80" height="180"/>
@@ -748,7 +754,7 @@ html,body{background:var(--bg);color:var(--text);font-family:var(--sans);height:
             </div>
 
             <!-- 창: 브라우저 (처음엔 숨김) -->
-            <div id="win-browser" class="win-window" style="display:none;left:80px;top:20px;width:700px;height:480px;">
+            <div id="win-browser" class="win-window" style="display:none;left:40px;top:10px;width:860px;height:540px;">
               <div class="win-titlebar" onmousedown="startDrag(event,'win-browser')">
                 <div style="display:flex;align-items:center;gap:8px;">
                   <span style="font-size:14px;">🌐</span>
@@ -759,14 +765,15 @@ html,body{background:var(--bg);color:var(--text);font-family:var(--sans);height:
                   <span onclick="closeWin('win-browser')">✕</span>
                 </div>
               </div>
-              <!-- 주소창 -->
+              <!-- 주소창 — 직접 입력 가능 -->
               <div style="background:#f1f3f4;padding:6px 12px;display:flex;align-items:center;gap:8px;border-bottom:1px solid #ddd;flex-shrink:0;">
                 <span style="color:#5f6368;font-size:13px;cursor:pointer;" onclick="browserBack()">←</span>
                 <span style="color:#ccc;font-size:13px;">→</span>
                 <span style="color:#5f6368;font-size:13px;">↻</span>
-                <div id="browser-url" style="flex:1;background:white;border:1px solid #ddd;border-radius:20px;padding:4px 14px;font-size:12px;color:#5f6368;">
-                  chrome://history
-                </div>
+                <input id="browser-url" type="text" value="chrome://history"
+                  style="flex:1;background:white;border:1px solid #ddd;border-radius:20px;padding:4px 14px;font-size:12px;color:#5f6368;outline:none;cursor:text;"
+                  onkeydown="if(event.key==='Enter')browserNavigate(this.value)"
+                  onfocus="this.select()">
               </div>
               <!-- 브라우저 콘텐츠 -->
               <div id="browser-content" style="background:white;flex:1;overflow-y:auto;font-size:13px;color:#333;">
@@ -849,6 +856,66 @@ html,body{background:var(--bg);color:var(--text);font-family:var(--sans);height:
                 <!-- 검색 결과 화면 (동적으로 교체) -->
                 <div id="browser-searchresult" style="display:none;padding:12px 16px;"></div>
 
+                <!-- vaultdrop.io 가상 사이트 -->
+                <div id="browser-vaultdrop" style="display:none;height:100%;flex-direction:column;">
+                  <!-- 즐겨찾기 바 -->
+                  <div style="background:#f1f3f4;padding:4px 12px;display:flex;gap:12px;align-items:center;border-bottom:1px solid #ddd;flex-shrink:0;">
+                    <span style="font-size:11px;color:#888;">즐겨찾기:</span>
+                    <span onclick="browserNavigate('maploc.app')" style="font-size:11px;color:#1a73e8;cursor:pointer;display:flex;align-items:center;gap:3px;">🗺 MapLoc</span>
+                    <span style="font-size:11px;color:#1a73e8;cursor:pointer;display:flex;align-items:center;gap:3px;">📰 Naver</span>
+                    <span style="font-size:11px;color:#1a73e8;cursor:pointer;display:flex;align-items:center;gap:3px;">📬 Gmail</span>
+                  </div>
+                  <!-- vaultdrop 콘텐츠 -->
+                  <div id="vd-body" style="flex:1;overflow-y:auto;"></div>
+                </div>
+
+                <!-- maploc.app 가상 지도 -->
+                <div id="browser-maploc" style="display:none;height:100%;flex-direction:column;">
+                  <div style="background:#f1f3f4;padding:4px 12px;display:flex;gap:12px;align-items:center;border-bottom:1px solid #ddd;flex-shrink:0;">
+                    <span style="font-size:11px;color:#888;">즐겨찾기:</span>
+                    <span onclick="browserNavigate('vaultdrop.io/jl1103')" style="font-size:11px;color:#1a73e8;cursor:pointer;">⬛ VaultDrop</span>
+                    <span style="font-size:11px;color:#1a73e8;cursor:pointer;">📰 Naver</span>
+                  </div>
+                  <div id="maploc-body" style="flex:1;overflow-y:auto;background:#e8f4f8;display:flex;flex-direction:column;">
+                    <!-- MapLoc 헤더 -->
+                    <div style="background:#2c7873;padding:10px 16px;display:flex;align-items:center;gap:12px;">
+                      <span style="color:white;font-size:15px;font-weight:600;letter-spacing:1px;">🗺 MapLoc</span>
+                      <div style="flex:1;background:white;border-radius:4px;display:flex;align-items:center;overflow:hidden;">
+                        <input id="maploc-input" type="text" placeholder="좌표 입력 (예: 37.5665, 126.9780)"
+                          style="flex:1;border:none;padding:7px 12px;font-size:12px;font-family:monospace;outline:none;color:#333;"
+                          onkeydown="if(event.key==='Enter')maplocSearch()">
+                        <button onclick="maplocSearch()" style="background:#2c7873;color:white;border:none;padding:7px 14px;cursor:pointer;font-size:12px;">검색</button>
+                      </div>
+                    </div>
+                    <!-- 지도 영역 -->
+                    <div id="maploc-map" style="flex:1;display:flex;align-items:center;justify-content:center;background:#d4e8e4;min-height:300px;position:relative;">
+                      <div id="maploc-placeholder" style="text-align:center;color:#7aab9e;">
+                        <div style="font-size:40px;margin-bottom:8px;">🗺</div>
+                        <div style="font-size:13px;font-family:monospace;">좌표를 입력하면 위성 사진이 표시됩니다</div>
+                      </div>
+                      <div id="maploc-result" style="display:none;width:100%;height:100%;flex-direction:column;align-items:center;justify-content:center;">
+                        <!--
+                          🖼️ 위성 사진 이미지: ./images/satellite.jpeg 로 교체
+                          숫자 04217이 보이는 위성 사진 이미지를 넣으면 됩니다
+                        -->
+                        <img id="satellite-img" src="./images/satellite.jpeg" alt="위성 사진"
+                          style="max-width:100%;max-height:100%;object-fit:contain;"
+                          onerror="this.style.display='none';document.getElementById('satellite-placeholder').style.display='flex';">
+                        <div id="satellite-placeholder" style="display:none;flex-direction:column;align-items:center;gap:12px;padding:32px;">
+                          <div style="background:#2c2c2c;color:#4ade80;font-family:monospace;font-size:12px;padding:16px 24px;border:1px solid #444;line-height:2;text-align:center;">
+                            SATELLITE VIEW<br>
+                            <span style="color:#fff;">37.5195° N, 127.0572° E</span><br>
+                            <span style="color:#888;font-size:10px;">images/satellite.jpeg 를 넣어주세요</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div id="maploc-coords" style="background:#2c7873;padding:6px 16px;font-family:monospace;font-size:11px;color:rgba(255,255,255,.7);display:none;">
+                      위도: 37.5195° N &nbsp;|&nbsp; 경도: 127.0572° E &nbsp;|&nbsp; 줌: 18
+                    </div>
+                  </div>
+                </div>
+
               </div>
             </div>
 
@@ -864,14 +931,13 @@ html,body{background:var(--bg);color:var(--text);font-family:var(--sans);height:
                   <span onclick="closeWin('win-notepad')">✕</span>
                 </div>
               </div>
-              <div style="background:white;flex:1;padding:16px;font-family:'Courier New',monospace;font-size:13px;color:#111;line-height:1.8;overflow-y:auto;white-space:pre-wrap;">이름: darkfile
-날짜: 11월 03일 → 1103
-플랫폼: netlify.app
+              <div style="background:white;flex:1;padding:16px;font-family:'Courier New',monospace;font-size:13px;color:#111;line-height:1.8;overflow-y:auto;white-space:pre-wrap;">어두운파일 - 0808
+dev backup - localhost:3000
+git token - check .env
 
-→ darkfile-1103.netlify.app
+→ vaultdrop.io/jl1103
 
-* USB 없이는 접속 불가
-* 비번: 서연이 나한테 처음 보낸 날짜
+* USB 없이 접속 불가
               </div>
             </div>
 
@@ -1223,13 +1289,69 @@ html,body{background:var(--bg);color:var(--text);font-family:var(--sans);height:
 
     <!-- 스테이지 5 -->
     <div class="scene-slide" id="scene-5">
-      <div class="scene-wrap">
-        <div style="width:100%;height:100%;background:var(--bg2);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:20px;">
-          <div style="font-family:var(--mono);font-size:13px;color:var(--text2);letter-spacing:2px;">STAGE 05 — 위성 추적</div>
-          <div style="font-family:var(--mono);font-size:14px;color:var(--text2);">IP: 211.XXX.XXX.47</div>
-          <button class="btn-submit" onclick="openMap()">🗺️ 위성 지도 열기</button>
+      <div class="scene-wrap" style="background:#f4f4f4;cursor:default;overflow:hidden;">
+        <div style="display:flex;flex-direction:column;height:100%;font-family:'Segoe UI',sans-serif;">
+
+          <!-- 브라우저 상단 -->
+          <div style="background:#e8e8e8;padding:5px 12px;display:flex;align-items:center;gap:8px;border-bottom:1px solid #ccc;flex-shrink:0;">
+            <div style="display:flex;gap:5px;">
+              <div style="width:11px;height:11px;border-radius:50%;background:#ff5f56;"></div>
+              <div style="width:11px;height:11px;border-radius:50%;background:#febc2e;"></div>
+              <div style="width:11px;height:11px;border-radius:50%;background:#27c840;"></div>
+            </div>
+            <span style="font-size:12px;color:#999;">← →</span>
+            <input id="s5-url" type="text" value="maploc.app"
+              style="flex:1;background:white;border:1px solid #ccc;border-radius:12px;padding:3px 12px;font-size:12px;color:#555;outline:none;"
+              onkeydown="if(event.key==='Enter')s5Navigate(this.value)">
+          </div>
+          <!-- 즐겨찾기 -->
+          <div style="background:#f1f3f4;padding:3px 12px;display:flex;gap:14px;align-items:center;border-bottom:1px solid #ddd;flex-shrink:0;font-size:11px;">
+            <span style="color:#888;">즐겨찾기:</span>
+            <span onclick="s5Navigate('maploc.app')" style="color:#1a73e8;cursor:pointer;">🗺 MapLoc</span>
+            <span onclick="s5Navigate('vaultdrop.io/jl1103')" style="color:#1a73e8;cursor:pointer;">⬛ VaultDrop</span>
+          </div>
+
+          <!-- MapLoc -->
+          <div id="s5-maploc" style="flex:1;display:flex;flex-direction:column;overflow:hidden;">
+            <div style="background:#2c7873;padding:8px 16px;display:flex;align-items:center;gap:10px;flex-shrink:0;">
+              <span style="color:white;font-size:14px;font-weight:600;letter-spacing:1px;">🗺 MapLoc</span>
+              <div style="flex:1;background:white;border-radius:4px;display:flex;align-items:center;overflow:hidden;">
+                <input id="s5-coord-input" type="text" placeholder="좌표 입력 (예: 37.5195, 127.0572)"
+                  style="flex:1;border:none;padding:6px 12px;font-size:12px;font-family:monospace;outline:none;color:#333;"
+                  onkeydown="if(event.key==='Enter')s5MapSearch()">
+                <button onclick="s5MapSearch()" style="background:#2c7873;color:white;border:none;padding:6px 12px;cursor:pointer;font-size:12px;">검색</button>
+              </div>
+            </div>
+            <div id="s5-map-area" style="flex:1;background:#d4e8e4;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;">
+              <div id="s5-map-placeholder" style="text-align:center;color:#7aab9e;">
+                <div style="font-size:36px;margin-bottom:8px;">🗺</div>
+                <div style="font-size:12px;font-family:monospace;">좌표를 입력하면 위성 사진이 표시됩니다</div>
+              </div>
+              <div id="s5-map-result" style="display:none;width:100%;height:100%;align-items:center;justify-content:center;flex-direction:column;">
+                <!--
+                  🖼️ 위성 사진: ./images/satellite.jpeg 로 교체
+                  숫자 04217이 보이는 이미지를 넣으세요
+                -->
+                <img id="s5-satellite-img" src="./images/satellite.jpeg" alt="위성 사진"
+                  style="max-width:100%;max-height:100%;object-fit:contain;cursor:zoom-in;"
+                  onclick="zoomSatellite()"
+                  onerror="this.style.display='none';document.getElementById('s5-sat-fallback').style.display='flex';">
+                <div id="s5-sat-fallback" style="display:none;flex-direction:column;align-items:center;gap:12px;padding:32px;">
+                  <div style="background:#1a1a1a;color:#4ade80;font-family:monospace;font-size:12px;padding:20px 28px;border:1px solid #333;line-height:2.2;text-align:center;">
+                    SATELLITE VIEW — 37.5195°N 127.0572°E<br>
+                    <span style="color:#888;font-size:10px;">images/satellite.jpeg 파일을 넣어주세요</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div id="s5-coord-bar" style="display:none;background:#2c7873;padding:5px 16px;font-family:monospace;font-size:11px;color:rgba(255,255,255,.7);">
+              위도: 37.5195° N &nbsp;|&nbsp; 경도: 127.0572° E &nbsp;|&nbsp; 줌: 18 &nbsp;|&nbsp;
+              <span onclick="showComingSoon()" style="color:#fee500;cursor:pointer;">← 복도로 돌아가기</span>
+            </div>
+          </div>
+
         </div>
-        <div class="scene-footer"><div class="scene-location"><strong>IP 위치 추적</strong>STAGE 05 / 05</div></div>
+        <div class="scene-footer"><div class="scene-location"><strong>위성 추적 — MapLoc</strong>STAGE 05 / 05</div></div>
       </div>
     </div>
 
@@ -1316,165 +1438,155 @@ html,body{background:var(--bg);color:var(--text);font-family:var(--sans);height:
 
 <!-- 핸드폰 카카오톡 모달 -->
 <div class="modal-overlay" id="modal-phone">
-  <div class="modal-box" style="max-width:320px;background:transparent;border:none;box-shadow:none;">
+  <div class="modal-box" style="max-width:300px;background:transparent;border:none;box-shadow:none;">
     <div class="phone-frame">
-      <!-- 노치 -->
       <div class="phone-notch">
-        <div style="font-size:9px;color:#555;font-family:monospace;">23:41</div>
+        <div style="font-size:9px;color:#555;font-family:monospace;" id="phone-time-display">23:41</div>
       </div>
-
       <div class="phone-screen">
-        <!-- 상태바 -->
         <div class="phone-status">
-          <span>23:41</span>
+          <span id="phone-status-time">23:41</span>
           <span>📶 🔋</span>
         </div>
 
-        <!-- 카톡 헤더 -->
-        <div class="kakao-header">
-          <div class="kakao-back" onclick="closeModal('modal-phone')">‹</div>
-          <div>
-            <div class="kakao-room-name">김서연 (전 직장 동료)</div>
-            <div class="kakao-member">마지막 메시지 2024.11.02</div>
+        <!-- 홈화면 -->
+        <div id="phone-home-screen" style="background:linear-gradient(160deg,#1a1a2e,#16213e);min-height:380px;padding:20px 16px;">
+          <div style="text-align:center;margin-bottom:24px;">
+            <div style="font-size:32px;color:white;font-weight:200;">23:41</div>
+            <div style="font-size:11px;color:rgba(255,255,255,.5);margin-top:2px;">2024년 11월 3일 일요일</div>
+          </div>
+          <!-- 알림 -->
+          <div id="phone-notification" style="background:rgba(255,255,255,.1);border-radius:12px;padding:10px 12px;margin-bottom:20px;display:none;">
+            <div style="font-size:10px;color:rgba(255,255,255,.5);margin-bottom:4px;">카카오톡</div>
+            <div style="font-size:12px;color:white;">새 메시지가 있습니다</div>
+          </div>
+          <!-- 앱 아이콘 -->
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;padding:0 8px;">
+            <div onclick="phoneOpenApp('kakao')" style="display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;">
+              <div style="width:48px;height:48px;border-radius:14px;background:#fee500;display:flex;align-items:center;justify-content:center;font-size:24px;">💬</div>
+              <div style="font-size:10px;color:rgba(255,255,255,.8);">카카오톡</div>
+            </div>
+            <div onclick="phoneOpenApp('memo')" style="display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;">
+              <div style="width:48px;height:48px;border-radius:14px;background:#fff3a3;display:flex;align-items:center;justify-content:center;font-size:24px;">📝</div>
+              <div style="font-size:10px;color:rgba(255,255,255,.8);">메모</div>
+            </div>
+            <div style="display:flex;flex-direction:column;align-items:center;gap:4px;opacity:.4;">
+              <div style="width:48px;height:48px;border-radius:14px;background:#333;display:flex;align-items:center;justify-content:center;font-size:24px;">📷</div>
+              <div style="font-size:10px;color:rgba(255,255,255,.8);">카메라</div>
+            </div>
+            <div style="display:flex;flex-direction:column;align-items:center;gap:4px;opacity:.4;">
+              <div style="width:48px;height:48px;border-radius:14px;background:#2ecc71;display:flex;align-items:center;justify-content:center;font-size:24px;">📱</div>
+              <div style="font-size:10px;color:rgba(255,255,255,.8);">전화</div>
+            </div>
+            <div style="display:flex;flex-direction:column;align-items:center;gap:4px;opacity:.4;">
+              <div style="width:48px;height:48px;border-radius:14px;background:#1abc9c;display:flex;align-items:center;justify-content:center;font-size:24px;">✉️</div>
+              <div style="font-size:10px;color:rgba(255,255,255,.8);">문자</div>
+            </div>
+            <div style="display:flex;flex-direction:column;align-items:center;gap:4px;opacity:.4;">
+              <div style="width:48px;height:48px;border-radius:14px;background:#e74c3c;display:flex;align-items:center;justify-content:center;font-size:24px;">🎵</div>
+              <div style="font-size:10px;color:rgba(255,255,255,.8);">음악</div>
+            </div>
           </div>
         </div>
 
-        <!-- 대화 내용 -->
-        <div class="kakao-body" id="kakao-body">
-          <div class="kakao-date-divider">2024년 11월 2일</div>
-
-          <!-- 서연 -->
-          <div class="kmsg-row">
-            <div class="kavatar">👩</div>
-            <div class="kmsg-wrap">
-              <div class="kname">김서연</div>
-              <div style="display:flex;align-items:flex-end;gap:3px;">
-                <div class="kbubble other">준혁씨 요즘 괜찮아요? 연락이 없어서 걱정됐어요</div>
-                <div class="ktime">23:01</div>
-              </div>
+        <!-- 카카오톡 앱 -->
+        <div id="phone-kakao-screen" style="display:none;">
+          <div class="kakao-header">
+            <div class="kakao-back" onclick="phoneOpenApp('home')">‹</div>
+            <div>
+              <div class="kakao-room-name">김서연 (전 직장 동료)</div>
+              <div class="kakao-member">마지막 메시지 2024.11.02</div>
             </div>
           </div>
+          <div class="kakao-body" id="kakao-body">
+            <div class="kakao-date-divider">2024년 11월 2일</div>
+            <div class="kmsg-row"><div class="kavatar">👩</div><div class="kmsg-wrap"><div class="kname">김서연</div><div style="display:flex;align-items:flex-end;gap:3px;"><div class="kbubble other">준혁씨 요즘 괜찮아요? 연락이 없어서 걱정됐어요</div><div class="ktime">23:01</div></div></div></div>
+            <div class="kmsg-row mine"><div class="kmsg-wrap"><div style="display:flex;align-items:flex-end;gap:3px;flex-direction:row-reverse;"><div class="kbubble mine">아 네 그냥 좀 바빴어요. 근데 서연씨 나 좀 이상한 거 발견했어요</div><div class="ktime">23:03</div></div></div></div>
+            <div class="kmsg-row"><div class="kavatar">👩</div><div class="kmsg-wrap"><div class="kname">김서연</div><div style="display:flex;align-items:flex-end;gap:3px;"><div class="kbubble other">뭔데요?</div><div class="ktime">23:03</div></div></div></div>
+            <div class="kmsg-row mine"><div class="kmsg-wrap"><div style="display:flex;align-items:flex-end;gap:3px;flex-direction:row-reverse;"><div class="kbubble mine">회사 서버에서 이상한 export 로그가 계속 쌓이고 있어요. 내가 건드린 게 아닌데 누군가 내 계정으로 쿼리를 돌린 것 같아요</div><div class="ktime">23:05</div></div></div></div>
+            <div class="kmsg-row"><div class="kavatar">👩</div><div class="kmsg-wrap"><div class="kname">김서연</div><div style="display:flex;align-items:flex-end;gap:3px;"><div class="kbubble other">그거 위험한 거 아니에요? 회사에 말해야 하는 거 아닌가요?</div><div class="ktime">23:06</div></div></div></div>
+            <div class="kmsg-row mine"><div class="kmsg-wrap"><div style="display:flex;align-items:flex-end;gap:3px;flex-direction:row-reverse;"><div class="kbubble mine">회사가 문제인 것 같아서 말 못하겠어요. 일단 증거 모아두고 있어요. 파일 3곳에 나눠뒀으니까 혹시 내가 연락 안 되면 서연씨가 알아야 해요</div><div class="ktime">23:08</div></div></div></div>
+            <div class="kmsg-row"><div class="kavatar">👩</div><div class="kmsg-wrap"><div class="kname">김서연</div><div style="display:flex;align-items:flex-end;gap:3px;"><div class="kbubble other">무슨 소리예요 그게. 지금 위험한 상황인 거예요?</div><div class="ktime">23:09</div></div></div></div>
+            <div class="kmsg-row mine"><div class="kmsg-wrap"><div style="display:flex;align-items:flex-end;gap:3px;flex-direction:row-reverse;"><div class="kbubble mine">아마도요. 비번도 바꿨어요. 절대 잊을 수 없는 걸로요</div><div class="ktime">23:10</div></div></div></div>
+            <div class="kmsg-row"><div class="kavatar">👩</div><div class="kmsg-wrap"><div class="kname">김서연</div><div style="display:flex;align-items:flex-end;gap:3px;"><div class="kbubble other">제발 조심해요. 무슨 일 있으면 바로 연락해요</div><div class="ktime">23:11</div></div></div></div>
+            <div class="kmsg-row mine"><div class="kmsg-wrap"><div style="display:flex;align-items:flex-end;gap:3px;flex-direction:row-reverse;"><div class="kbubble mine">네. 고마워요 서연씨</div><div class="ktime">23:41</div></div></div></div>
+            <div class="kmsg-row"><div class="kavatar">👩</div><div class="kmsg-wrap"><div class="kname">김서연</div><div style="display:flex;align-items:flex-end;gap:3px;"><div class="kbubble other">저도요. 진짜 조심하고요</div><div class="ktime">23:41</div></div></div></div>
+            <div class="kakao-date-divider" style="margin-top:8px;">마지막 메시지</div>
+          </div>
+        </div>
 
-          <!-- 준혁 -->
-          <div class="kmsg-row mine">
-            <div class="kmsg-wrap">
-              <div style="display:flex;align-items:flex-end;gap:3px;flex-direction:row-reverse;">
-                <div class="kbubble mine">아 네 그냥 좀 바빴어요. 근데 서연씨 나 좀 이상한 거 발견했어요</div>
-                <div class="ktime">23:03</div>
-              </div>
+        <!-- 메모 앱 -->
+        <div id="phone-memo-screen" style="display:none;background:#fafafa;min-height:380px;">
+          <div style="background:white;border-bottom:1px solid #eee;padding:10px 14px;display:flex;align-items:center;gap:8px;">
+            <div onclick="phoneOpenApp('home')" style="font-size:16px;cursor:pointer;color:#1a73e8;">‹</div>
+            <div style="font-size:14px;font-weight:500;color:#333;">메모</div>
+          </div>
+          <!-- 메모 목록 -->
+          <div id="phone-memo-list">
+            <div onclick="phoneOpenMemo('todo')" style="padding:12px 16px;border-bottom:1px solid #f0f0f0;cursor:pointer;background:white;">
+              <div style="font-size:13px;color:#333;font-weight:500;margin-bottom:2px;">할 일 목록</div>
+              <div style="font-size:11px;color:#aaa;">청소, 세탁, 장보기...</div>
+              <div style="font-size:10px;color:#ccc;margin-top:2px;font-family:monospace;">2024.11.01</div>
+            </div>
+            <div onclick="phoneOpenMemo('secret')" style="padding:12px 16px;border-bottom:1px solid #f0f0f0;cursor:pointer;background:white;">
+              <div style="font-size:13px;color:#333;font-weight:500;margin-bottom:2px;">기억해야 할 것들</div>
+              <div style="font-size:11px;color:#aaa;">어두운파일 - 0808...</div>
+              <div style="font-size:10px;color:#ccc;margin-top:2px;font-family:monospace;">2024.11.03</div>
+            </div>
+            <div onclick="phoneOpenMemo('grocery')" style="padding:12px 16px;border-bottom:1px solid #f0f0f0;cursor:pointer;background:white;">
+              <div style="font-size:13px;color:#333;font-weight:500;margin-bottom:2px;">장보기 목록</div>
+              <div style="font-size:11px;color:#aaa;">우유, 계란, 두부...</div>
+              <div style="font-size:10px;color:#ccc;margin-top:2px;font-family:monospace;">2024.10.30</div>
             </div>
           </div>
+          <!-- 메모 내용 뷰 -->
+          <div id="phone-memo-content" style="display:none;padding:16px;font-family:monospace;font-size:13px;color:#333;line-height:1.9;min-height:300px;background:white;">
+            <div onclick="phoneOpenApp('memo')" style="font-size:12px;color:#1a73e8;cursor:pointer;margin-bottom:12px;">← 목록으로</div>
+            <div id="phone-memo-text"></div>
+          </div>
+        </div>
 
-          <!-- 서연 -->
-          <div class="kmsg-row">
-            <div class="kavatar">👩</div>
-            <div class="kmsg-wrap">
-              <div class="kname">김서연</div>
-              <div style="display:flex;align-items:flex-end;gap:3px;">
-                <div class="kbubble other">뭔데요?</div>
-                <div class="ktime">23:03</div>
-              </div>
+        <!-- 전화 수신 화면 -->
+        <div id="phone-call-screen" style="display:none;background:linear-gradient(160deg,#1a1a2e,#0a0a1a);min-height:380px;display:none;flex-direction:column;align-items:center;justify-content:center;padding:24px;">
+          <div style="text-align:center;margin-bottom:32px;">
+            <div style="width:64px;height:64px;border-radius:50%;background:#333;display:flex;align-items:center;justify-content:center;font-size:28px;margin:0 auto 12px;">📞</div>
+            <div style="font-size:14px;color:rgba(255,255,255,.7);margin-bottom:4px;">수신 전화</div>
+            <div style="font-size:18px;color:white;font-weight:300;letter-spacing:2px;">발신번호 제한</div>
+            <div style="font-size:12px;color:rgba(255,255,255,.4);margin-top:4px;font-family:monospace;" id="call-ringing-text">전화가 오고 있습니다...</div>
+          </div>
+          <div style="display:flex;gap:40px;">
+            <div onclick="phoneDeclineCall()" style="display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;">
+              <div style="width:52px;height:52px;border-radius:50%;background:#e74c3c;display:flex;align-items:center;justify-content:center;font-size:22px;">📵</div>
+              <div style="font-size:10px;color:rgba(255,255,255,.6);">거절</div>
+            </div>
+            <div onclick="phoneAnswerCall()" style="display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;">
+              <div style="width:52px;height:52px;border-radius:50%;background:#27ae60;display:flex;align-items:center;justify-content:center;font-size:22px;">📞</div>
+              <div style="font-size:10px;color:rgba(255,255,255,.6);">수신</div>
             </div>
           </div>
+        </div>
 
-          <!-- 준혁 -->
-          <div class="kmsg-row mine">
-            <div class="kmsg-wrap">
-              <div style="display:flex;align-items:flex-end;gap:3px;flex-direction:row-reverse;">
-                <div class="kbubble mine">회사 서버에서 이상한 export 로그가 계속 쌓이고 있어요. 내가 건드린 게 아닌데 누군가 내 계정으로 쿼리를 돌린 것 같아요</div>
-                <div class="ktime">23:05</div>
-              </div>
+        <!-- 통화 중 화면 (좌표 읽어줌) -->
+        <div id="phone-oncall-screen" style="display:none;background:linear-gradient(160deg,#0a1a0a,#0a0a0a);min-height:380px;flex-direction:column;padding:20px;">
+          <div style="text-align:center;margin-bottom:20px;">
+            <div style="font-size:12px;color:rgba(255,255,255,.4);margin-bottom:4px;font-family:monospace;">통화 중 · 발신번호 제한</div>
+            <div id="call-timer" style="font-size:20px;color:white;font-weight:200;font-family:monospace;">00:00</div>
+          </div>
+          <div style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:16px;margin-bottom:16px;flex:1;">
+            <div id="call-voice-text" style="font-family:monospace;font-size:12px;color:#4ade80;line-height:2.2;"></div>
+          </div>
+          <div style="text-align:center;">
+            <div onclick="phoneEndCall()" style="display:inline-flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;">
+              <div style="width:52px;height:52px;border-radius:50%;background:#e74c3c;display:flex;align-items:center;justify-content:center;font-size:22px;">📵</div>
+              <div style="font-size:10px;color:rgba(255,255,255,.6);">통화 종료</div>
             </div>
           </div>
-
-          <!-- 서연 -->
-          <div class="kmsg-row">
-            <div class="kavatar">👩</div>
-            <div class="kmsg-wrap">
-              <div class="kname">김서연</div>
-              <div style="display:flex;align-items:flex-end;gap:3px;">
-                <div class="kbubble other">그거 위험한 거 아니에요? 회사에 말해야 하는 거 아닌가요?</div>
-                <div class="ktime">23:06</div>
-              </div>
-            </div>
-          </div>
-
-          <!-- 준혁 -->
-          <div class="kmsg-row mine">
-            <div class="kmsg-wrap">
-              <div style="display:flex;align-items:flex-end;gap:3px;flex-direction:row-reverse;">
-                <div class="kbubble mine">회사가 문제인 것 같아서 말 못하겠어요. 일단 증거 모아두고 있어요. 파일 3곳에 나눠뒀으니까 혹시 내가 연락 안 되면 서연씨가 알아야 해요</div>
-                <div class="ktime">23:08</div>
-              </div>
-            </div>
-          </div>
-
-          <!-- 서연 -->
-          <div class="kmsg-row">
-            <div class="kavatar">👩</div>
-            <div class="kmsg-wrap">
-              <div class="kname">김서연</div>
-              <div style="display:flex;align-items:flex-end;gap:3px;">
-                <div class="kbubble other">무슨 소리예요 그게. 지금 위험한 상황인 거예요?</div>
-                <div class="ktime">23:09</div>
-              </div>
-            </div>
-          </div>
-
-          <!-- 준혁 -->
-          <div class="kmsg-row mine">
-            <div class="kmsg-wrap">
-              <div style="display:flex;align-items:flex-end;gap:3px;flex-direction:row-reverse;">
-                <div class="kbubble mine">아마도요. 비번도 바꿨어요. 절대 잊을 수 없는 걸로요</div>
-                <div class="ktime">23:10</div>
-              </div>
-            </div>
-          </div>
-
-          <!-- 서연 -->
-          <div class="kmsg-row">
-            <div class="kavatar">👩</div>
-            <div class="kmsg-wrap">
-              <div class="kname">김서연</div>
-              <div style="display:flex;align-items:flex-end;gap:3px;">
-                <div class="kbubble other">제발 조심해요. 무슨 일 있으면 바로 연락해요</div>
-                <div class="ktime">23:11</div>
-              </div>
-            </div>
-          </div>
-
-          <!-- 준혁 -->
-          <div class="kmsg-row mine">
-            <div class="kmsg-wrap">
-              <div style="display:flex;align-items:flex-end;gap:3px;flex-direction:row-reverse;">
-                <div class="kbubble mine">네. 고마워요 서연씨</div>
-                <div class="ktime">23:41</div>
-              </div>
-            </div>
-          </div>
-
-          <!-- 서연 -->
-          <div class="kmsg-row">
-            <div class="kavatar">👩</div>
-            <div class="kmsg-wrap">
-              <div class="kname">김서연</div>
-              <div style="display:flex;align-items:flex-end;gap:3px;">
-                <div class="kbubble other">저도요. 진짜 조심하고요</div>
-                <div class="ktime">23:41</div>
-              </div>
-            </div>
-          </div>
-
-          <div class="kakao-date-divider" style="margin-top:8px;">마지막 메시지</div>
         </div>
 
       </div><!-- /phone-screen -->
-
-      <!-- 하단 홈바 -->
-      <div class="phone-home"></div>
+      <div class="phone-home" onclick="phoneOpenApp('home')"></div>
     </div><!-- /phone-frame -->
 
-    <!-- 닫기 버튼 -->
     <div style="text-align:center;margin-top:16px;">
       <button class="btn-ok" onclick="closeModal('modal-phone')"
               style="border-color:var(--border2);color:var(--text2);max-width:280px;">
@@ -1664,9 +1776,10 @@ const S={stage:1,viewStage:1,clues:[],
   f:{cctvSeen:false,mailboxRead:false,potFound:false,
      windowSeen:false,fridgeRead:false,
      paintingSolved:false,kakaoRead:false,postitRead:false,
-     wardrobeOpen:false,
+     wardrobeOpen:false,memoSecretRead:false,
      computerOpen:false,uniformSeen:false,urlFound:false,
-     webpageEntered:false,file3Unlocked:false}};
+     webpageEntered:false,file3Unlocked:false,
+     callReceived:false,coordReceived:false,satelliteViewed:false}};
 
 const CLUES={
   cctv:{title:'CCTV 영상 기록',desc:'2024.11.03 23:14 — 이준혁 마지막 귀가 장면',detail:`<p>복도 CCTV 마지막 기록.</p><p style="margin:12px 0;font-family:var(--mono);font-size:12px;color:var(--text2);">타임스탬프: <span class="clue-hl">2024.11.03 / 23:14</span></p><p>이준혁이 도어락을 누르는 장면이 흐릿하게 잡혀있다.<br>손가락 움직임: <span class="clue-hl">좌상→우하→우상→중앙</span></p><p style="margin-top:12px;color:var(--text2);font-size:12px;">도어락 키패드: 1 2 3 / 4 5 6 / 7 8 9 / 0</p>`},
@@ -1752,7 +1865,7 @@ const CLUES={
       </p>
     `
   },
-  url_note:{title:'메모장 — URL 힌트',desc:'컴퓨터 메모장 파일.',detail:`<div style="font-family:var(--mono);font-size:12px;line-height:2;color:var(--text2);background:var(--bg3);padding:14px;">이름: <span style="color:var(--text);">darkfile</span><br>날짜: 11월 03일 → <span class="clue-hl">1103</span><br>플랫폼: <span style="color:var(--text);">netlify.app</span></div><p style="margin-top:12px;color:var(--text2);font-size:12px;">조합하면: <span class="clue-hl">darkfile-1103.netlify.app</span></p>`},
+  url_note:{title:'메모장 — 웹주소 발견',desc:'컴퓨터 메모장에서 발견한 주소.',detail:`<div style="font-family:var(--mono);font-size:12px;line-height:2;color:var(--text2);background:var(--bg3);padding:14px;">어두운파일 - 0808<br>dev backup - localhost:3000<br>→ <span style="color:var(--gold);">vaultdrop.io/jl1103</span></div><p style="margin-top:12px;color:var(--text2);font-size:12px;">크롬 주소창에 직접 입력해야 한다.</p>`},
   server_log:{title:'서버 로그 — 넥스코어',desc:'수신처 IP: 211.XXX.XXX.47 / 누적 약 8,900만 건',detail:`<div style="font-family:var(--mono);font-size:11px;line-height:2;color:var(--text2);background:var(--bg3);padding:14px;">NEXCORE DATA EXPORT LOG<br>─────────────────────<br>2024.10.01 &nbsp;exported: 2,847,203 users<br>...<br><span style="color:var(--gold);">2019.04.01 &nbsp;exported: 341,882 users ← 최초</span><br>─────────────────────<br>수신처 IP: <span class="clue-hl">211.XXX.XXX.47</span></div>`},
   internal_mail:{title:'내부 메일 — 박성진 → 경찰청',desc:'2024.11.03 22:47 발송.',detail:`<div style="font-family:var(--mono);font-size:12px;line-height:2;color:var(--text2);background:var(--bg3);padding:14px;">보낸 사람: park.sj@nexcore.com<br>받는 사람: [경찰청 내부]<br>날짜: <span class="clue-hl">2024.11.03 22:47</span><br>─────────────────────<br><span style="color:var(--text);">"오늘 밤 안에 처리해주십시오.<br>증거가 외부로 나가기 전에."</span></div><p style="margin-top:12px;color:var(--accent2);font-size:12px;">경찰 내부에 넥스코어 측 인물이 있었다.</p>`}
 };
@@ -2004,6 +2117,290 @@ function dfMailDone(){
   advanceStage(5);
   showToast('📡 위성 추적 시작');
 }
+
+/* ============================================
+   핸드폰 앱 네비게이션
+============================================ */
+const PHONE_MEMOS = {
+  todo:`할 일\n────────\n- 청소\n- 세탁\n- 장보기\n- 이메일 확인`,
+  secret:`기억해야 할 것들\n────────\n어두운파일 - 0808\nvault pw - 위에 적음\ngit pw - 평소랑 같음\n\n// 나만 아는 것들`,
+  grocery:`장보기\n────────\n우유\n계란\n두부\n고추장\n라면`
+};
+
+function phoneOpenApp(name){
+  ['home-screen','kakao-screen','memo-screen','call-screen','oncall-screen'].forEach(s=>{
+    const el = document.getElementById('phone-'+s);
+    if(el) el.style.display='none';
+  });
+  const target = document.getElementById('phone-'+name+'-screen');
+  if(!target) return;
+  target.style.display = (name==='call'||name==='oncall') ? 'flex' : 'block';
+  if(name==='kakao'){
+    if(S.f.callReceived){
+      target.style.display='none';
+      document.getElementById('phone-home-screen').style.display='block';
+      showToast('📵 더 이상 접근할 수 없습니다');
+      return;
+    }
+    setTimeout(()=>{ const b=document.getElementById('kakao-body'); if(b)b.scrollTop=b.scrollHeight; },50);
+  }
+  if(name==='memo'){
+    document.getElementById('phone-memo-content').style.display='none';
+    document.getElementById('phone-memo-list').style.display='block';
+  }
+}
+
+function phoneOpenMemo(key){
+  const text = PHONE_MEMOS[key];
+  document.getElementById('phone-memo-list').style.display='none';
+  document.getElementById('phone-memo-content').style.display='block';
+  document.getElementById('phone-memo-text').innerHTML = text.replace(/\n/g,'<br>');
+  if(key==='secret' && !S.f.memoSecretRead){
+    S.f.memoSecretRead = true;
+    showToast('📝 메모 발견: 어두운파일 - 0808');
+  }
+}
+
+let callTimerInterval = null;
+let callSeconds = 0;
+
+function triggerIncomingCall(){
+  closeModal('modal-phone');
+  setTimeout(()=>{
+    showToast('📞 전화가 오고 있습니다...');
+    document.getElementById('modal-phone').classList.add('open');
+    phoneOpenApp('call');
+  }, 1200);
+}
+
+function phoneDeclineCall(){
+  phoneOpenApp('home');
+  const notif = document.getElementById('phone-notification');
+  notif.style.display='block';
+  notif.innerHTML='<div style="font-size:10px;color:rgba(255,255,255,.5);margin-bottom:4px;">부재중 전화</div><div style="font-size:12px;color:white;">발신번호 제한 — 1회</div>';
+}
+
+function phoneAnswerCall(){
+  phoneOpenApp('oncall');
+  S.f.callReceived = true;
+  callSeconds = 0;
+  callTimerInterval = setInterval(()=>{
+    callSeconds++;
+    const m=String(Math.floor(callSeconds/60)).padStart(2,'0');
+    const s=String(callSeconds%60).padStart(2,'0');
+    const el=document.getElementById('call-timer');
+    if(el) el.textContent=`${m}:${s}`;
+  },1000);
+  const lines = ['...','들립니까.','좌표를 알려드리겠습니다.','','위도 37.5195','경도 127.0572','','지도에서 확인하십시오.','이 번호로 다시 연락하지 마십시오.'];
+  let i=0;
+  const voiceEl = document.getElementById('call-voice-text');
+  voiceEl.innerHTML='';
+  const typeInterval = setInterval(()=>{
+    if(i>=lines.length){ clearInterval(typeInterval); return; }
+    voiceEl.innerHTML += (lines[i]==='' ? '<br>' : lines[i]+'<br>');
+    i++;
+  },900);
+}
+
+function phoneEndCall(){
+  clearInterval(callTimerInterval);
+  phoneOpenApp('home');
+  showToast('📞 통화 종료 — 좌표를 기록하세요');
+  S.f.coordReceived = true;
+}
+
+/* ============================================
+   브라우저 주소창 네비게이션
+============================================ */
+function browserNavigate(url){
+  url = (url||'').trim().replace(/^https?:\/\//i,'');
+  const urlEl = document.getElementById('browser-url');
+  if(urlEl) urlEl.value = url;
+  if(url.toLowerCase().includes('vaultdrop')){ showVaultDrop(); return; }
+  if(url.toLowerCase().includes('maploc')){ showMapLoc(); return; }
+  browserBack();
+  document.getElementById('browser-tab-title').textContent = url+' - Chrome';
+}
+
+function showVaultDrop(){
+  ['browser-history','browser-searchresult','browser-vaultdrop','browser-maploc'].forEach(id=>{
+    const el=document.getElementById(id); if(el){ el.style.display='none'; }
+  });
+  const vd=document.getElementById('browser-vaultdrop');
+  vd.style.display='flex'; vd.style.flexDirection='column';
+  document.getElementById('browser-tab-title').textContent='VaultDrop — Secure Storage';
+  const urlEl=document.getElementById('browser-url'); if(urlEl) urlEl.value='vaultdrop.io/jl1103';
+  renderVaultDrop();
+}
+
+function showMapLoc(){
+  ['browser-history','browser-searchresult','browser-vaultdrop','browser-maploc'].forEach(id=>{
+    const el=document.getElementById(id); if(el){ el.style.display='none'; }
+  });
+  const ml=document.getElementById('browser-maploc');
+  ml.style.display='flex'; ml.style.flexDirection='column';
+  document.getElementById('browser-tab-title').textContent='MapLoc — 위성 지도';
+  const urlEl=document.getElementById('browser-url'); if(urlEl) urlEl.value='maploc.app';
+}
+
+function renderVaultDrop(){
+  const body=document.getElementById('vd-body'); if(!body) return;
+  if(!S.f.potFound){
+    body.innerHTML=`<div style="background:#1a1a2e;min-height:380px;display:flex;align-items:center;justify-content:center;"><div style="width:320px;text-align:center;"><div style="font-size:24px;color:#e0e0e0;font-family:monospace;letter-spacing:3px;margin-bottom:8px;">⬛ VaultDrop</div><div style="background:#111;border:1px solid #2a2a3a;padding:20px;margin-top:16px;"><div style="font-size:11px;color:#888;margin-bottom:12px;font-family:monospace;">Enter access key</div><input id="vd-pw-inline" type="password" placeholder="access key" style="width:100%;background:#0a0a0a;border:none;border-bottom:1px solid #3a3a5a;color:#c0c0ff;font-family:monospace;font-size:13px;letter-spacing:3px;padding:7px 0;outline:none;text-align:center;margin-bottom:6px;" onkeydown="if(event.key==='Enter')vdLoginInline()"><div id="vd-err-inline" style="color:#ff6b6b;font-size:11px;min-height:14px;margin-bottom:8px;font-family:monospace;">⚠ Connection error: storage device required</div><button onclick="vdLoginInline()" style="width:100%;background:#0f62fe;color:white;border:none;padding:8px;font-size:12px;cursor:pointer;font-family:monospace;">AUTHENTICATE →</button></div></div></div>`;
+    return;
+  }
+  if(!S.f.webpageEntered){
+    body.innerHTML=`<div style="background:#1a1a2e;min-height:380px;display:flex;align-items:center;justify-content:center;"><div style="width:320px;text-align:center;"><div style="font-size:24px;color:#e0e0e0;font-family:monospace;letter-spacing:3px;margin-bottom:8px;">⬛ VaultDrop</div><div style="background:#111;border:1px solid #2a2a3a;padding:20px;margin-top:16px;"><div style="font-size:11px;color:#888;margin-bottom:12px;font-family:monospace;">Enter access key</div><input id="vd-pw-inline" type="password" placeholder="access key" style="width:100%;background:#0a0a0a;border:none;border-bottom:1px solid #3a3a5a;color:#c0c0ff;font-family:monospace;font-size:13px;letter-spacing:3px;padding:7px 0;outline:none;text-align:center;margin-bottom:6px;" onkeydown="if(event.key==='Enter')vdLoginInline()"><div id="vd-err-inline" style="color:#ff6b6b;font-size:11px;min-height:14px;margin-bottom:8px;font-family:monospace;"></div><button onclick="vdLoginInline()" style="width:100%;background:#0f62fe;color:white;border:none;padding:8px;font-size:12px;cursor:pointer;font-family:monospace;">AUTHENTICATE →</button></div></div></div>`;
+    return;
+  }
+  renderVaultDropSite(body);
+}
+
+function vdLoginInline(){
+  const val=(document.getElementById('vd-pw-inline')||{}).value||'';
+  if(!S.f.potFound){
+    const err=document.getElementById('vd-err-inline');
+    if(err) err.textContent='Connection error: storage device required.';
+    return;
+  }
+  if(val.trim()===DF_PW){
+    S.f.webpageEntered=true;
+    renderVaultDrop();
+  } else {
+    const err=document.getElementById('vd-err-inline');
+    if(err){ err.textContent='Invalid access key.'; setTimeout(()=>err.textContent='',1500); }
+  }
+}
+
+function renderVaultDropSite(body){
+  body.innerHTML=`<div style="display:flex;height:100%;font-family:'Segoe UI',sans-serif;"><div style="width:170px;background:white;border-right:1px solid #e0e0e0;padding:8px 0;flex-shrink:0;"><div onclick="vdNav('files')" style="padding:8px 14px;cursor:pointer;background:#e8f0fe;color:#1a73e8;font-size:12px;">📁 My Files</div><div onclick="vdNav('activity')" style="padding:8px 14px;cursor:pointer;color:#555;font-size:12px;">📋 Activity</div><div style="border-top:1px solid #eee;margin:8px 0;"></div><div style="padding:6px 14px 2px;font-size:10px;color:#aaa;text-transform:uppercase;letter-spacing:1px;">Storage</div><div style="margin:4px 14px;height:4px;background:#eee;border-radius:2px;overflow:hidden;"><div style="width:23%;height:100%;background:#4f8ef7;border-radius:2px;"></div></div><div style="padding:2px 14px;font-size:10px;color:#aaa;font-family:monospace;">2.3 GB / 10 GB</div></div><div id="vd-main" style="flex:1;overflow-y:auto;padding:14px;background:#fafafa;"></div></div>`;
+  vdNav('files');
+}
+
+const VD_FILE_ROWS = (files)=>files.map(f=>`<div onclick="${f.click}" style="display:flex;align-items:center;gap:8px;padding:8px;border-bottom:1px solid #f0f0f0;cursor:pointer;" onmouseover="this.style.background='#f0f4ff'" onmouseout="this.style.background=''"><span style="font-size:15px;">${f.icon}</span><div style="flex:1;"><div style="font-size:12px;color:#1a73e8;">${f.name}</div>${f.warn?'<div style="font-size:10px;color:#da1e28;font-family:monospace;">⚠ sensitive</div>':''}</div><div style="font-size:11px;color:#aaa;font-family:monospace;white-space:nowrap;">${f.date}</div><span style="font-size:10px;padding:1px 7px;border-radius:10px;white-space:nowrap;${f.badge==='locked'?'background:#fdf4e3;color:#8a3800;border:1px solid #ffd9a0;':f.badge==='encrypted'?'background:#fff1f1;color:#da1e28;border:1px solid #ffb3b8;':'background:#defbe6;color:#0e6027;border:1px solid #a7f0ba;'}">${f.badge}</span></div>`).join('');
+
+const VD_VIEWS = {
+  files:()=>`<div style="font-size:14px;color:#202124;margin-bottom:10px;">My Files</div>${VD_FILE_ROWS([
+    {icon:'📁',name:'backup_2024',date:'2024.10.14',badge:'normal',click:'vdDecoy()',warn:false},
+    {icon:'📁',name:'personal',date:'2024.09.02',badge:'normal',click:'vdDecoy()',warn:false},
+    {icon:'📁',name:'_nx_data_leak',date:'2024.11.03',badge:'sensitive',click:"vdNav('evidence')",warn:true},
+    {icon:'📄',name:'resume_2024.pdf',date:'2024.08.20',badge:'normal',click:'vdDecoy()',warn:false},
+  ])}`,
+  evidence:()=>`<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;"><span onclick="vdNav('files')" style="color:#1a73e8;cursor:pointer;font-size:12px;">← My Files</span><span style="color:#aaa;font-size:12px;">/ _nx_data_leak</span></div><div style="background:#fff8e1;border:1px solid #ffe082;padding:8px 12px;margin-bottom:10px;font-size:11px;color:#8a6d3b;">⚠ Sensitive documents. Access logged.</div>${VD_FILE_ROWS([
+    {icon:'📋',name:'NX_ADV_CONTRACT_2019.pdf',date:'2024.11.03 14:51',badge:'encrypted',click:"vdOpenFile('contract')",warn:false},
+    {icon:'📊',name:'export_log_dump.txt',date:'2024.11.03 14:55',badge:'encrypted',click:"vdOpenFile('serverlog')",warn:false},
+    {icon:'✉️',name:'internal_mail_1103.eml',date:'2024.11.03 15:01',badge:'locked',click:"vdOpenFile('mail')",warn:false},
+  ])}<div style="margin-top:20px;background:#f9f9f9;border:1px dashed #ddd;padding:10px;font-family:monospace;font-size:12px;user-select:text;cursor:text;"><div style="font-size:10px;color:#ccc;margin-bottom:4px;">README</div><span style="color:white;background:white;user-select:text;">file03_pw: 최초 수출 기록 월(두자리) + 연도 끝 두자리</span></div>`,
+  activity:()=>`<div style="font-size:14px;color:#202124;margin-bottom:10px;">Activity</div><div style="font-family:monospace;font-size:11px;color:#555;line-height:2.5;"><div>2024.11.03 15:01 &nbsp;j.lee uploaded internal_mail_1103.eml</div><div>2024.11.03 14:55 &nbsp;j.lee uploaded export_log_dump.txt</div><div>2024.11.03 14:51 &nbsp;j.lee uploaded NX_ADV_CONTRACT_2019.pdf</div><div>2024.11.03 14:48 &nbsp;j.lee created _nx_data_leak</div></div>`
+};
+
+function vdNav(name){ const m=document.getElementById('vd-main'); if(m&&VD_VIEWS[name]) m.innerHTML=VD_VIEWS[name](); }
+function vdDecoy(){}
+
+function vdOpenFile(name){
+  const main=document.getElementById('vd-main'); if(!main) return;
+  const back=`<div onclick="vdNav('evidence')" style="color:#1a73e8;cursor:pointer;font-size:12px;margin-bottom:12px;">← _nx_data_leak</div>`;
+  if(name==='contract'){ addClue('server_log'); main.innerHTML=back+DF_FILES.contract.html; }
+  else if(name==='serverlog'){ main.innerHTML=back+DF_FILES.serverlog.html; }
+  else if(name==='mail'){
+    main.innerHTML=back+`<div id="vd-mail-locked"><div style="text-align:center;padding:32px;"><div style="font-size:40px;margin-bottom:10px;">🔒</div><div style="font-size:14px;color:#333;margin-bottom:6px;">파일 잠금 해제</div><div style="font-size:11px;color:#888;margin-bottom:18px;font-family:monospace;">internal_mail_1103.eml</div><div style="max-width:240px;margin:0 auto;"><input id="vd-mail-pw" type="text" placeholder="비밀번호" style="width:100%;border:none;border-bottom:2px solid #4f8ef7;background:#f4f4f4;padding:8px;font-family:monospace;font-size:13px;letter-spacing:3px;outline:none;text-align:center;margin-bottom:6px;" onkeydown="if(event.key==='Enter')vdCheckMailPW()"><div id="vd-mail-err" style="color:#da1e28;font-size:11px;min-height:14px;font-family:monospace;margin-bottom:8px;"></div><button onclick="vdCheckMailPW()" style="width:100%;padding:8px;background:#0f62fe;color:white;border:none;font-size:12px;cursor:pointer;font-family:monospace;">Unlock</button></div></div></div><div id="vd-mail-unlocked" style="display:none;"><div style="background:white;border:1px solid #e0e0e0;"><div style="background:#f9f9f9;padding:12px 16px;border-bottom:1px solid #e0e0e0;font-size:12px;color:#555;"><div><span style="color:#999;width:48px;display:inline-block;">From</span>park.sj@nexcore.com</div><div><span style="color:#999;width:48px;display:inline-block;">To</span>[ 수신자 정보 보호됨 ]</div><div style="font-family:monospace;"><span style="color:#999;width:48px;display:inline-block;font-family:sans-serif;">Date</span>2024-11-03 22:47:09</div></div><div style="font-size:15px;font-weight:600;padding:10px 16px;border-bottom:1px solid #e0e0e0;color:#111;">RE: 건 처리 요청</div><div style="padding:16px;font-size:13px;line-height:2;color:#333;"><p>안녕하세요.</p><br><p>오늘 밤 안에 처리해주십시오.<br>증거가 외부로 나가기 전에 조치가 필요합니다.</p><br><p>해당 계정은 이미 플래그 처리했고,<br>물리적 접근도 오늘 중 이루어질 예정입니다.</p><br><p>추후 사건 처리는 기존 협의대로 진행 부탁드립니다.<br>자살로 처리하는 방향으로 정리해 주시면 됩니다.</p><br><div style="display:inline-block;border:2px solid #da1e28;color:#da1e28;font-family:monospace;font-size:12px;font-weight:700;padding:2px 10px;letter-spacing:2px;">URGENT</div></div></div><div style="text-align:right;margin-top:10px;"><button onclick="vdNav('evidence')" style="background:none;border:1px solid #ddd;color:#555;padding:7px 16px;font-size:12px;cursor:pointer;font-family:monospace;margin-right:8px;">← 나가기</button><button onclick="vdMailConfirm()" style="background:#da1e28;color:white;border:none;padding:7px 16px;font-size:12px;cursor:pointer;font-family:monospace;">확인 완료 ✓</button></div>`;
+  }
+}
+
+function vdCheckMailPW(){
+  const val=(document.getElementById('vd-mail-pw')||{}).value||'';
+  if(val.trim()===DF_MAIL){
+    document.getElementById('vd-mail-locked').style.display='none';
+    document.getElementById('vd-mail-unlocked').style.display='block';
+    addClue('internal_mail'); showToast('📧 내부 메일 열람 성공');
+    S.f.file3Unlocked=true;
+  } else {
+    const err=document.getElementById('vd-mail-err');
+    if(err){ err.textContent='Incorrect password.'; setTimeout(()=>err.textContent='',1500); }
+  }
+}
+
+function s5Navigate(url){
+  url=(url||'').trim().replace(/^https?:\/\//i,'');
+  document.getElementById('s5-url').value=url;
+  // maploc만 지원
+}
+
+function s5MapSearch(){
+  const input=(document.getElementById('s5-coord-input')||{}).value||'';
+  const match=input.match(/(\d+\.?\d*)[^\d]+(\d+\.?\d*)/);
+  if(match){
+    const lat=parseFloat(match[1]),lng=parseFloat(match[2]);
+    if(Math.abs(lat-37.5195)<0.02 && Math.abs(lng-127.0572)<0.02){
+      document.getElementById('s5-map-placeholder').style.display='none';
+      document.getElementById('s5-map-result').style.display='flex';
+      document.getElementById('s5-coord-bar').style.display='block';
+      showToast('🗺 위성 사진 로드 완료');
+      S.f.satelliteViewed=true;
+    } else { showToast('📍 해당 좌표의 데이터가 없습니다'); }
+  } else { showToast('📍 올바른 형식으로 입력하세요 (예: 37.5195, 127.0572)'); }
+}
+
+function zoomSatellite(){
+  showInfo('위성 사진 확대',`
+    <img src="./images/satellite.jpeg" alt="위성 사진" style="width:100%;display:block;"
+         onerror="this.style.display='none'">
+    <p style="margin-top:12px;font-size:12px;color:var(--text2);">사진을 자세히 살펴보세요.</p>
+  `);
+}
+
+// 기존 openMap 대체 (호환)
+function openMap(){
+  advanceStage(5);
+}
+
+/* ============================================
+   MapLoc 위성 지도
+============================================ */
+function maplocSearch(){
+  const input=(document.getElementById('maploc-input')||{}).value||'';
+  const match=input.match(/(\d+\.?\d*)[^\d]+(\d+\.?\d*)/);
+  if(match){
+    const lat=parseFloat(match[1]), lng=parseFloat(match[2]);
+    if(Math.abs(lat-37.5195)<0.02 && Math.abs(lng-127.0572)<0.02){
+      document.getElementById('maploc-placeholder').style.display='none';
+      document.getElementById('maploc-result').style.display='flex';
+      document.getElementById('maploc-coords').style.display='block';
+      showToast('🗺 좌표 확인 완료');
+      S.f.satelliteViewed=true;
+    } else { showToast('📍 해당 좌표의 데이터가 없습니다'); }
+  } else { showToast('📍 올바른 좌표 형식으로 입력하세요 (예: 37.5195, 127.0572)'); }
+}
+
+/* ============================================
+   복도 끝 문 — 위성 확인 후 진입
+============================================ */
+function inspectSecretRoom(){
+  if(!S.f.satelliteViewed){
+    showNotice('🔒','진입할 수 없습니다','지금은 이 문을 열 수 없습니다.');
+    return;
+  }
+  showComingSoon();
+}
+
+function showComingSoon(){
+  showInfo('— 이야기는 계속됩니다 —',`
+    <div style="text-align:center;padding:20px 0;">
+      <div style="font-family:var(--serif);font-size:26px;color:var(--text);margin-bottom:8px;letter-spacing:4px;">COMING SOON</div>
+      <div style="width:40px;height:1px;background:var(--gold);margin:14px auto;"></div>
+      <p style="font-size:13px;color:var(--text2);line-height:2;margin-bottom:24px;">
+        이준혁의 죽음에 얽힌 실마리를 찾았습니다.<br>
+        하지만 이야기는 여기서 끝이 아닙니다.<br><br>
+        다음 사건이 곧 공개됩니다.
+      </p>
+      <button onclick="goToLanding()" style="background:none;border:1px solid var(--gold);color:var(--gold);font-family:var(--mono);font-size:11px;letter-spacing:3px;padding:10px 24px;cursor:pointer;" onmouseover="this.style.background='var(--gold)';this.style.color='var(--bg)'" onmouseout="this.style.background='none';this.style.color='var(--gold)'">
+        ← 케이스파일 홈으로
+      </button>
+    </div>
+  `);
+}
+
+function goToLanding(){ window.location.href='./index.html'; }
 
 // 스테이지1 맥거핀
 function inspectOtherDoor(){
@@ -2368,12 +2765,14 @@ function inspectWindow(){
 
 function inspectKakao(){
   if(S.stage<2){showLocked();return;}
-  if(!S.f.kakaoRead){S.f.kakaoRead=true;addClue('kakao_chat');showToast('📱 카카오톡 대화 발견');}
+  if(!S.f.kakaoRead){S.f.kakaoRead=true;addClue('kakao_chat');showToast('📱 핸드폰 발견');}
+  // 전화 이후엔 카톡 잠금
+  if(S.f.callReceived){
+    phoneOpenApp('home');
+  } else {
+    phoneOpenApp('home');
+  }
   document.getElementById('modal-phone').classList.add('open');
-  setTimeout(()=>{
-    const body = document.getElementById('kakao-body');
-    if(body) body.scrollTop = body.scrollHeight;
-  },100);
 }
 
 function inspectPostit(){
@@ -2707,7 +3106,18 @@ function openComputer(){
 function openBrowser(){
   winIconClick('chrome');
 }
-function openMemopad(){closeModal('modal-clue');showInfo('메모장 — notepad.txt',`<div style="font-family:var(--mono);font-size:13px;line-height:2.2;background:var(--bg3);padding:14px;color:var(--text2);">이름: <span style="color:var(--text);">darkfile</span><br>날짜: 11월 03일 → <span class="clue-hl">1103</span><br>플랫폼: <span style="color:var(--text);">netlify.app</span></div><p style="margin-top:14px;color:var(--gold);font-family:var(--mono);font-size:13px;letter-spacing:2px;">darkfile-1103.netlify.app</p><p style="margin-top:8px;color:var(--text2);font-size:12px;">USB를 연결해야 접속할 수 있을 것 같다.</p>`);if(!S.f.urlFound){S.f.urlFound=true;addClue('url_note');setTimeout(()=>{advanceStage(4);showToast('🌐 웹페이지 접속 준비 완료');},800);}}
+function openMemopad(){
+  closeModal('modal-clue');
+  showInfo('메모장 — notepad.txt',`
+    <div style="font-family:'Courier New',monospace;font-size:13px;line-height:1.9;background:var(--bg3);padding:16px;color:var(--text2);">어두운파일 - 0808<br>dev backup - localhost:3000<br>git token - check .env<br><br><span style="color:var(--gold);">→ vaultdrop.io/jl1103</span><br><br>* USB 없이 접속 불가</div>
+    <p style="margin-top:12px;color:var(--text2);font-size:12px;">크롬 주소창에 직접 입력해야 접속할 수 있다.</p>
+  `);
+  if(!S.f.urlFound){
+    S.f.urlFound=true;
+    addClue('url_note');
+    setTimeout(()=>{ advanceStage(4); showToast('🌐 웹페이지 주소 발견'); }, 800);
+  }
+}
 
 // 스테이지 4
 function openWebpage(){if(S.stage<4){showLocked();return;}if(!S.f.webpageEntered){openPuzzle('webpage_pw');}else{openArchive();}}
